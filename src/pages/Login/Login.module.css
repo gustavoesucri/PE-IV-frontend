@@ -1,0 +1,71 @@
+/* src/pages/Login/Login.module.css */
+/* src/pages/Login/Login.module.css */
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--azul);
+}
+
+/* Caixa de login com borda gradiente */
+.loginBox {
+  padding: 2.5rem 2.8rem;
+  border-radius: 16px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+  color: var(--branco);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  /* efeito de borda gradiente */
+  border: 3px solid transparent;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
+
+label {
+  align-self: flex-start;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  font-size: 0.95rem;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--cinza);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border: 1px solid var(--roxo);
+  box-shadow: 0 0 6px rgba(109, 40, 217, 0.5);
+}
+
+button {
+  align-self: flex-start;
+  align-items: flex-start;
+  width: auto; 
+  margin: 0;
+  display: inline-flex;
+  padding: 0.7rem 1.2rem;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(var(--vermelho));
+  color: var(--branco);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.4);
+}

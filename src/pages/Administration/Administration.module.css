@@ -1,0 +1,176 @@
+.container {
+  background-color: var(--branco);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Botões superiores (fixos) */
+.topButtons {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000; /* abaixo do overlay e sidebar */
+}
+
+/* Botão ícone reutilizável (menu e notificação) */
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--azul);
+  padding: 4px;
+  line-height: 0;
+}
+.iconButton:hover,
+.iconButton:focus {
+  outline: none;           /* sem borda/hover */
+  box-shadow: none;
+}
+.iconBlue { color: var(--azul); }
+
+/* Notificações */
+.notificationWrapper {
+  position: relative;
+  z-index: 1050; /* acima dos botões, abaixo do sidebar */
+}
+
+.notificationsDropdown {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  background: var(--branco);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 0.8rem;
+  width: 260px;
+}
+
+.notificationsDropdown h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--preto);
+}
+
+.notificationsDropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notificationsDropdown li {
+  font-size: 0.9rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--cinza);
+}
+.notificationsDropdown li:last-child { border-bottom: none; }
+
+/* Overlay escuro quando o sidebar abre */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 1200; /* abaixo do sidebar, acima de tudo */
+}
+
+/* Sidebar totalmente invisível quando fechado */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 280px;
+  height: 100%;
+  background: var(--branco);
+  box-shadow: 2px 0 16px rgba(0,0,0,0.2);
+  transition: left 0.28s ease;
+  z-index: 1300; /* acima do overlay */
+  display: flex;             /* necessário p/ header e itens */
+  flex-direction: column;
+}
+
+/* Abre deslizando da esquerda */
+.sidebarOpen { left: 0; }
+
+/* Header do menu (com X) */
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--cinza);
+}
+.sidebarHeader h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--preto);
+}
+.closeSidebar {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.closeSidebar:hover,
+.closeSidebar:focus { outline: none; box-shadow: none; }
+
+/* Item do menu */
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 3rem 0.5rem 0rem 0rem;
+  transition: background 0.2s ease;
+}
+.sidebarItem:hover { background-color: var(--cinza); }
+
+/* Conteúdo */
+.mainContent {
+  /* empurra a seção ainda mais para baixo */
+  margin-top: 11rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1rem 2rem;
+}
+
+.studentsBox {
+  background: var(--cinza);
+  border-radius: 12px;
+  padding: 1rem;
+  width: 85%;
+  max-width: 820px;
+  margin-top: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Linha do aluno (nome e observação lado a lado) */
+.studentRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--branco);
+  border-radius: 8px;
+  margin-bottom: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+.studentRow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  background: #f3f4f6;
+}
+
+.studentName { font-weight: 600; }
+.studentObs  { font-size: 0.92rem; color: #4b5563; }

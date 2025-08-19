@@ -1,0 +1,50 @@
+:root{
+    --largura: 300px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: linear-gradient(135deg, var(--azul), var(--roxo));
+  color: var(--branco);
+}
+
+.title {
+    color: var(--branco)
+}
+
+.form,
+.label,
+.input,
+.button {
+  width: var(--largura);
+}
+
+.label {
+    display: block; /* label vira bloco, assim o margin-bottom funciona */
+    margin: 5px 0px;
+}
+
+.button {
+    display: block;
+    margin: 10px auto;
+    color: var(--branco);
+    border: none;
+    padding: 6px 0px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100px;
+    }
+
+.button:hover {
+    background-color: #c62828;
+}

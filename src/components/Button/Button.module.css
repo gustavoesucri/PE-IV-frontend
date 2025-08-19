@@ -1,0 +1,17 @@
+/* src/components/Button/Button.module.css */
+.button {
+  color: var(--branco);
+  border: none;
+  padding: 6px 0px;     /* menor padding para botão pequeno */
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100px;          /* largura fixa */
+  display: block;
+  margin: 10px auto;
+}
+
+.button:hover {
+  background-color: #c62828;
+}
