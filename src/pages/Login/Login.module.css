@@ -47,7 +47,7 @@ input:focus {
   box-shadow: 0 0 6px rgba(109, 40, 217, 0.5);
 }
 
-button {
+.loginButton {
   align-self: flex-start;
   align-items: flex-start;
   width: auto; 
@@ -65,7 +65,8 @@ button {
 }
 
 
-button:hover {
+.loginButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(109, 40, 217, 0.4);
+  background: rgb(211, 50, 50);
 }

@@ -1,0 +1,22 @@
+.backButton {
+  position: absolute;
+  top: 16px;
+  left: 16px; /* posiciona no canto superior esquerdo */
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(219, 200, 200, 0.85); /* flecha branca, levemente acinzentada */
+  transition: transform 0.2s ease, background 0.2s ease;
+  z-index: 1000; /* garante que fique acima do conteúdo */
+}
+
+.backButton:hover {
+  transform: scale(1.2);
+}
+
+.backButton:focus {
+  outline: none;
+}

@@ -1,0 +1,61 @@
+:root{
+    --largura: 300px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 2rem;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+th {
+  background-color: #f0f0f0;
+  font-weight: 600;
+}
+
+.questionCell {
+  text-align: left;
+  font-weight: 500;
+  max-width: 400px;
+}
+
+.optionCell {
+  width: 100px;
+}
+
+.radioInput {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+
+/* Isso tira o sombreamento do focus quando com clique do mouse */
+input[type="radio"]:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.button {
+    display: block;
+    margin: 10px auto;
+    color: var(--branco);
+    border: none;
+    padding: 6px 0px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100px;
+    background-color: #c62828;
+    }
+
+.button:hover {
+    background-color: #f71515;
+}

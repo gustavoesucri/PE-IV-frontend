@@ -20,11 +20,31 @@
     color: var(--branco)
 }
 
-.form,
+.form {
+  max-width: calc(var(--largura) * 3);
+}
+
+/* .form,
 .label,
 .input,
 .button {
   width: var(--largura);
+} */
+
+.inputNome, .inputCnpj {
+  width: calc(var(--largura)*1.5);
+}
+
+.inputRua, .inputBairro {
+  width: calc(var(--largura)*1);
+}
+
+.inputNumero, .inputEstado {
+  width: calc(var(--largura)*0.5);
+}
+
+.inputCep {
+  width: calc(var(--largura)*0.7);
 }
 
 .label {
@@ -32,11 +52,26 @@
     margin: 5px 0px;
 }
 
+.endereco {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+
+  /* width: auto; */
+  max-width: calc(var(--largura) * 2);
+
+  flex-wrap: wrap;
+}
+
+.estado {
+  width: 100px;
+}
+
 .button {
     display: block;
     margin: 10px auto;
     color: var(--branco);
-    background-color: #c62828;
     border: none;
     padding: 6px 0px;
     font-size: 0.9rem;
@@ -44,9 +79,9 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     width: 100px;
+    background-color: #c62828;
     }
 
 .button:hover {
-  transition: 0.5s;
-    background-color: var(--azul);
+    background-color: #f71515;
 }

@@ -6,7 +6,6 @@
   position: relative;
 }
 
-/* Botões superiores (fixos) */
 .topButtons {
   position: fixed;
   top: 1rem;
@@ -15,10 +14,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000; /* abaixo do overlay e sidebar */
+  z-index: 1000;
 }
 
-/* Botão ícone reutilizável (menu e notificação) */
 .iconButton {
   background: none;
   border: none;
@@ -27,17 +25,20 @@
   padding: 4px;
   line-height: 0;
 }
+
 .iconButton:hover,
 .iconButton:focus {
-  outline: none;           /* sem borda/hover */
+  outline: none;
   box-shadow: none;
 }
-.iconBlue { color: var(--azul); }
 
-/* Notificações */
+.iconBlue {
+  color: var(--azul);
+}
+
 .notificationWrapper {
   position: relative;
-  z-index: 1050; /* acima dos botões, abaixo do sidebar */
+  z-index: 1050;
 }
 
 .notificationsDropdown {
@@ -69,17 +70,18 @@
   padding: 0.45rem 0;
   border-bottom: 1px solid var(--cinza);
 }
-.notificationsDropdown li:last-child { border-bottom: none; }
 
-/* Overlay escuro quando o sidebar abre */
+.notificationsDropdown li:last-child {
+  border-bottom: none;
+}
+
 .overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.35);
-  z-index: 1200; /* abaixo do sidebar, acima de tudo */
+  z-index: 1200;
 }
 
-/* Sidebar totalmente invisível quando fechado */
 .sidebar {
   position: fixed;
   top: 0;
@@ -89,39 +91,16 @@
   background: var(--branco);
   box-shadow: 2px 0 16px rgba(0,0,0,0.2);
   transition: left 0.28s ease;
-  z-index: 1300; /* acima do overlay */
-  display: flex;             /* necessário p/ header e itens */
-  flex-direction: column;
-}
-
-/* Abre deslizando da esquerda */
-.sidebarOpen { left: 0; }
-
-/* Header do menu (com X) */
-.sidebarHeader {
+  z-index: 1300;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
+  flex-direction: column;
   padding: 1rem;
-  border-bottom: 1px solid var(--cinza);
 }
-.sidebarHeader h3 {
-  margin: 0;
-  font-size: 1.05rem;
-  color: var(--preto);
-}
-.closeSidebar {
-  background: none;
-  border: none;
-  font-size: 1.4rem;
-  cursor: pointer;
-  line-height: 1;
-}
-.closeSidebar:hover,
-.closeSidebar:focus { outline: none; box-shadow: none; }
 
-/* Item do menu */
+.sidebarOpen {
+  left: 0;
+}
+
 .sidebarItem {
   display: flex;
   align-items: center;
@@ -129,14 +108,38 @@
   padding: 0.8rem 1rem;
   border-radius: 8px;
   cursor: pointer;
-  margin: 3rem 0.5rem 0rem 0rem;
+  margin-bottom: 0.5rem;
+  color: var(--preto);
   transition: background 0.2s ease;
 }
-.sidebarItem:hover { background-color: var(--cinza); }
 
-/* Conteúdo */
+.sidebarItem:hover {
+  background-color: var(--cinza);
+}
+
+.sidebarItem span {
+  font-size: 1rem;
+}
+
+.logoutButton {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  background: none;
+  color: var(--vermelho);
+  font-size: 1rem;
+  transition: background 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: var(--cinza);
+}
+
 .mainContent {
-  /* empurra a seção ainda mais para baixo */
   margin-top: 11rem;
   display: flex;
   flex-direction: column;
@@ -154,7 +157,6 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* Linha do aluno (nome e observação lado a lado) */
 .studentRow {
   display: flex;
   justify-content: space-between;
@@ -166,11 +168,18 @@
   cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
+
 .studentRow:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   background: #f3f4f6;
 }
 
-.studentName { font-weight: 600; }
-.studentObs  { font-size: 0.92rem; color: #4b5563; }
+.studentName {
+  font-weight: 600;
+}
+
+.studentObs {
+  font-size: 0.92rem;
+  color: #4b5563;
+}

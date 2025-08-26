@@ -1,26 +1,34 @@
 import React, { useState, useEffect } from "react";
-import styles from "./Administration.module.css";
-import { FiMenu, FiSettings } from "react-icons/fi";
+import {
+  FiMenu, FiSettings, FiLogOut,
+  FiBriefcase,
+  FiUsers,
+  FiUser,
+  FiCheckCircle
+} from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import styles from "./Administration.module.css";
 
 const Administration = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const navigate = useNavigate();
 
   const notifications = [
     "Novo aluno cadastrado: Maria",
     "Reunião de professores às 15h",
-    "Aluno João esta Doente",
+    "Aluno João está doente"
   ];
 
   const students = [
     { nome: "Rodrigo", observacao: "Faltando muito no trabalho" },
     { nome: "Maria", observacao: "Ótimo desempenho" },
-    { nome: "João", observacao: "Precisa melhorar no foco durante o trabalho" },
+    { nome: "João", observacao: "Precisa melhorar no foco durante o trabalho" }
   ];
 
   const openSidebar = () => {
-    setShowNotifications(false); // garante que dropdown não fique aberto
+    setShowNotifications(false);
     setShowSidebar(true);
   };
 
@@ -28,7 +36,10 @@ const Administration = () => {
     setShowSidebar(false);
   };
 
-  // Fecha menu com ESC
+  const handleLogout = () => {
+    navigate("/login");
+  };
+
   useEffect(() => {
     const onKeyDown = (e) => {
       if (e.key === "Escape") closeSidebar();
@@ -39,7 +50,6 @@ const Administration = () => {
 
   return (
     <div className={styles.container}>
-      {/* Botões flutuantes (fixos) */}
       <div className={styles.topButtons}>
         {!showSidebar && (
           <button
@@ -50,7 +60,6 @@ const Administration = () => {
             <FiMenu size={26} />
           </button>
         )}
-
         <div className={styles.notificationWrapper}>
           <button
             className={`${styles.iconButton} ${styles.iconBlue}`}
@@ -59,13 +68,12 @@ const Administration = () => {
           >
             <IoNotificationsOutline size={28} />
           </button>
-
           {showNotifications && !showSidebar && (
             <div className={styles.notificationsDropdown}>
               <h4>Notificações</h4>
               <ul>
-                {notifications.map((n, index) => (
-                  <li key={index}>{n}</li>
+                {notifications.map((n, i) => (
+                  <li key={i}>{n}</li>
                 ))}
               </ul>
             </div>
@@ -73,32 +81,48 @@ const Administration = () => {
         </div>
       </div>
 
-      {/* Overlay (impede clique e oculta ícones por baixo) */}
       {showSidebar && <div className={styles.overlay} onClick={closeSidebar} />}
 
-      {/* Menu Lateral */}
       <aside
         className={`${styles.sidebar} ${showSidebar ? styles.sidebarOpen : ""}`}
         aria-hidden={!showSidebar}
       >
-
-        <div className={styles.sidebarItem} role="button" tabIndex={0}>
+        <div className={styles.sidebarItem} onClick={() => navigate("/settings")}>
           <FiSettings size={20} />
           <span>Configurações</span>
         </div>
+        <div className={styles.sidebarItem} onClick={() => navigate("/students")}>
+          <FiUsers size={20} />
+          <span>Estudantes</span>
+        </div>
+        <div className={styles.sidebarItem} onClick={() => navigate("/users")}>
+          <FiUser size={20} />
+          <span>Usuários</span>
+        </div>
+        <div className={styles.sidebarItem} onClick={() => navigate("/companies")}>
+          <FiBriefcase size={20} />
+          <span>Empresas</span>
+        </div>
+        <div className={styles.sidebarItem} onClick={() => navigate("/assessment")}>
+          <FiCheckCircle  size={20} />
+          <span>Avaliação</span>
+        </div>
+        <div className={styles.logoutButton} onClick={handleLogout}>
+          <FiLogOut size={20} />
+          <span>Sair</span>
+        </div>
       </aside>
 
-      {/* Conteúdo */}
       <main className={styles.mainContent}>
         <h2>Alunos Cadastrados</h2>
         <div className={styles.studentsBox}>
-          {students.map((aluno, index) => (
+          {students.map((aluno, i) => (
             <div
-              key={index}
+              key={i}
               className={styles.studentRow}
-              onClick={() => alert(`Abrir perfil de ${aluno.nome}`)}
               role="button"
               tabIndex={0}
+              onClick={() => alert(`Abrir perfil de ${aluno.nome}`)}
             >
               <span className={styles.studentName}>{aluno.nome}</span>
               <span className={styles.studentObs}>{aluno.observacao}</span>
