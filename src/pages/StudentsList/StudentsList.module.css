@@ -1,0 +1,73 @@
+:root{
+    --largura: 300px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: linear-gradient(135deg, var(--azul), var(--roxo));
+  color: var(--branco);
+}
+
+.title {
+    color: var(--branco)
+}
+
+.alumn {
+  background-color: rgb(255, 0, 106);
+  width: 50%;
+  padding: 10px;
+  margin: 1px;
+  border-radius: 16px;
+  border: 1px solid white;
+
+   position: relative;
+}
+
+.editIcon {
+  position: absolute;
+
+  size: 20px;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background-color: rgb(102, 201, 184);
+  color: rgb(235, 235, 235);
+  border-radius: 4px;
+}
+
+
+.button {
+    display: block;
+    margin: 10px auto;
+    color: var(--branco);
+    background-color: #c62828;
+    border: none;
+    padding: 6px 0px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100px;
+    }
+
+.button:hover {
+  transition: 0.5s;
+    background-color: var(--azul);
+}
+
+.button2 {
+  margin-top: 10px;
+}

@@ -4,14 +4,16 @@ import styles from './BackButton.module.css';
 
 export default function BackButton() {
   const navigate = useNavigate();
+
   return (
     <button
       type="button"
       className={styles.backButton}
-      onClick={() => navigate('/administration')}
+      onClick={() => navigate(-1)}
       aria-label="Voltar"
     >
       <FaArrowLeft size="1.2em" />
     </button>
   );
 }
+

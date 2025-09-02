@@ -1,53 +1,51 @@
 import React from "react";
-import styles from "./Companies.module.css"
+import styles from "./Companies.module.css";
 import BackButton from "../../components/BackButton/BackButton";
-// import Button from "../../components/Button/Button.jsx"
 
 const Companies = () => {
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        alert("Empresa cadastrada com sucesso!");
+    };
+
     return (
         <div className={styles.container}>
             <BackButton />
-            <h1 className={styles.title}>{"Página de Cadastro de Empresas"}</h1>
-            <div className={styles.form}>
-            <label className={styles.label} htmlFor="nome">{"Nome da empresa:"}</label>
-            <input className={styles.inputNome} id="nome" name="nome" type="text" />
-            <label className={styles.label} htmlFor="cnpj-empresa">{"CNPJ da empresa:"}</label>
-            <input className={styles.inputCnpj} id="cnpj-empresa" name="cnpj-empresa" type="number" />
+            <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
 
-            <h2>Endereço</h2>
-            <div className={styles.endereco}>
+            <div className={styles.card}>
+                <h2 className={styles.title}>Cadastro de Empresas</h2>
 
-            <div>
-            <label className={styles.label} htmlFor="rua">{"Rua:"}</label>
-            <input className={styles.inputRua} id="rua" name="rua" type="text" />
-            </div>
+                <form className={styles.form} onSubmit={handleSubmit}>
+                    <TextInput label="Nome da empresa" id="nome" type="text" />
+                    <TextInput label="CNPJ da empresa" id="cnpj-empresa" type="number" />
 
-            <div>
-            <label className={styles.label} htmlFor="numero">{"Número:"}</label>
-            <input className={styles.inputNumero} id="numero" name="numero" type="number" />
-            </div>
-            
+                    <h3 className={styles.subTitle}>Endereço</h3>
 
-            <div>
-            <label className={styles.label} htmlFor="bairro">{"Bairro:"}</label>
-            <input className={styles.inputBairro} id="bairro" name="bairro" type="text" />
-            </div>
+                    <div className={styles.endereco}>
+                        <TextInput label="Rua" id="rua" type="text" />
+                        <TextInput label="Número" id="numero" type="number" />
+                        <TextInput label="Bairro" id="bairro" type="text" />
+                        <TextInput label="Estado" id="estado" type="text" />
+                        <TextInput label="CEP" id="cep" type="text" />
+                    </div>
 
-            <div className="estado">
-            <label className={styles.label} htmlFor="estado">{"Estado:"}</label>
-            <input className={styles.inputEstado} id="estado" name="estado" type="text" />
-            </div>
-
-            <div>
-            <label className={styles.label} htmlFor="cep">{"CEP:"}</label>
-            <input className={styles.inputCep} id="cep" name="cep" type="text" />
-            </div>
-
-            </div>
-            <button className={styles.button} type="submit">Cadastrar</button>
+                    <button type="submit" className={styles.button}>
+                        Cadastrar
+                    </button>
+                </form>
             </div>
         </div>
     );
 };
+
+// Componente de input reutilizável
+const TextInput = ({ label, id, type }) => (
+    <div className={styles.inputGroup}>
+        <label className={styles.label} htmlFor={id}>{label}:</label>
+        <input className={styles.input} id={id} name={id} type={type} required />
+    </div>
+);
 
 export default Companies;

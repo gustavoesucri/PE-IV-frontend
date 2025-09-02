@@ -1,0 +1,188 @@
+.container {
+  padding: 2rem;
+  background: var(--cinza-claro);
+  min-height: 100vh;
+  color: var(--preto);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: var(--azul);
+}
+
+.infoBox {
+  background: var(--branco);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+.editBtn {
+  margin-top: 1rem;
+  padding: 0.7rem 1.2rem;
+  background: var(--azul);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: inline-block;
+}
+
+.editBtn:hover {
+  background: var(--roxo);
+}
+
+.successMessage {
+  margin-top: 1rem;
+  color: var(--azul);
+  font-weight: bold;
+}
+
+.switchContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  max-width: 500px;
+  margin: 0 auto;   /* centraliza igual à infoBox */
+}
+
+.switchLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  gap: 0.5cm;
+}
+
+.switch {
+  width: 50px;
+  height: 26px;
+  border-radius: 20px;
+  background: var(--cinza);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.slider {
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease;
+}
+
+.on {
+  background: var(--vermelho);
+}
+
+.on .slider {
+  transform: translateX(24px);
+}
+
+.off {
+  background: var(--cinza);
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(17, 24, 39, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: var(--branco);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.modal h2 {
+  margin-bottom: 1rem;
+  color: var(--azul);
+}
+
+.modal input {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--cinza);
+  outline: none;
+}
+
+.modal input:focus {
+  border-color: var(--azul);
+}
+
+.saveBtn {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--azul);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.saveBtn:disabled {
+  background: var(--cinza);
+  cursor: not-allowed;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: #1e3a8a;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  color: var(--preto);
+}
+
+.match {
+  color: green;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.notMatch {
+  color: var(--vermelho);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.buttonsRow {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}

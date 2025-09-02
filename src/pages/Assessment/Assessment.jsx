@@ -62,53 +62,59 @@ const Assessment = () => {
   return (
     <div className={styles.container}>
       <BackButton />
-      <h1 className={styles.title}>Avaliação Usuário em período de Experiência</h1>
-      <form
-        className={styles.form}
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log("Formulário enviado");
-          // Aqui você pode adicionar a lógica de envio (API, validação etc.)
-        }}
-      >
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Pergunta</th>
-              {options.map((opt) => (
-                <th key={opt.value}>{opt.label}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {questions.map((question, index) => {
-              const questionId = `q${index + 1}`;
-              return (
-                <tr key={questionId}>
-                  <td className={styles.questionCell}>{question}</td>
-                  {options.map((option) => (
-                    <td key={option.value} className={styles.optionCell}>
-                      <input
-                        type="radio"
-                        id={`${questionId}-${option.value}`}
-                        name={questionId}
-                        value={option.value}
-                        className={styles.radioInput}
-                      />
-                    </td>
+      <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
+
+      <div className={styles.card}>
+        <h2 className={styles.title}>Avaliação Usuário em período de Experiência</h2>
+
+        <form
+          className={styles.form}
+          onSubmit={(e) => {
+            e.preventDefault();
+            alert("Avaliação enviada com sucesso!");
+          }}
+        >
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Pergunta</th>
+                  {options.map((opt) => (
+                    <th key={opt.value}>{opt.label}</th>
                   ))}
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {questions.map((question, index) => {
+                  const questionId = `q${index + 1}`;
+                  return (
+                    <tr key={questionId}>
+                      <td className={styles.questionCell}>{question}</td>
+                      {options.map((option) => (
+                        <td key={option.value} className={styles.optionCell}>
+                          <input
+                            type="radio"
+                            id={`${questionId}-${option.value}`}
+                            name={questionId}
+                            value={option.value}
+                            className={styles.radioInput}
+                          />
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
 
-        <div className={styles.submitWrapper}>
-          <button type="submit" className={styles.submitButton}>
-            Enviar avaliação
-          </button>
-        </div>
-      </form>
+          <div className={styles.submitWrapper}>
+            <button type="submit" className={styles.submitButton}>
+              Enviar avaliação
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

@@ -1,87 +1,104 @@
-:root{
-    --largura: 300px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
 .container {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  background: linear-gradient(135deg, var(--azul), var(--roxo));
+  background: var(--branco);
+  padding: 20px;
+}
+
+.pageTitle {
   color: var(--branco);
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 30px 25px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .title {
-    color: var(--branco)
+  color: var(--azul);
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.subTitle {
+  color: var(--preto);
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
 }
 
 .form {
-  max-width: calc(var(--largura) * 3);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-/* .form,
-.label,
-.input,
-.button {
-  width: var(--largura);
-} */
-
-.inputNome, .inputCnpj {
-  width: calc(var(--largura)*1.5);
-}
-
-.inputRua, .inputBairro {
-  width: calc(var(--largura)*1);
-}
-
-.inputNumero, .inputEstado {
-  width: calc(var(--largura)*0.5);
-}
-
-.inputCep {
-  width: calc(var(--largura)*0.7);
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .label {
-    display: block; /* label vira bloco, assim o margin-bottom funciona */
-    margin: 5px 0px;
+  font-size: 0.95rem;
+  color: var(--preto);
+  margin-bottom: 5px;
+}
+
+.input {
+  padding: 10px;
+  width: 100%;
+  border: 1px solid var(--cinza);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.input:focus {
+  border: 1px solid var(--azul);
+  box-shadow: 0 0 6px rgba(42, 82, 193, 0.4);
 }
 
 .endereco {
   display: flex;
-  flex-direction: row;
-  gap: 10px;
-  justify-content: center;
-
-  /* width: auto; */
-  max-width: calc(var(--largura) * 2);
-
   flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
 }
 
-.estado {
-  width: 100px;
+.endereco .inputGroup {
+  flex: 1 1 45%;
+  min-width: 120px;
 }
 
 .button {
-    display: block;
-    margin: 10px auto;
-    color: var(--branco);
-    border: none;
-    padding: 6px 0px;
-    font-size: 0.9rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100px;
-    background-color: #c62828;
-    }
+  margin-top: 15px;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--branco);
+  background-color: var(--azul);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
 .button:hover {
-    background-color: #f71515;
+  background-color: var(--roxo);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(42, 82, 193, 0.4);
 }

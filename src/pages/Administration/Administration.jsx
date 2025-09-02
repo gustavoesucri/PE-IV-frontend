@@ -37,7 +37,7 @@ const Administration = () => {
   };
 
   const handleLogout = () => {
-    navigate("/login");
+    navigate("/");
   };
 
   useEffect(() => {

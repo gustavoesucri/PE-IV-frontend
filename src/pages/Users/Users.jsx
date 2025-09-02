@@ -1,21 +1,29 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { TextField, MenuItem, Select, InputLabel, FormControl, Button } from '@mui/material';
+import {
+  TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Button,
+} from '@mui/material';
 import styles from './Users.module.css';
 import BackButton from '../../components/BackButton/BackButton';
 import { FaTimes } from 'react-icons/fa';
 
-
 Modal.setAppElement('#root');
-
-
 
 const Users = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [category, setCategory] = useState('');
   const [newCategory, setNewCategory] = useState('');
-  const [categories, setCategories] = useState(['Professor', 'Psicólogo', 'Diretor']);
+  const [categories, setCategories] = useState([
+    'Professor',
+    'Psicólogo',
+    'Diretor',
+  ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
@@ -39,53 +47,61 @@ const Users = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Lógica para cadastrar o usuário
+    alert('Administrador cadastrado com sucesso!');
+    setUsername('');
+    setPassword('');
+    setCategory('');
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Cadastro de Administrador</h1>
-      <BackButton />
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <TextField
-          label="Nome de Usuário"
-          variant="outlined"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Senha"
-          type="password"
-          variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          fullWidth
-          margin="normal"
-        />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Categoria</InputLabel>
-          <Select
-            value={category}
-            onChange={handleCategoryChange}
-            label="Categoria"
+              <BackButton />
+      <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
+      <div className={styles.card}>
+        <h2 className={styles.title}>Cadastro de Administrador</h2>
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <TextField
+            label="Nome de Usuário"
+            variant="outlined"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
-          >
-            {categories.map((cat, index) => (
-              <MenuItem key={index} value={cat}>
-                {cat}
-              </MenuItem>
-            ))}
-            <MenuItem onClick={() => setIsModalOpen(true)}>+</MenuItem>
-          </Select>
-        </FormControl>
-        <Button type="submit" class={styles.btn_users} fullWidth>
-          Cadastrar
-        </Button>
-      </form>
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Senha"
+            type="password"
+            variant="outlined"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Categoria</InputLabel>
+            <Select
+              value={category}
+              onChange={handleCategoryChange}
+              required
+            >
+              {categories.map((cat, index) => (
+                <MenuItem key={index} value={cat}>
+                  {cat}
+                </MenuItem>
+              ))}
+              <MenuItem onClick={() => setIsModalOpen(true)}>+ Nova</MenuItem>
+            </Select>
+          </FormControl>
+
+          <button type="submit" className={styles.btn_users}>
+            Cadastrar
+          </button>
+        </form>
+      </div>
 
       {/* Modal para adicionar nova categoria */}
       <Modal
@@ -97,7 +113,10 @@ const Users = () => {
         closeTimeoutMS={200}
       >
         <div className={styles.modalContent}>
-          <button className={styles.closeButton} onClick={() => setIsModalOpen(false)}>
+          <button
+            className={styles.closeButton}
+            onClick={() => setIsModalOpen(false)}
+          >
             <FaTimes />
           </button>
           <h2>Nova Categoria</h2>
@@ -109,7 +128,11 @@ const Users = () => {
             fullWidth
             margin="normal"
           />
-          <Button onClick={handleAddCategory} variant="contained" color="secondary">
+          <Button
+            onClick={handleAddCategory}
+            variant="contained"
+            color="primary"
+          >
             Adicionar
           </Button>
         </div>
@@ -130,7 +153,6 @@ const Users = () => {
       </Modal>
     </div>
   );
-}
-
+};
 
 export default Users;
