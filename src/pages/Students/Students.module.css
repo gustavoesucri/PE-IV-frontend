@@ -17,20 +17,19 @@
 }
 
 .pageTitle {
-  color: var(--branco);
+  color: var(--azul);
   font-size: 1.8rem;
   margin-bottom: 20px;
   text-align: center;
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.85); /* fundo translúcido */
-  backdrop-filter: blur(10px);
+  background: var(--branco);
   border-radius: 12px;
   padding: 30px 25px;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+  max-width: 450px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
@@ -51,20 +50,30 @@
   font-size: 0.9rem;
   color: var(--preto);
   text-align: left;
+  font-weight: 500;
 }
 
-.input {
+.input,
+.textarea {
   padding: 10px;
   border: 1px solid var(--cinza);
   border-radius: 8px;
   font-size: 0.95rem;
   outline: none;
   transition: border 0.3s ease;
+  width: 100%;
 }
 
-.input:focus {
+.input:focus,
+.textarea:focus {
   border: 1px solid var(--azul);
-  box-shadow: 0 0 6px rgba(42, 82, 193, 0.4);
+  box-shadow: 0 0 6px rgba(42, 82, 193, 0.3);
+}
+
+.textarea {
+  resize: vertical; /* ajustável */
+  min-height: 80px;
+  max-height: 200px;
 }
 
 .button {

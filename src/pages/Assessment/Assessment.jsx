@@ -1,56 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./Assessment.module.css";
 import BackButton from "../../components/BackButton/BackButton";
+import { X } from "lucide-react";
 
 const Assessment = () => {
-  const questions = [
-    "1 - Atende as regras.",
-    "2 - Socializa com o grupo.",
-    "3 - Isola-se do grupo",
-    "4 - Possui tolerância a frustração.",
-    "5 - Respeita colega e professores.",
-    "6 - Faz relatos fantasiosos.",
-    "7 - Concentra-se nas atividades.",
-    "8 - Tem iniciativa.",
-    "9 - Sonolência durante as atividades em sala de aula.",
-    "10 - Alterações intensas de humor.",
-    "11 - Indica oscilação repentina de humor.",
-    "12 - Irrita-se com facilidade.",
-    "13 - Ansiedade.",
-    "14 - Escuta quando seus colegas falam.",
-    "15 - Escuta e segue orientação dos professores.",
-    "16 - Mantem-se em sala de aula.",
-    "17 - Desloca-se muito na sala.",
-    "18 - Fala demasiadamente.",
-    "19 - É pontual.",
-    "20 - É assíduo.",
-    "21 - Demonstra desejo de trabalhar.",
-    "22 - Apropria-se indevidamente daquilo que não é seu.",
-    "23 - Indica hábito de banho diário.",
-    "24 - Indica habito de escovação e qualidade na escovação.",
-    "25 - Indica cuidado com a aparência e limpeza do uniforme.",
-    "26 - Indica autonomia quanto a estes hábitos (23, 24, 25).",
-    "27 - Indica falta do uso de medicação com oscilações de comportamento.",
-    "28 - Tem meio articulado de conseguir receitas e aquisições das medicações.",
-    "29 - Traz seus materiais organizados.",
-    "30 - Usa transporte coletivo.",
-    "31 - Tem iniciativa diante das atividades propostas.",
-    "32 - Localiza-se no espaço da Instituição.",
-    "33 - Situa-se nas trocas de sala e atividades.",
-    "34 - Interage par a par.",
-    "35 - Interage em grupo.",
-    "36 - Cria conflitos e intrigas.",
-    "37 - Promove a harmonia.",
-    "38 - Faz intrigas entre colegas x professores.",
-    "39 - Demonstra interesse em participar das atividades extraclasses.",
-    "40 - Você percebe que existe interação/participação da família em apoio ao usuário na Instituição.",
-    "41 - Você percebe superproteção por parte da família quanto a autonomia do usuário.",
-    "42 - Usuário traz relatos negativos da família (de forma geral).",
-    "43 - Usuário traz relatos positivos da família (de forma geral).",
-    "44 - Você percebe incentivo quanto a busca de autonomia para o usuário por parte da família.",
-    "45 - Você percebe incentivo quanto a inserção do usuário no mercado de trabalho por parte da família.",
-    "46 - Traz os documentos enviados pela Instituição assinado.",
+  const [selectedStudent, setSelectedStudent] = useState("");
+  const [submissionDate, setSubmissionDate] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState(""); // "success" ou "error"
+
+  const students = [
+    "João Silva",
+    "Maria Oliveira",
+    "Pedro Souza",
+    "Ana Costa",
+    "Lucas Pereira",
   ];
+
+  const questions = ["1 - Atende as regras.", "2 - Socializa com o grupo.", "3 - Isola-se do grupo", "4 - Possui tolerância a frustração.", "5 - Respeita colega e professores.", "6 - Faz relatos fantasiosos.", "7 - Concentra-se nas atividades.", "8 - Tem iniciativa.", "9 - Sonolência durante as atividades em sala de aula.", "10 - Alterações intensas de humor.", "11 - Indica oscilação repentina de humor.", "12 - Irrita-se com facilidade.", "13 - Ansiedade.", "14 - Escuta quando seus colegas falam.", "15 - Escuta e segue orientação dos professores.", "16 - Mantem-se em sala de aula.", "17 - Desloca-se muito na sala.", "18 - Fala demasiadamente.", "19 - É pontual.", "20 - É assíduo.", "21 - Demonstra desejo de trabalhar.", "22 - Apropria-se indevidamente daquilo que não é seu.", "23 - Indica hábito de banho diário.", "24 - Indica habito de escovação e qualidade na escovação.", "25 - Indica cuidado com a aparência e limpeza do uniforme.", "26 - Indica autonomia quanto a estes hábitos (23, 24, 25).", "27 - Indica falta do uso de medicação com oscilações de comportamento.", "28 - Tem meio articulado de conseguir receitas e aquisições das medicações.", "29 - Traz seus materiais organizados.", "30 - Usa transporte coletivo.", "31 - Tem iniciativa diante das atividades propostas.", "32 - Localiza-se no espaço da Instituição.", "33 - Situa-se nas trocas de sala e atividades.", "34 - Interage par a par.", "35 - Interage em grupo.", "36 - Cria conflitos e intrigas.", "37 - Promove a harmonia.", "38 - Faz intrigas entre colegas x professores.", "39 - Demonstra interesse em participar das atividades extraclasses.", "40 - Você percebe que existe interação/participação da família em apoio ao usuário na Instituição.", "41 - Você percebe superproteção por parte da família quanto a autonomia do usuário.", "42 - Usuário traz relatos negativos da família (de forma geral).", "43 - Usuário traz relatos positivos da família (de forma geral).", "44 - Você percebe incentivo quanto a busca de autonomia para o usuário por parte da família.", "45 - Você percebe incentivo quanto a inserção do usuário no mercado de trabalho por parte da família.", "46 - Traz os documentos enviados pela Instituição assinado.",];
 
   const options = [
     { value: "sim", label: "Sim" },
@@ -59,21 +27,90 @@ const Assessment = () => {
     { value: "raras", label: "Raras vezes" },
   ];
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    let allAnswered = true;
+
+    if (!selectedStudent) {
+      setModalType("error");
+      setModalMessage("Selecione um aluno antes de enviar a avaliação!");
+      setShowModal(true);
+      return;
+    }
+
+    if (!submissionDate) {
+      setModalType("error");
+      setModalMessage("Selecione a data de envio da avaliação!");
+      setShowModal(true);
+      return;
+    }
+
+    for (let i = 1; i <= questions.length; i++) {
+      if (!formData.get(`q${i}`)) {
+        allAnswered = false;
+        break;
+      }
+    }
+
+    if (!allAnswered) {
+      setModalType("error");
+      setModalMessage("Preencha todas as opções antes de enviar a avaliação!");
+      setShowModal(true);
+      return;
+    }
+
+    setModalType("success");
+    setModalMessage(
+      `Avaliação do aluno ${selectedStudent} enviada com sucesso na data ${submissionDate}!`
+    );
+    setShowModal(true);
+  };
+
   return (
     <div className={styles.container}>
       <BackButton />
       <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
 
       <div className={styles.card}>
-        <h2 className={styles.title}>Avaliação Usuário em período de Experiência</h2>
+        <h2 className={styles.title}>
+          Avaliação Usuário em período de Experiência
+        </h2>
 
-        <form
-          className={styles.form}
-          onSubmit={(e) => {
-            e.preventDefault();
-            alert("Avaliação enviada com sucesso!");
-          }}
-        >
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <div className={styles.topFields}>
+            {/* Seleção do Aluno */}
+            <div className={styles.selectWrapper}>
+              <label htmlFor="studentSelect">Aluno:</label>
+              <select
+                id="studentSelect"
+                value={selectedStudent}
+                onChange={(e) => setSelectedStudent(e.target.value)}
+                className={styles.select}
+              >
+                <option value="">-- Escolha um aluno --</option>
+                {students.map((student, index) => (
+                  <option key={index} value={student}>
+                    {student}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Data de Envio */}
+            <div className={styles.dateWrapper}>
+              <label htmlFor="submissionDate">Data de envio:</label>
+              <input
+                type="date"
+                id="submissionDate"
+                value={submissionDate}
+                onChange={(e) => setSubmissionDate(e.target.value)}
+                className={styles.dateInput}
+              />
+            </div>
+          </div>
+
+          {/* Tabela de perguntas */}
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
               <thead>
@@ -115,6 +152,29 @@ const Assessment = () => {
           </div>
         </form>
       </div>
+
+      {/* Modal de feedback */}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <button
+              className={styles.closeBtn}
+              onClick={() => setShowModal(false)}
+            >
+              <X size={20} />
+            </button>
+            <p
+              className={
+                modalType === "success"
+                  ? styles.modalMessageSuccess
+                  : styles.modalMessageError
+              }
+            >
+              {modalMessage}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

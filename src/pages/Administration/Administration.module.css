@@ -1,3 +1,5 @@
+/* src/pages/Administration/Administration.module.css */
+
 .container {
   background-color: var(--branco);
   height: 100vh;
@@ -6,6 +8,7 @@
   position: relative;
 }
 
+/* Top Buttons */
 .topButtons {
   position: fixed;
   top: 1rem;
@@ -29,7 +32,6 @@
 .iconButton:hover,
 .iconButton:focus {
   outline: none;
-  box-shadow: none;
 }
 
 .iconBlue {
@@ -75,6 +77,7 @@
   border-bottom: none;
 }
 
+/* Overlay */
 .overlay {
   position: fixed;
   inset: 0;
@@ -82,10 +85,11 @@
   z-index: 1200;
 }
 
+/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -100%;
+  left: -280px;
   width: 280px;
   height: 100%;
   background: var(--branco);
@@ -139,53 +143,92 @@
   background-color: var(--cinza);
 }
 
+/* Main Content */
 .mainContent {
-  margin-top: 11rem;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  padding: 0 1rem 2rem;
+  height: 100%;
+  padding-top: 5rem;
 }
 
-.mainContent h2 {
+.studentsContainer {
+  width: 85%;
+  max-width: 800px;
+}
+
+.studentsContainer h2 {
   color: var(--azul);
+  margin-bottom: 1rem;
 }
 
 .studentsBox {
-  background: var(--cinza);
-  border-radius: 12px;
-  padding: 1rem;
-  width: 85%;
-  max-width: 820px;
-  margin-top: 2rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
 .studentRow {
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
   padding: 0.9rem 1rem;
   background: var(--branco);
   border-radius: 8px;
-  margin-bottom: 0.9rem;
   cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .studentRow:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  background: #f3f4f6;
 }
 
-.studentName {
+/* Modal Perfil */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+}
+
+.modalContent {
+  background: var(--branco);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.closeModal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--preto);
+}
+
+.infoRow {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.label {
   font-weight: 600;
+  width: 150px;
+  color: var(--preto);
 }
 
-.studentObs {
-  font-size: 0.92rem;
+.value {
+  flex: 1;
   color: #4b5563;
 }
-
-
