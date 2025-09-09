@@ -37,6 +37,42 @@
 - **"2ª Avaliação" (campo de data)**:
   - ⚠️ Este campo deve ser selecionável, alternando entre as opções "1ª Avaliação" e "2ª Avaliação".
 
+### DOCUMENTO "CONTROLE INTERNO AVALIAÇÃO USUÁRIOS PERÍODO EXPERIÊNCIA.docx":
+
+- ⚠️ ESTA PÁGINA NÃO EXISTE AINDA. Criar a página! (pode ser rota /control)
+
+Talvez ela possa ser feita usando os dados cadSastrados na parte de "Avaliação experiência"(rota /assessment), pois o nome de usuário já estará lá, a data de entrada (muito provavelmente - perguntar) é o "INGRESSO", enquanto "1 AVAL" e "2 AVAL" seriam as datas da primeira e segunda avaliação.
+
+Entretanto, para consolidar essa 'página-lista resultante' é necessário ter um campo também para colocar os dados das entrevistas com os pais ("1 ENTREVISTA PAIS" e "2 ENTREVISTA PAIS").
+
+Em sendo o "RESULTADO" também um campo de data(Date), isso significa que ele poderia(ou deveria) ser editável por meio da lista.
+
+Talvez o campo dos pais também poderia ser editável via lista (principalmente se isso não ficar registrado em nenhuma parte do virtual - o que faria pouco sentido)
+
+Já o ingresso e avaliação, talvez melhor não. Ou seja, deve vir importados já das avaliações (/assessment).
+
+<u>**SUGESTÃO**: Criar um modelo UI em forma de lista (para facilitar buscas), mas que simule uma tabela. Ou seja, como uma lista com cabeçalho.</u>
+
+- **Campos da tabela/lista**:
+  Pelo fato de o documento original ter uma interface de lista/tabela, é interessante replicar isso, contudo permitindo a busca por nome de usuário e outros filtros de data(Date).
+
+  - ⚠️ Criar cabeçalho fixo (não há necessidade de vir do banco de dados).
+
+  - ⚠️ Criar o campo de lista que receberá os dados importados do banco de dados, essa lista deve simular a apresentação dos dados como no modelo original (com os campos na horizontal).
+
+  - **Extras**:
+  - ❔ Criar campo para pesquisa de nomes.
+
+  - ❔ Pesquisa deve poder ser filtrada por nome.
+
+  - ❔ Pesquisa deve poder ser filtrada por data, usando qualquer dos tipos de coluna (INGRESSO, 1 AVAL...). Por exemplo, a pessoa pode pesquisar os ingressos ocorridos entre data X e data Y.
+
+  - ❔ Pesquisa pode ser filtrada por nome e um dos tipos de coluna de data (INGRESSO, 1 AVAL...). Por exemplo, a pessoa pode pesquisar os ingressos ocorridos entre data X e data Y que se relacionam ao nome Pedro.
+
+  - 〰️  Verificar necessidade: Dados de 'entrevistas pais' podem ser editáveis diretamente na tabela.
+  
+  - 〰️  Verificar necessidade: Dados de 'resultados' podem ser editáveis diretamente na tabela.
+
 ## Design UX/UI:
 
 - **Botão de retornar de cada página**:
