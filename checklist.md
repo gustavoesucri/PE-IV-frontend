@@ -40,9 +40,17 @@
 - **"2ª Avaliação" (campo de data)**:
   - ⚠️ Este campo deve ser selecionável, alternando entre as opções "1ª Avaliação" e "2ª Avaliação".
 
+ ### Sugestão do Professor
+ - Professor Sugeriu Que o Menu presente em administration seja feito para todas as páginas no lugar do botão voltar porque geralmente ao implementar esse tipo de menu. ele fica presente em todas as páginas. No caso. se decidir fazer. necessário implementar mais uma aba para que seja possível acessar Administration pelo Menu
+
+ ### Administration
+ - Feito alterações. Mudamos "Alunos Cadastrados" para "Alunos em acompanhamento" para melhor interpretação. adicionado botão para adicionar os alunos em acompanhamento e feito mais algumas descrições necessárias dos alunos. A aba de adicionar Aluno adiciona um aluno com informações Básicas, enquanto informações posteriores virão depois que ele for registrado no mercado de trabalho!
+
+
 ### DOCUMENTO "CONTROLE INTERNO AVALIAÇÃO USUÁRIOS PERÍODO EXPERIÊNCIA.docx":
 
-- ⚠️ ESTA PÁGINA NÃO EXISTE AINDA. Criar a página! (pode ser rota '/control')
+- ✔️ Página Criada (rota '/control') com as informações devidas. ao selecionar um aluno que não está no mercado de trabalho. você pode cadastra-lo devidamente. ao selecionar um aluno que ja está. mostra informações. se já fez avaliações ou entrevistas assim como no "Alunos em Acompanhamento. (Necessário Fazer página referente a entrevista com os país!)
+
 
 Talvez ela possa ser feita usando os dados cadastrados na parte de "Avaliação experiência"(rota /assessment), pois o nome de usuário já estará lá, a data de entrada (muito provavelmente - perguntar) é o "INGRESSO", enquanto "1 AVAL" e "2 AVAL" seriam as datas da primeira e segunda avaliação.
 

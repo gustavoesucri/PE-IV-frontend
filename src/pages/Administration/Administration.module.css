@@ -1,5 +1,3 @@
-/* src/pages/Administration/Administration.module.css */
-
 .container {
   background-color: var(--branco);
   height: 100vh;
@@ -36,6 +34,15 @@
 
 .iconBlue {
   color: var(--azul);
+}
+
+.iconAdd {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--branco);
+  padding: 4px;
+  line-height: 0;
 }
 
 .notificationWrapper {
@@ -153,19 +160,83 @@
 }
 
 .studentsContainer {
-  width: 85%;
-  max-width: 800px;
+  background: var(--branco);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  position: absolute;
+  cursor: move;
 }
 
-.studentsContainer h2 {
+.studentsContainerHeader {
+  background: var(--azul);
+  color: var(--branco);
+  padding: 0.5rem 1rem;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  cursor: move;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.studentsContainerHeader h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.addStudentWrapper {
+  position: relative;
+}
+
+.addStudentDropdown {
+  position: absolute;
+  right: 0;
+  top: 30px;
+  background: var(--branco);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 0.8rem;
+  width: 200px;
+  z-index: 1100;
+}
+
+.addStudentDropdown h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--azul);
-  margin-bottom: 1rem;
+}
+
+.addStudentDropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: var(--preto);
+}
+
+.addStudentDropdown li {
+  font-size: 0.9rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--cinza);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.addStudentDropdown li:hover {
+  background-color: var(--cinza);
+}
+
+.addStudentDropdown li:last-child {
+  border-bottom: none;
 }
 
 .studentsBox {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  padding: 1rem;
+  max-height: calc(100% - 40px);
+  overflow-y: auto;
 }
 
 .studentRow {
@@ -231,4 +302,38 @@
 .value {
   flex: 1;
   color: #4b5563;
+}
+
+.modalContent h2 {
+  color: var(--azul);
+}
+
+/* Ensure resizable handle is styled */
+.react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  background: transparent;
+  cursor: se-resize;
+}
+
+.infoGroup {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.iconStatus {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.iconGreen {
+  color: green;
+}
+
+.iconRed {
+  color: red;
 }

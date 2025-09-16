@@ -4,16 +4,41 @@ import styles from "./StudentsList.module.css";
 import BackButton from "../../components/BackButton/BackButton";
 
 const studentsData = [
-  { nome: "Ana Maria Silva Souza", dataNascimento: "2003-05-12", observacao: "Boa aluna, dedicada." },
-  { nome: "Bruno Henrique Costa Lima", dataNascimento: "2001-08-22", observacao: "Participa bastante em sala." },
-  { nome: "Carlos Eduardo Ferreira Santos", dataNascimento: "2004-02-10", observacao: "Precisa melhorar frequência." },
-  { nome: "Diana Beatriz Oliveira Rocha", dataNascimento: "2002-11-30", observacao: "Exemplo para os colegas." },
+  {
+    nome: "Ana Maria Silva Souza",
+    dataNascimento: "2003-05-12",
+    observacao: "Boa aluna.",
+    observacoesDetalhadas: "Muito dedicada, sempre entrega as atividades antes do prazo.",
+  },
+  {
+    nome: "Bruno Henrique Costa Lima",
+    dataNascimento: "2001-08-22",
+    observacao: "Participa bastante.",
+    observacoesDetalhadas: "Mostra interesse em debates, precisa melhorar entrega de tarefas.",
+  },
+  {
+    nome: "Carlos Eduardo Ferreira Santos",
+    dataNascimento: "2004-02-10",
+    observacao: "Frequência baixa.",
+    observacoesDetalhadas: "Frequência abaixo de 70%, já foi notificado.",
+  },
+  {
+    nome: "Diana Beatriz Oliveira Rocha",
+    dataNascimento: "2002-11-30",
+    observacao: "Exemplar.",
+    observacoesDetalhadas: "Ajuda colegas com dificuldades, excelente rendimento.",
+  },
 ];
 
 const StudentsList = () => {
   const [students, setStudents] = useState(studentsData);
   const [editingStudent, setEditingStudent] = useState(null);
-  const [formData, setFormData] = useState({ nome: "", dataNascimento: "", observacao: "" });
+  const [formData, setFormData] = useState({
+    nome: "",
+    dataNascimento: "",
+    observacao: "",
+    observacoesDetalhadas: "",
+  });
   const [expanded, setExpanded] = useState(null); // guarda índice do expandido
 
   const handleEditClick = (student) => {
@@ -21,9 +46,15 @@ const StudentsList = () => {
     setFormData({ ...student });
   };
 
+
   const handleCloseModal = () => {
     setEditingStudent(null);
-    setFormData({ nome: "", dataNascimento: "", observacao: "" });
+    setFormData({
+      nome: "",
+      dataNascimento: "",
+      observacao: "",
+      observacoesDetalhadas: "",
+    });
   };
 
   const handleChange = (e) => {
@@ -62,6 +93,7 @@ const StudentsList = () => {
             <div className={styles.alumnDetails}>
               <p><strong>Data de Nascimento:</strong> {formatDate(student.dataNascimento)}</p>
               <p><strong>Observação:</strong> {student.observacao}</p>
+              <p><strong>Observações detalhadas:</strong> {student.observacoesDetalhadas}</p>
             </div>
           )}
 
@@ -76,43 +108,57 @@ const StudentsList = () => {
       ))}
 
       {editingStudent && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <button className={styles.closeBtn} onClick={handleCloseModal}>
-              <X size={20} />
-            </button>
-            <h2 className={styles.modalTitle}>Editar Aluno</h2>
+  <div className={styles.modalOverlay}>
+    <div className={styles.modal}>
+      <button className={styles.closeBtn} onClick={handleCloseModal}>
+        <X size={20} />
+      </button>
+      <h2 className={styles.modalTitle}>Editar Aluno</h2>
 
-            <input
-              type="text"
-              name="nome"
-              value={formData.nome}
-              onChange={handleChange}
-              placeholder="Nome"
-              className={styles.modalInput}
-            />
-            <input
-              type="date"
-              name="dataNascimento"
-              value={formData.dataNascimento}
-              onChange={handleChange}
-              className={styles.modalInput}
-            />
-            <textarea
-              name="observacao"
-              value={formData.observacao}
-              onChange={handleChange}
-              placeholder="Observação"
-              rows={4}
-              className={styles.modalTextarea}
-            />
+      <input
+        type="text"
+        name="nome"
+        value={formData.nome}
+        onChange={handleChange}
+        placeholder="Nome"
+        className={styles.modalInput}
+      />
 
-            <button onClick={handleSave} className={styles.saveBtn}>
-              Salvar
-            </button>
-          </div>
-        </div>
-      )}
+      <input
+        type="date"
+        name="dataNascimento"
+        value={formData.dataNascimento}
+        onChange={handleChange}
+        className={styles.modalInput}
+      />
+
+      {/* Campo para observação curta */}
+      <input
+        type="text"
+        name="observacao"
+        value={formData.observacao}
+        onChange={handleChange}
+        placeholder="Observação (curta)"
+        maxLength={100} // limita o tamanho para poucas palavras
+        className={styles.modalInput}
+      />
+
+      {/* Campo para observações detalhadas */}
+      <textarea
+        name="observacoesDetalhadas"
+        value={formData.observacoesDetalhadas}
+        onChange={handleChange}
+        placeholder="Observações detalhadas"
+        rows={5}
+        className={styles.modalTextarea}
+      />
+
+      <button onClick={handleSave} className={styles.saveBtn}>
+        Salvar
+      </button>
+    </div>
+  </div>
+)}
     </div>
   );
 };

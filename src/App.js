@@ -10,6 +10,7 @@ import Users from './pages/Users/Users';
 import StudentsList from './pages/StudentsList/StudentsList';
 import EditStudent from './pages/EditStudent/EditStudent';
 import Settings from './pages/Settings/Settings';
+import Control from './pages/Control/Control';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/companies" element={<Companies />} />
           <Route path="/users" element={<Users />} />
           <Route path="/assessment" element={<Assessment />} />
+          <Route path="/control" element={<Control />} />
           <Route path="/students-list" element={<StudentsList />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/edit-student/:name" element={<EditStudent />} />
