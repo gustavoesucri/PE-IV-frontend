@@ -24,12 +24,12 @@
 
 - **"Questionário"**:
   - ✅ As perguntas estão sem os asteriscos * e **. Adicionar.
-  - ⚠️ Pergunta 47 inexistente. Criar (campo de texto).
-  - ⚠️ Pergunta de um asterisco (*) inexistente. Criar (campo de texto).
-  - ⚠️ Campo de dois asteriscos (**) (junto de "Observações") inexistente. Criar (campo de texto).
+  - ✅ Pergunta 47 inexistente. Criar (campo de texto).
+  - ✅ Pergunta de um asterisco (*) inexistente. Criar (campo de texto).
+  - ✅ Campo de dois asteriscos (**) (junto de "Observações") inexistente. Criar (campo de texto).
 
 - **"Nome do professor(a)"**:
-  - ✅ A princípio, desnecessário, pois já está vinculado ao login.
+  - ✅ A princípio, desnecessário, pois já está vinculado ao login. (⚠️ Conferir/confirmar se nome do professor é quem está fazendo a avaliação (quem está logado) ou não.)
   
 - **"Assinatura"**:
   - ✅ A princípio, desnecessário, pois já está vinculado ao login.
