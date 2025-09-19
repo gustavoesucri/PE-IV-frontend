@@ -98,7 +98,7 @@ Já o ingresso e avaliação, talvez melhor não. Ou seja, deve vir importados j
 
   ### DOCUMENTO "Ficha de acompanhamento.doc":
 
-- ⚠️ ESTA PÁGINA NÃO EXISTE AINDA. Criar a página! (pode ser rota '/follow-up')
+- ✅ ESTA PÁGINA NÃO EXISTE AINDA. Criar a página! (pode ser rota '/follow-up')
 
 - **"Nome"**:
   - ⚠️ Colocar o componente de escolher um aluno já cadastrado previamente.
