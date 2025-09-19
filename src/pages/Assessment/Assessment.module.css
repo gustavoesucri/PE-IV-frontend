@@ -171,3 +171,59 @@ th {
   color: red;
   font-weight: bold;
 }
+
+/*ABAIXO, CSS PROVISÓRIO DAS PERGUNTAS ABERTAS */
+
+/* Adicionando estilo para o wrapper das perguntas abertas */
+.openQuestionsWrapper {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+/* Estilo para cada pergunta aberta */
+.openQuestionField {
+  margin-bottom: 15px;
+}
+
+.openQuestionField label {
+  font-size: 16px;
+  /* font-weight: bold; */
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  text-align: left;
+}
+
+.openQuestionField textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+  min-height: 80px;
+  background-color: #fff;
+}
+
+.openQuestionField textarea:focus {
+  border-color: #0057d8; /* Cor de borda ao focar no campo */
+  outline: none;
+}
+
+.openQuestionField textarea::placeholder {
+  color: #aaa;
+}
+
+/* Adicionando margens nos campos */
+.openQuestionField textarea:focus,
+.openQuestionField label {
+  margin-bottom: 10px;
+}
+
+/* Ajustando o container para o bloco de perguntas abertas */
+.openQuestionsWrapper .openQuestionField:last-child {
+  margin-bottom: 0;
+}
