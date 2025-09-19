@@ -8,10 +8,11 @@
 
 - **"Nome"**:
   - ✅ Há uma opção de escolher um aluno cadastrado.
+  - ✅ Modificações de "Aluno" para "Nome" ou "Usuário". (Justificativa: Não compete a nós decidirmos os nomes que eles usam para identificar as pessoas nesse contexto.)
 
 - **"Data da entrada"**:
   - ✅ Está como "data de envio", deve ser alterado para "Data da entrada".
-  OBS: Alterado para "Data de entrada".
+  OBS: Alterado para "Data de entrada". (Justificativa: Soa ligeiramente melhor e mais formal, sem alterar o sentido. Mas pode ser que seja necessário retornar para "Data da entrada".)
 
 - **"1ª Avaliação" (campo de data)**:
   - ⚠️ Necessário criar esse campo de data para que tenha tanto o "Data da entrada" quanto o "1a Avaliação". (A princípio, não devemos forçar que a data da avaliação seja a mesma data de envio do questionário virtual.)

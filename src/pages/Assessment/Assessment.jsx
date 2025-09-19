@@ -34,7 +34,7 @@ const Assessment = () => {
 
     if (!selectedStudent) {
       setModalType("error");
-      setModalMessage("Selecione um aluno antes de enviar a avaliação!");
+      setModalMessage("Selecione um usuário antes de enviar a avaliação!");
       setShowModal(true);
       return;
     }
@@ -62,7 +62,7 @@ const Assessment = () => {
 
     setModalType("success");
     setModalMessage(
-      `Avaliação do aluno ${selectedStudent} enviada com sucesso na data ${submissionDate}!`
+      `Avaliação do usuário ${selectedStudent} enviada com sucesso na data ${submissionDate}!`
     );
     setShowModal(true);
   };
@@ -70,7 +70,7 @@ const Assessment = () => {
   return (
     <div className={styles.container}>
       <BackButton />
-      <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
+      {/* <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1> */}
 
       <div className={styles.card}>
         <h2 className={styles.title}>
@@ -79,16 +79,16 @@ const Assessment = () => {
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.topFields}>
-            {/* Seleção do Aluno */}
+            {/* Seleção do Nome */}
             <div className={styles.selectWrapper}>
-              <label htmlFor="studentSelect">Aluno:</label>
+              <label htmlFor="studentSelect">Nome:</label>
               <select
                 id="studentSelect"
                 value={selectedStudent}
                 onChange={(e) => setSelectedStudent(e.target.value)}
                 className={styles.select}
               >
-                <option value="">-- Escolha um aluno --</option>
+                <option value="">-- Escolha um usuário --</option>
                 {students.map((student, index) => (
                   <option key={index} value={student}>
                     {student}
