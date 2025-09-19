@@ -15,7 +15,7 @@
   OBS: Alterado para "Data de entrada". (Justificativa: Soa ligeiramente melhor e mais formal, sem alterar o sentido. Mas pode ser que seja necessário retornar para "Data da entrada".)
 
 - **"1ª Avaliação" (campo de data)**:
-  - ⚠️ Necessário criar esse campo de data para que tenha tanto o "Data da entrada" quanto o "1a Avaliação". (A princípio, não devemos forçar que a data da avaliação seja a mesma data de envio do questionário virtual.)
+  - ✅ Necessário criar esse campo de data para que tenha tanto o "Data da entrada" quanto o "1a Avaliação". (A princípio, não devemos forçar que a data da avaliação seja a mesma data de envio do questionário virtual.)
   - ⚠️ Colocar um seletor que permita marcar a data como "1ª Avaliação" ou "2ª Avaliação" (não há necessidade de vinculação, pode ser um campo em separado próximo do campo de data, é só para distinção de formulários utilizando-se de mesma UI).
 
 - **"Questionário"**:

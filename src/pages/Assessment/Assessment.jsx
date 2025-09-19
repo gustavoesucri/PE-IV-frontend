@@ -108,6 +108,18 @@ const Assessment = () => {
                 className={styles.dateInput}
               />
             </div>
+
+            {/* Data de 1a Avaliação */}
+            <div className={styles.dateWrapper}>
+              <label htmlFor="submissionDate">Data 1ª Avaliação:</label>
+              <input
+                type="date"
+                id="submissionDate"
+                value={submissionDate}
+                onChange={(e) => setSubmissionDate(e.target.value)}
+                className={styles.dateInput}
+              />
+            </div>
           </div>
 
           {/* Tabela de perguntas */}

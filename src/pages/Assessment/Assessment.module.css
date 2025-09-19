@@ -52,6 +52,10 @@
   border: 1px solid #ccc;
 }
 
+.dateInput {
+  width: 160px;
+}
+
 .tableWrapper {
   overflow-x: auto;
 }
