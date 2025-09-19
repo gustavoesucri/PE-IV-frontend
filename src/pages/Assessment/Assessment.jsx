@@ -109,9 +109,24 @@ const Assessment = () => {
               />
             </div>
 
-            {/* Data de 1a Avaliação */}
+            {/* Seletor de tipo de avaliação */}
+            <div className={styles.selectWrapper}>
+              <label htmlFor="evaluationType">Avaliação:</label>
+              <select
+                id="evaluationType"
+                value={modalType}
+                onChange={(e) => setModalType(e.target.value)} // ou crie um estado específico
+                className={styles.select}
+              >
+                <option value="">-- Avaliação --</option>
+                <option value="primeira">1ª Avaliação</option>
+                <option value="segunda">2ª Avaliação</option>
+              </select>
+            </div>
+
+            {/* Data da Avaliação */}
             <div className={styles.dateWrapper}>
-              <label htmlFor="submissionDate">Data 1ª Avaliação:</label>
+              <label htmlFor="submissionDate">Data Avaliação:</label>
               <input
                 type="date"
                 id="submissionDate"

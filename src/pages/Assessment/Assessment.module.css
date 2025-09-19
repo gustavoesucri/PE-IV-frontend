@@ -44,6 +44,15 @@
   flex: 1;
 }
 
+.selectWrapper {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.select {
+  width: 100%;
+}
+
 .select,
 .dateInput {
   padding: 8px;
