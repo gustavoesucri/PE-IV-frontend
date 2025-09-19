@@ -41,10 +41,10 @@
 
   ### DOCUMENTO "Avaliação experiência 2.doc":
 
-- ✔️ USARÁ A MESMA PÁGINA DO DOCUMENTO "Avaliação experiência 2.doc", porém deve ser passível de escolher se é a primeira ou segunda avaliação.
+- ✅ USARÁ A MESMA PÁGINA DO DOCUMENTO "Avaliação experiência 2.doc", porém deve ser passível de escolher se é a primeira ou segunda avaliação.
 
 - **"2ª Avaliação" (campo de data)**:
-  - ⚠️ Este campo deve ser selecionável, alternando entre as opções "1ª Avaliação" e "2ª Avaliação".
+  - ✅ Este campo deve ser selecionável, alternando entre as opções "1ª Avaliação" e "2ª Avaliação".
 
  ### Sugestão do Professor
  - Professor Sugeriu Que o Menu presente em administration seja feito para todas as páginas no lugar do botão voltar porque geralmente ao implementar esse tipo de menu. ele fica presente em todas as páginas. No caso. se decidir fazer. necessário implementar mais uma aba para que seja possível acessar Administration pelo Menu
