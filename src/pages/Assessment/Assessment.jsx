@@ -41,7 +41,7 @@ const Assessment = () => {
 
     if (!submissionDate) {
       setModalType("error");
-      setModalMessage("Selecione a data de envio da avaliação!");
+      setModalMessage("Selecione a data de entrada da avaliação!");
       setShowModal(true);
       return;
     }
@@ -97,9 +97,9 @@ const Assessment = () => {
               </select>
             </div>
 
-            {/* Data de Envio */}
+            {/* Data de Entrada */}
             <div className={styles.dateWrapper}>
-              <label htmlFor="submissionDate">Data de envio:</label>
+              <label htmlFor="submissionDate">Data de entrada:</label>
               <input
                 type="date"
                 id="submissionDate"
