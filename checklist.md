@@ -23,7 +23,7 @@
   - ⚠️ Criar validação "Data da Avaliação" a ser selecionado antes de submeter os dados.
 
 - **"Questionário"**:
-  - ⚠️ As perguntas estão sem os asteriscos * e **. Adicionar.
+  - ✅ As perguntas estão sem os asteriscos * e **. Adicionar.
   - ⚠️ Pergunta 47 inexistente. Criar (campo de texto).
   - ⚠️ Pergunta de um asterisco (*) inexistente. Criar (campo de texto).
   - ⚠️ Campo de dois asteriscos (**) (junto de "Observações") inexistente. Criar (campo de texto).
