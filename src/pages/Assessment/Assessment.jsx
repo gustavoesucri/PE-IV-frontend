@@ -24,12 +24,13 @@ const Assessment = () => {
 
   const openQuestions = ["47- Em sua opinião o usuário tem perfil para esta instituição? Por quê?","<b>*</b>Em que situações demonstra irritações?","<b>**</b> Caso o aluno faça uso de medicação.<br><strong><u>Observações</u>:</strong>"];
 
+
   const options = [
     { value: "sim", label: "Sim" },
-    { value: "nao", label: "Não" },
     { value: "maioria", label: "Maioria das vezes" },
     { value: "raras", label: "Raras vezes" },
-  ];
+    { value: "nao", label: "Não" },
+  ]; // Alterada a ordem dos critérios para representar uma escala de maior intensidade para a menor. Isso sobrecarrega menos cognitivamente o usuário que preenche e o que lê.
 
   const handleSubmit = (e) => {
     e.preventDefault();
