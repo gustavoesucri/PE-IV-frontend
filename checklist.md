@@ -20,7 +20,9 @@
   - ✅ Necessário criar esse campo de data para que tenha tanto o "Data da entrada" quanto o "1a Avaliação". (A princípio, não devemos forçar que a data da avaliação seja a mesma data de envio do questionário virtual.)
   - ✅ Colocar um seletor que permita marcar a data como "1ª Avaliação" ou "2ª Avaliação" (não há necessidade de vinculação, pode ser um campo em separado próximo do campo de data, é só para distinção de formulários utilizando-se de mesma UI).
   - ⚠️ Criar validação para seletor de Avaliação a ser selecionado antes de submeter os dados.
-  - ⚠️ Criar validação "Data da Avaliação" a ser selecionado antes de submeter os dados.
+  - ⚠️ Criar validação "Data da Avaliação" a ser selecionada antes de submeter os dados.
+  - ⚠️ Criar validação da pergunta 47 a ser escrita antes de submeter os dados.
+  - ⚠️ Criar validação da pergunta de * para os casos de 'Sim' e 'Maioria das vezes'. (Pode ser importante perguntar se eles querem que isso seja validado também no caso de 'Raras vezes.)
 
 - **"Questionário"**:
   - ✅ As perguntas estão sem os asteriscos * e **. Adicionar.
