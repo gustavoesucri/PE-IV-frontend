@@ -127,7 +127,7 @@ const Assessment = () => {
 
             {/* Data da Avaliação */}
             <div className={styles.dateWrapper}>
-              <label htmlFor="assessmentDate">Data Avaliação:</label>
+              <label htmlFor="assessmentDate">Data da Avaliação:</label>
               <input
                 type="date"
                 id="assessmentDate"
