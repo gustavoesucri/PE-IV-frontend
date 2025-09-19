@@ -5,7 +5,8 @@ import { X } from "lucide-react";
 
 const Assessment = () => {
   const [selectedStudent, setSelectedStudent] = useState("");
-  const [submissionDate, setSubmissionDate] = useState("");
+  const [entryDate, setEntryDate] = useState("");
+  const [assesmentDate, setAssesmentDate] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState(""); // "success" ou "error"
@@ -39,7 +40,7 @@ const Assessment = () => {
       return;
     }
 
-    if (!submissionDate) {
+    if (!entryDate) {
       setModalType("error");
       setModalMessage("Selecione a data de entrada da avaliação!");
       setShowModal(true);
@@ -62,7 +63,7 @@ const Assessment = () => {
 
     setModalType("success");
     setModalMessage(
-      `Avaliação do usuário ${selectedStudent} enviada com sucesso na data ${submissionDate}!`
+      `Avaliação do usuário ${selectedStudent} enviada com sucesso!`
     );
     setShowModal(true);
   };
@@ -99,12 +100,12 @@ const Assessment = () => {
 
             {/* Data de Entrada */}
             <div className={styles.dateWrapper}>
-              <label htmlFor="submissionDate">Data de entrada:</label>
+              <label htmlFor="entryDate">Data de entrada:</label>
               <input
                 type="date"
-                id="submissionDate"
-                value={submissionDate}
-                onChange={(e) => setSubmissionDate(e.target.value)}
+                id="entryDate"
+                value={entryDate}
+                onChange={(e) => setEntryDate(e.target.value)}
                 className={styles.dateInput}
               />
             </div>
@@ -126,12 +127,12 @@ const Assessment = () => {
 
             {/* Data da Avaliação */}
             <div className={styles.dateWrapper}>
-              <label htmlFor="submissionDate">Data Avaliação:</label>
+              <label htmlFor="assessmentDate">Data Avaliação:</label>
               <input
                 type="date"
-                id="submissionDate"
-                value={submissionDate}
-                onChange={(e) => setSubmissionDate(e.target.value)}
+                id="assessmentDate"
+                value={assesmentDate}
+                onChange={(e) => setAssesmentDate(e.target.value)}
                 className={styles.dateInput}
               />
             </div>
