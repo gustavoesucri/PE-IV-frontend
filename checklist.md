@@ -149,6 +149,9 @@ Já o ingresso e avaliação, talvez melhor não. Ou seja, deve vir importados j
 
   Observar que a maioria dos campos aqui é semelhante aos do documento "Ficha de acompanhamento.doc", os campos extras desse aqui são 'Função' e 'Provável data desligamento IEEDF'. Nesse sentido, é bem provável que esse formulário deva ser feito antes e o "Ficha de acompanhamento.doc" deva importar os dados deste.
 
+- ⚠️ Corrigir os filtros de modo que permita consulta somente com data ou somente nome ou data e nome.
+- ⚠️ APÓS A CORREÇÃO DOS FILTROS, adicionar um botão de Limpar filtros.
+
 - **"Nome"**:
   - ✅ Colocar o componente de escolher um aluno já cadastrado previamente.
 
