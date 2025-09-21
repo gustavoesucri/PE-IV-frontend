@@ -1,0 +1,99 @@
+.container {
+  background-color: var(--branco);
+  padding: 2rem;
+  max-width: 1002px;
+  margin: 2rem auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.title {
+  color: var(--azul);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.input {
+  padding: 0.5rem;
+  border: 1px solid var(--cinza);
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: var(--cinza-claro);
+  text-align: left;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead {
+  position: sticky;
+  top: 0;
+  background: var(--cinza-claro);
+  z-index: 1;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  border: 1px solid var(--cinza);
+  text-align: left;
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--azul);
+}
+
+.noData {
+  text-align: center;
+  padding: 1rem;
+  color: var(--cinza);
+}
+
+.actionButton {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: #2340a0;
+}
+
+.rangeSeparator {
+  margin: 0 0.5rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.filterButton {
+  background-color: var(--roxo);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.filterButton:hover {
+  background-color: var(--verde);
+}

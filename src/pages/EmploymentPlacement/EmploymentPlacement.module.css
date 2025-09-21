@@ -1,0 +1,107 @@
+.container {
+  background-color: var(--branco);
+  padding: 2rem;
+  max-width: 650px;
+  margin: 2rem auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.title {
+  color: var(--azul);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.formGroup label {
+  flex: 1;
+  font-weight: 500;
+  text-align: left; /* alinhado à esquerda */
+}
+
+.formGroup .input,
+.formGroup .select,
+.formGroup .readonly {
+  flex: 2;
+}
+
+.formGroupColumn {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.input, .select, .textarea, .readonly {
+  padding: 0.5rem;
+  border: 1px solid var(--cinza);
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: var(--cinza-claro);
+  text-align: left; /* alinhado à esquerda */
+}
+
+.textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.readonly {
+  color: var(--preto);
+}
+
+.button {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: #2340a0;
+}
+
+.error {
+  color: var(--vermelho);
+  margin-top: 0.5rem;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--branco);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.modalButton {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
