@@ -101,28 +101,28 @@ Já o ingresso e avaliação, talvez melhor não. Ou seja, deve vir importados j
 - ✅ ESTA PÁGINA NÃO EXISTE AINDA. Criar a página! (pode ser rota '/follow-up')
 
 - **"Nome"**:
-  - ⚠️ Colocar o componente de escolher um aluno já cadastrado previamente.
+  - ✅ Colocar o componente de escolher um aluno já cadastrado previamente.
 
 - **"Data de admissão"**:
   Verificar se este campo pode ter a ver com outros campos de nome diferente em outras páginas/documentos.
-  - ⚠️ Criar o componente 'Data de admissão' que armazenará os dados que serão utilizados em outras páginas/documentos ou usar um que importe a data de admissão (é necessário análisar onde será o local a inicialmente colocar a data de admissão, se nesta página/documento ou em outra).
+  - ✅ Criar o componente 'Data de admissão' que armazenará os dados que serão utilizados em outras páginas/documentos ou usar um que importe a data de admissão (é necessário análisar onde será o local a inicialmente colocar a data de admissão, se nesta página/documento ou em outra).
 
 - **"Empresa"**:
-  - ⚠️ Colocar o componente de escolher uma empresa já cadastrada previamente.
+  - ✅ Colocar o componente de escolher uma empresa já cadastrada previamente.
 
 - **"Responsável RH"**:
   IMPORTANTE: Verificar antes se esse responsável não poderia ser alguém do próprio Instituto, ao invés da empresa. Isso alteraria muitas coisas do componente e de como cadastrar.
   Se cada empresa comportar mais de um RH, é necessário criar um cadastro de pessoas do RH e vincular cada pessoa a uma única empresa cadastrada. Aí, permitir a seleção da pessoa do RH de uma lista que seja pré-filtrada pelo vínculo com a empresa selecionada no componente anterior. Por exemplo, se na empresa Y houver 2 Responsáveis pelo RH, ao selecionar a empresa Y, permitir somente a escolha entre esses 2 responsáveis.
-  - ⚠️ Colocar o componente de escolher um Responsável RH já cadastrado previamente, vinculado à empresa se puder haver mais de um; do contrário, pré-selecionar ele ao selecionar a empresa.
+  - ✅ Colocar o componente de escolher um Responsável RH já cadastrado previamente, vinculado à empresa se puder haver mais de um; do contrário, pré-selecionar ele ao selecionar a empresa.
 
 - **"Data da visita"**:
-  - ⚠️ Criar/inserir o componente de 'Data da visita'.
+  - ✅ Criar/inserir o componente de 'Data da visita'.
 
 - **"Contato com"**:
-  - ⚠️ Criar/inserir o componente de 'Contato com'. Provavelmente, campo aberto string, de modo que a pessoa possa colocar tanto nome, telefone ou e-mail, de maneira mais flexível. Entretanto, podemos solicitar se esse campo é algo em específico como um telefone ou um e-mail, por exemplo.
+  - ✅ Criar/inserir o componente de 'Contato com'. Provavelmente, campo aberto string, de modo que a pessoa possa colocar tanto nome, telefone ou e-mail, de maneira mais flexível. Entretanto, podemos solicitar se esse campo é algo em específico como um telefone ou um e-mail, por exemplo.
 
 - **"Parecer Geral"**:
-  - ⚠️ Criar o componente de 'Parecer geral'. Um campo string, no banco de dados provavelmente um campo 'text', que permita textos longos. (OBS: é interessante perguntar se gostariam de mais algum campo aqui, de modo a permitir que o parecer geral tenha opções pré-selecionáveis para preenchimento, talvez algumas strings prontas, por exemplo.)
+  - ✅ Criar o componente de 'Parecer geral'. Um campo string, no banco de dados provavelmente um campo 'text', que permita textos longos. (OBS: é interessante perguntar se gostariam de mais algum campo aqui, de modo a permitir que o parecer geral tenha opções pré-selecionáveis para preenchimento, talvez algumas strings prontas, por exemplo.)
 
 - **Extras**:
   - ❔ Permitir ir até a página de cadastro de aluno ao clicar em algo como 'Cadastrar novo aluno', podendo ser um elemento da lista ou um botão ao lado dela.
