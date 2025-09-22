@@ -6,7 +6,6 @@
   position: relative;
 }
 
-/* Top Buttons */
 .topButtons {
   position: fixed;
   top: 1rem;
@@ -84,7 +83,6 @@
   border-bottom: none;
 }
 
-/* Overlay */
 .overlay {
   position: fixed;
   inset: 0;
@@ -92,7 +90,6 @@
   z-index: 1200;
 }
 
-/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
@@ -106,6 +103,7 @@
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  overflow: visible;
 }
 
 .sidebarOpen {
@@ -122,6 +120,9 @@
   margin-bottom: 0.5rem;
   color: var(--preto);
   transition: background 0.2s ease;
+  position: relative;
+  z-index: 10;
+  user-select: none;
 }
 
 .sidebarItem:hover {
@@ -150,7 +151,6 @@
   background-color: var(--cinza);
 }
 
-/* Main Content */
 .mainContent {
   display: flex;
   justify-content: center;
@@ -254,7 +254,6 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Modal Perfil */
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -308,7 +307,6 @@
   color: var(--azul);
 }
 
-/* Ensure resizable handle is styled */
 .react-resizable-handle {
   position: absolute;
   width: 20px;
@@ -336,4 +334,10 @@
 
 .iconRed {
   color: red;
+}
+
+.dragging {
+  background-color: #e0e7ff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: grabbing;
 }

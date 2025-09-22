@@ -86,6 +86,7 @@
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  overflow: visible;
 }
 
 .sidebarOpen {
@@ -102,6 +103,9 @@
   margin-bottom: 0.5rem;
   color: var(--preto);
   transition: background 0.2s ease;
+  position: relative;
+  z-index: 10;
+  user-select: none;
 }
 
 .sidebarItem:hover {
@@ -128,4 +132,10 @@
 
 .logoutButton:hover {
   background-color: var(--cinza);
+}
+
+.dragging {
+  background-color: #e0e7ff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: grabbing;
 }
