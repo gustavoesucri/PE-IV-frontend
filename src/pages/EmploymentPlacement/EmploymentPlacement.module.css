@@ -1,81 +1,107 @@
 .container {
-  background-color: var(--branco);
-  padding: 2rem;
-  max-width: 650px;
-  margin: 2rem auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-}
-
-.title {
-  color: var(--azul);
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-}
-
-.formGroup {
-  margin-bottom: 1rem;
+  min-height: 100vh;
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-direction: column;
+  background: var(--branco);
+  padding: 20px;
 }
 
-.formGroup label {
-  flex: 1;
-  font-weight: 500;
-  text-align: left; /* alinhado à esquerda */
+.pageTitle {
+  color: var(--azul);
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-.formGroup .input,
-.formGroup .select,
-.formGroup .readonly {
-  flex: 2;
+.card {
+  background: var(--branco);
+  border-radius: 12px;
+  padding: 30px 25px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.formGroupColumn {
-  margin-bottom: 1rem;
+.form {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.input, .select, .textarea, .readonly {
-  padding: 0.5rem;
+.label {
+  font-size: 0.9rem;
+  color: var(--preto);
+  text-align: left;
+  font-weight: 500;
+}
+
+.input,
+.textarea,
+.select {
+  padding: 10px;
   border: 1px solid var(--cinza);
-  border-radius: 6px;
-  font-size: 1rem;
-  background-color: var(--cinza-claro);
-  text-align: left; /* alinhado à esquerda */
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.3s ease;
+  width: 100%;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  border: 1px solid var(--azul);
+  box-shadow: 0 0 6px rgba(42, 82, 193, 0.3);
 }
 
 .textarea {
-  min-height: 100px;
   resize: vertical;
-}
-
-.readonly {
-  color: var(--preto);
+  min-height: 80px;
+  max-height: 200px;
 }
 
 .button {
+  margin-top: 10px;
+  color: var(--branco);
   background-color: var(--azul);
-  color: white;
   border: none;
-  padding: 0.8rem 1.2rem;
+  padding: 10px;
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 1.5rem;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 .button:hover {
-  background-color: #2340a0;
+  background-color: var(--roxo);
+}
+
+.secondaryButton {
+  margin-top: 10px;
+  color: var(--azul);
+  background-color: var(--branco);
+  border: 1px solid var(--azul);
+  padding: 10px;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.secondaryButton:hover {
+  background-color: var(--azul);
+  color: var(--branco);
 }
 
 .error {
   color: var(--vermelho);
-  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  text-align: left;
 }
 
 .modalOverlay {
@@ -94,14 +120,21 @@
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
   text-align: center;
+  max-width: 400px;
+  width: 90%;
 }
 
 .modalButton {
   margin-top: 1rem;
   padding: 0.6rem 1.2rem;
   background-color: var(--azul);
-  color: white;
+  color: var(--branco);
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modalButton:hover {
+  background-color: var(--roxo);
 }

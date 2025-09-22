@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./EmploymentPlacement.module.css";
 import BackButton from "../../components/BackButton/BackButton";
+import { useNavigate } from "react-router-dom";
 
 const empresasMock = [
   { id: 1, nome: "Tech Solutions" },
@@ -35,86 +36,97 @@ const EmploymentPlacement = () => {
 
   const closeModal = () => setSuccessModal(false);
 
+  const navigate = useNavigate();
+  const handleNavigate = () => {
+    navigate("/employment-placement-list");
+  };
+
   return (
     <div className={styles.container}>
       <BackButton />
-      <h1 className={styles.title}>Cadastro de Usuários Encaminhados</h1>
+      <h1 className={styles.pageTitle}>Cadastro de Usuários Encaminhados</h1>
 
-      <div className={styles.formGroup}>
-        <label>Nome:</label>
-        <select
-          value={selectedStudentId}
-          onChange={(e) => setSelectedStudentId(e.target.value)}
-          className={styles.select}
-        >
-          <option value="">Selecione...</option>
-          {alunosMock.map(aluno => (
-            <option key={aluno.id} value={aluno.id}>{aluno.nome}</option>
-          ))}
-        </select>
+      <div className={styles.card}>
+        <form className={styles.form}>
+          {/* Nome */}
+          <label className={styles.label}>Nome:</label>
+          <select
+            value={selectedStudentId}
+            onChange={(e) => setSelectedStudentId(e.target.value)}
+            className={styles.input}
+          >
+            <option value="">Selecione...</option>
+            {alunosMock.map((aluno) => (
+              <option key={aluno.id} value={aluno.id}>
+                {aluno.nome}
+              </option>
+            ))}
+          </select>
+
+          {/* Data de Admissão */}
+          <label className={styles.label}>Data de Admissão:</label>
+          <input
+            type="date"
+            value={admissao}
+            onChange={(e) => setAdmissao(e.target.value)}
+            className={styles.input}
+          />
+
+          {/* Empresa */}
+          <label className={styles.label}>Empresa:</label>
+          <select
+            value={empresaId}
+            onChange={(e) => setEmpresaId(e.target.value)}
+            className={styles.input}
+          >
+            <option value="">Selecione...</option>
+            {empresasMock.map((emp) => (
+              <option key={emp.id} value={emp.id}>
+                {emp.nome}
+              </option>
+            ))}
+          </select>
+
+          {/* Função */}
+          <label className={styles.label}>Função:</label>
+          <input
+            type="text"
+            value={funcao}
+            onChange={(e) => setFuncao(e.target.value)}
+            className={styles.input}
+            placeholder="Digite a função"
+          />
+
+          {/* Contato RH */}
+          <label className={styles.label}>Contato RH:</label>
+          <input
+            type="text"
+            value={contatoRh}
+            onChange={(e) => setContatoRh(e.target.value)}
+            className={styles.input}
+            placeholder="Ex: Ana Pereira"
+          />
+
+          {/* Provável data desligamento */}
+          <label className={styles.label}>Provável data desligamento IEEDF:</label>
+          <input
+            type="date"
+            value={dataDesligamento}
+            onChange={(e) => setDataDesligamento(e.target.value)}
+            className={styles.input}
+          />
+
+          {error && <div className={styles.error}>{error}</div>}
+
+          <button className={styles.button} type="button" onClick={handleSave}>
+            Salvar
+          </button>
+        </form>
+
+        <button className={styles.secondaryButton} onClick={handleNavigate}>
+          Lista de Encaminhados
+        </button>
       </div>
-
-      <div className={styles.formGroup}>
-        <label>Data de Admissão:</label>
-        <input
-          type="date"
-          value={admissao}
-          onChange={(e) => setAdmissao(e.target.value)}
-          className={styles.input}
-        />
-      </div>
-
-      <div className={styles.formGroup}>
-        <label>Empresa:</label>
-        <select
-          value={empresaId}
-          onChange={(e) => setEmpresaId(e.target.value)}
-          className={styles.select}
-        >
-          <option value="">Selecione...</option>
-          {empresasMock.map(emp => (
-            <option key={emp.id} value={emp.id}>{emp.nome}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className={styles.formGroup}>
-        <label>Função:</label>
-        <input
-          type="text"
-          value={funcao}
-          onChange={(e) => setFuncao(e.target.value)}
-          className={styles.input}
-          placeholder="Digite a função"
-        />
-      </div>
-
-      <div className={styles.formGroup}>
-        <label>Contato RH:</label>
-        <input
-          type="text"
-          value={contatoRh}
-          onChange={(e) => setContatoRh(e.target.value)}
-          className={styles.input}
-          placeholder="Ex: Ana Pereira"
-        />
-      </div>
-
-      <div className={styles.formGroup}>
-        <label>Provável data desligamento IEEDF:</label>
-        <input
-          type="date"
-          value={dataDesligamento}
-          onChange={(e) => setDataDesligamento(e.target.value)}
-          className={styles.input}
-        />
-      </div>
-
-      {error && <div className={styles.error}>{error}</div>}
-
-      <button className={styles.button} onClick={handleSave}>
-        Salvar
-      </button>
 
       {successModal && (
         <div className={styles.modalOverlay} onClick={closeModal}>

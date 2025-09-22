@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   FiMenu, FiSettings, FiLogOut,
-  FiBriefcase, FiUsers, FiUser, FiCheckCircle, FiPlus, FiBarChart2
+  FiBriefcase, FiUsers, FiUser, FiCheckCircle, FiPlus, FiBarChart2, FiFileText, FiUserCheck
 } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -160,6 +160,12 @@ const Administration = () => {
         </div>
         <div className={styles.sidebarItem} onClick={() => navigate("/control")}>
           <FiBarChart2 size={20} /><span>Controle Interno</span>
+        </div>
+        <div className={styles.sidebarItem} onClick={() => navigate("/follow-up")}>
+          <FiFileText size={20} /><span>Acompanhamento</span>
+        </div>
+        <div className={styles.sidebarItem} onClick={() => navigate("/employment-placement")}>
+          <FiUserCheck size={20} /><span>Encaminhados</span>
         </div>
         <div className={styles.logoutButton} onClick={handleLogout}>
           <FiLogOut size={20} /><span>Sair</span>

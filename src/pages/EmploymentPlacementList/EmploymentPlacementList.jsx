@@ -3,7 +3,7 @@ import styles from "./EmploymentPlacementList.module.css";
 import BackButton from "../../components/BackButton/BackButton";
 
 const mockPlacements = [
-  { 
+  {
     id: 1,
     nome: "Rodrigo Martins",
     admissao: "2024-03-10",
@@ -12,7 +12,7 @@ const mockPlacements = [
     contatoRh: "Ana Pereira",
     desligamento: "2025-01-15"
   },
-  { 
+  {
     id: 2,
     nome: "Maria Silva",
     admissao: "2024-05-22",
@@ -21,7 +21,7 @@ const mockPlacements = [
     contatoRh: "Carlos Oliveira",
     desligamento: "2025-06-30"
   },
-  { 
+  {
     id: 3,
     nome: "João Souza",
     admissao: "2024-06-15",
@@ -38,6 +38,10 @@ const EmploymentPlacementList = () => {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [filteredPlacements, setFilteredPlacements] = useState(mockPlacements);
+
+  // controle do modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlacement, setSelectedPlacement] = useState(null);
 
   const handleFilter = () => {
     let results = mockPlacements.filter(p =>
@@ -59,8 +63,14 @@ const EmploymentPlacementList = () => {
     setFilteredPlacements(results);
   };
 
-  const handleView = (id) => {
-    alert(`Visualizar registro ID: ${id}`);
+  const handleView = (placement) => {
+    setSelectedPlacement(placement);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedPlacement(null);
   };
 
   return (
@@ -131,7 +141,7 @@ const EmploymentPlacementList = () => {
                   <td>
                     <button
                       className={styles.actionButton}
-                      onClick={() => handleView(p.id)}
+                      onClick={() => handleView(p)}
                     >
                       Visualizar
                     </button>
@@ -148,6 +158,33 @@ const EmploymentPlacementList = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && selectedPlacement && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2>Detalhes do Encaminhamento</h2>
+              <button className={styles.modalClose} onClick={closeModal}>✕</button>
+            </div>
+            <div className={styles.modalContent}>
+              <p>Visualizar registro ID: {selectedPlacement.id}</p>
+              <p><strong>Nome:</strong> {selectedPlacement.nome}</p>
+              <p><strong>Data de Admissão:</strong> {selectedPlacement.admissao}</p>
+              <p><strong>Empresa:</strong> {selectedPlacement.empresa}</p>
+              <p><strong>Função:</strong> {selectedPlacement.funcao}</p>
+              <p><strong>Contato RH:</strong> {selectedPlacement.contatoRh}</p>
+              <p><strong>Provável Desligamento:</strong> {selectedPlacement.desligamento}</p>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button onClick={closeModal} className={styles.filterButton}>
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

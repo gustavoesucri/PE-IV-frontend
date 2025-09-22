@@ -8,7 +8,6 @@ import Assessment from './pages/Assessment/Assessment';
 import './App.css';
 import Users from './pages/Users/Users';
 import StudentsList from './pages/StudentsList/StudentsList';
-import EditStudent from './pages/EditStudent/EditStudent';
 import Settings from './pages/Settings/Settings';
 import Control from './pages/Control/Control';
 import FollowUp from './pages/FollowUp/FollowUp';
@@ -29,7 +28,6 @@ function App() {
           <Route path="/control" element={<Control />} />
           <Route path="/students-list" element={<StudentsList />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/edit-student/:name" element={<EditStudent />} />
           <Route path="/follow-up" element={<FollowUp />} />
           <Route path="/employment-placement" element={<EmploymentPlacement />} />
           <Route path="/employment-placement-list" element={<EmploymentPlacementList />} />

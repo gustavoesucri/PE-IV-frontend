@@ -97,3 +97,68 @@
 .filterButton:hover {
   background-color: var(--verde);
 }
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background: var(--branco);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modalHeader h2 {
+  color: var(--azul);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--cinza);
+  transition: color 0.2s;
+}
+
+.modalClose:hover {
+  color: var(--roxo);
+}
+
+.modalContent p {
+  margin: 0.5rem 0;
+  color: #333;
+}
+
+.modalFooter {
+  margin-top: 1.5rem;
+  text-align: right;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
