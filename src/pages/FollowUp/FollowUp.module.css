@@ -70,7 +70,7 @@
 }
 
 .button:hover {
-  background-color: #2340a0;
+  background-color:  var(--roxo);
 }
 
 .error {
@@ -81,27 +81,58 @@
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
 }
 
 .modal {
   background: var(--branco);
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  padding: 24px;
+  border-radius: 16px;
+  width: 350px;
   text-align: center;
+  position: relative;
+  color: #333;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
-.modalButton {
-  margin-top: 1rem;
-  padding: 0.6rem 1.2rem;
-  background-color: var(--azul);
-  color: white;
-  border: none;
+.modalTitle {
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  color: var(--azul);
+  font-weight: bold;
+}
+
+.modalInput {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
   border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 1rem;
+}
+
+.modalTextarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #555;
   cursor: pointer;
 }

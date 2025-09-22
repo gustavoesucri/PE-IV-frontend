@@ -80,7 +80,7 @@
 }
 
 .actionButton:hover {
-  background-color: #2340a0;
+  background-color: var(--roxo);
 }
 
 .filterButton {
@@ -95,5 +95,6 @@
 }
 
 .filterButton:hover {
-  background-color: var(--verde);
+  background-color: var(--azul);
+  transition: 0.5s;
 }

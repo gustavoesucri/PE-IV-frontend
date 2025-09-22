@@ -74,7 +74,7 @@
 }
 
 .actionButton:hover {
-  background-color: #2340a0;
+  background-color: var(--roxo);
 }
 
 .rangeSeparator {
@@ -84,7 +84,7 @@
 }
 
 .filterButton {
-  background-color: var(--roxo);
+  background-color: var(--azul);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -95,7 +95,8 @@
 }
 
 .filterButton:hover {
-  background-color: var(--verde);
+  background-color: var(--roxo);
+  transition: 0.5s;
 }
 
 /* Modal */

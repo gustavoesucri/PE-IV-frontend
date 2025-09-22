@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./EmploymentPlacementList.module.css";
-import BackButton from "../../components/BackButton/BackButton";
+import BackButton from "../../../components/BackButton/BackButton";
 
 const mockPlacements = [
   {

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { X } from "lucide-react";
 import styles from "./FollowUp.module.css";
 import BackButton from "../../components/BackButton/BackButton";
 
@@ -47,19 +48,22 @@ const FollowUp = () => {
 
   const closeModal = () => {
     setSuccessModal(false);
+    setVisitDate("");
+    setContactWith("");
+    setGeneralFeedback("");
+    setSelectedStudentId("");
   };
 
   return (
     <div className={styles.container}>
       <BackButton />
-      <h1 className={styles.title}>FollowUp</h1>
+      <h1 className={styles.title}>Acompanhamento</h1>
 
       <div className={styles.formGroup}>
-        <label>Selecionar Aluno:</label>
         <select
           value={selectedStudentId}
           onChange={(e) => setSelectedStudentId(e.target.value)}
-          className={styles.select}
+          className={styles.input}
         >
           <option value="">Selecione...</option>
           {alunosMock.map(aluno => (
@@ -119,16 +123,17 @@ const FollowUp = () => {
           {error && <div className={styles.error}>{error}</div>}
 
           <button className={styles.button} onClick={handleSave}>
-            Salvar FollowUp
+            Salvar
           </button>
 
           {successModal && (
-            <div className={styles.modalOverlay} onClick={closeModal}>
-              <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-                <p>FollowUp salvo com sucesso!</p>
-                <button className={styles.modalButton} onClick={closeModal}>
-                  Fechar
+            <div className={styles.modalOverlay}>
+              <div className={styles.modal}>
+                <button className={styles.closeBtn} onClick={closeModal}>
+                  <X size={20} />
                 </button>
+                <h2 className={styles.modalTitle}>Acompanhamento Salvo</h2>
+                <p>O acompanhamento do aluno foi salvo com sucesso!</p>
               </div>
             </div>
           )}

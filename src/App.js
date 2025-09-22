@@ -7,12 +7,13 @@ import Companies from './pages/Companies/Companies';
 import Assessment from './pages/Assessment/Assessment';
 import './App.css';
 import Users from './pages/Users/Users';
-import StudentsList from './pages/StudentsList/StudentsList';
 import Settings from './pages/Settings/Settings';
 import Control from './pages/Control/Control';
 import FollowUp from './pages/FollowUp/FollowUp';
 import EmploymentPlacement from './pages/EmploymentPlacement/EmploymentPlacement';
-import EmploymentPlacementList from './pages/EmploymentPlacementList/EmploymentPlacementList';
+import EmploymentPlacementList from './pages/EmploymentPlacement/EmploymentPlacementList/EmploymentPlacementList';
+import StudentsList from './pages/Students/StudentsList/StudentsList';
+
 
 function App() {
   return (

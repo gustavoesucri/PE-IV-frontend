@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NotebookPen, X } from "lucide-react";
 import styles from "./StudentsList.module.css";
-import BackButton from "../../components/BackButton/BackButton";
+import BackButton from "../../../components/BackButton/BackButton";
 
 const studentsData = [
   {
