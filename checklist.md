@@ -75,18 +75,18 @@ Já o ingresso e avaliação, talvez melhor não. Ou seja, deve vir importados j
 - **Campos da tabela/lista**:
   Pelo fato de o documento original ter uma interface de lista/tabela, é interessante replicar isso, contudo permitindo a busca por nome de usuário e outros filtros de data(Date).
 
-  - ⚠️ Criar cabeçalho fixo (não há necessidade de vir do banco de dados).
+  - ✅  Criar cabeçalho fixo (não há necessidade de vir do banco de dados).
 
-  - ⚠️ Criar o campo de lista que receberá os dados importados do banco de dados, essa lista deve simular a apresentação dos dados como no modelo original (com os campos na horizontal).
+  - ✅  Criar o campo de lista que receberá os dados importados do banco de dados, essa lista deve simular a apresentação dos dados como no modelo original (com os campos na horizontal).
 
 - **Extras**:
-  - ❔ Criar campo para pesquisa de nomes.
+  - ✅  Criar campo para pesquisa de nomes.
 
-  - ❔ Pesquisa deve poder ser filtrada por nome.
+  - ✅  Pesquisa deve poder ser filtrada por nome.
 
-  - ❔ Pesquisa deve poder ser filtrada por data, usando qualquer dos tipos de coluna (INGRESSO, 1 AVAL...). Por exemplo, a pessoa pode pesquisar os ingressos ocorridos entre data X e data Y.
+  - ✅  Pesquisa deve poder ser filtrada por data, usando qualquer dos tipos de coluna (INGRESSO, 1 AVAL...). Por exemplo, a pessoa pode pesquisar os ingressos ocorridos entre data X e data Y.
 
-  - ❔ Pesquisa pode ser filtrada por nome e um dos tipos de coluna de data (INGRESSO, 1 AVAL...). Por exemplo, a pessoa pode pesquisar os ingressos ocorridos entre data X e data Y que se relacionam ao nome Pedro.
+  - ✅  Pesquisa pode ser filtrada por nome e um dos tipos de coluna de data (INGRESSO, 1 AVAL...). Por exemplo, a pessoa pode pesquisar os ingressos ocorridos entre data X e data Y que se relacionam ao nome Pedro.
 
   - ❔ Colocar um modo de exportar para pdf e/ ou doc e/ou xls.
   

@@ -1,128 +1,152 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./Control.module.css";
-import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 import BackButton from "../../components/BackButton/BackButton";
 
-const alunosMock = [
-  { id: 1, nome: "Rodrigo Martins", status: { av1: true, av2: false, pais: true, pais2: false, resultado: "Aprovado" } },
-  { id: 2, nome: "Maria Silva", status: { av1: true, av2: true, pais: true, pais2: true, resultado: "Em Experiência" } },
-  { id: 3, nome: "João Souza", status: { av1: false, av2: false, pais: false, pais2: false, resultado: "" } }
+const mockControls = [
+  {
+    id: 1,
+    nome: "Rodrigo Martins",
+    ingresso: "2024-03-10",
+    avaliacao1: "2024-04-15",
+    avaliacao2: "2024-06-20",
+    entrevista1: "2024-07-05",
+    entrevista2: "2024-07-25",
+    resultado: "2024-08-01",
+  },
+  {
+    id: 2,
+    nome: "Maria Silva",
+    ingresso: "2024-05-22",
+    avaliacao1: "2024-06-15",
+    avaliacao2: "2024-09-10",
+    entrevista1: "2024-09-20",
+    entrevista2: "2024-10-05",
+    resultado: "2024-11-01",
+  },
 ];
 
 const Control = () => {
-  const [selectedStudentId, setSelectedStudentId] = useState("");
-  const [entryDate, setEntryDate] = useState("");
-  const [successModal, setSuccessModal] = useState(false);
-  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [dateType, setDateType] = useState("ingresso");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [filtered, setFiltered] = useState(mockControls);
 
-  const selectedStudent = alunosMock.find(a => a.id === Number(selectedStudentId));
+  const handleFilter = () => {
+    let results = mockControls.filter((p) =>
+      p.nome.toLowerCase().includes(search.toLowerCase())
+    );
 
-  const handleRegister = () => {
-    if (!selectedStudentId || !entryDate) {
-      setError("Preencher Data");
-      return;
+    if (dateFrom || dateTo) {
+      results = results.filter((p) => {
+        const dateValue = new Date(p[dateType]);
+        const from = dateFrom ? new Date(dateFrom) : null;
+        const to = dateTo ? new Date(dateTo) : null;
+
+        if (from && dateValue < from) return false;
+        if (to && dateValue > to) return false;
+        return true;
+      });
     }
 
-    setSuccessModal(true);
-    setError("");
+    setFiltered(results);
   };
 
-  const closeModal = () => {
-    setSuccessModal(false);
+  const handleView = (id) => {
+    alert(`Visualizar registro ID: ${id}`);
   };
 
   return (
     <div className={styles.container}>
-    <BackButton />
-      <h1 className={styles.title}>Controle Interno</h1>
+      <BackButton />
+      <h1 className={styles.title}>Controle de Alunos</h1>
 
-      <div className={styles.formGroup}>
-        <label>Selecionar Aluno:</label>
-        <select
-          value={selectedStudentId}
-          onChange={(e) => setSelectedStudentId(e.target.value)}
-          className={styles.select}
-        >
-          <option value="">Selecione...</option>
-          {alunosMock.map(aluno => (
-            <option key={aluno.id} value={aluno.id}>{aluno.nome}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className={styles.formGroup}>
-        <label>Data de Entrada:</label>
+      <div className={styles.filters}>
         <input
-          type="date"
-          value={entryDate}
-          onChange={(e) => setEntryDate(e.target.value)}
+          type="text"
+          placeholder="Buscar por nome..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           className={styles.input}
         />
+
+        <select
+          value={dateType}
+          onChange={(e) => setDateType(e.target.value)}
+          className={styles.input}
+        >
+          <option value="ingresso">Ingresso</option>
+          <option value="avaliacao1">Avaliação</option>
+          <option value="avaliacao2">Avaliação 2</option>
+          <option value="entrevista1">Entrevista Pais 1</option>
+          <option value="entrevista2">Entrevista Pais 2</option>
+          <option value="resultado">Resultado</option>
+        </select>
+
+        <input
+          type="date"
+          value={dateFrom}
+          onChange={(e) => setDateFrom(e.target.value)}
+          className={styles.input}
+        />
+        <span className={styles.rangeSeparator}>até</span>
+        <input
+          type="date"
+          value={dateTo}
+          onChange={(e) => setDateTo(e.target.value)}
+          className={styles.input}
+        />
+
+        <button onClick={handleFilter} className={styles.filterButton}>
+          Filtrar
+        </button>
       </div>
 
-      {selectedStudent && (
-        <>
-          <div className={styles.statusRow}>
-            <div className={styles.statusBox}>
-              <span>Avaliação 1:</span>
-              {selectedStudent.status.av1 ? (
-                <FiCheckCircle className={styles.iconGreen} />
-              ) : (
-                <FiXCircle className={styles.iconRed} />
-              )}
-            </div>
-            <div className={styles.statusBox}>
-              <span>Avaliação 2:</span>
-              {selectedStudent.status.av2 ? (
-                <FiCheckCircle className={styles.iconGreen} />
-              ) : (
-                <FiXCircle className={styles.iconRed} />
-              )}
-            </div>
-          </div>
-
-          <div className={styles.statusRow}>
-            <div className={styles.statusBox}>
-              <span>Entrevista com Pais:</span>
-              {selectedStudent.status.pais ? (
-                <FiCheckCircle className={styles.iconGreen} />
-              ) : (
-                <FiXCircle className={styles.iconRed} />
-              )}
-            </div>
-            <div className={styles.statusBox}>
-              <span>Entrevista com Pais 2:</span>
-              {selectedStudent.status.pais2 ? (
-                <FiCheckCircle className={styles.iconGreen} />
-              ) : (
-                <FiXCircle className={styles.iconRed} />
-              )}
-            </div>
-          </div>
-
-          <div className={styles.resultado}>
-            <span>Resultado:</span>
-            <span className={styles.resultadoValor}>
-              {successModal ? "Em Experiência" : selectedStudent.status.resultado || ""}
-            </span>
-          </div>
-        </>
-      )}
-
-      {error && <div className={styles.error}>{error}</div>}
-
-      <button className={styles.button} onClick={handleRegister}>
-        Registrar Aluno em Experiência
-      </button>
-
-      {successModal && (
-        <div className={styles.modalOverlay} onClick={closeModal}>
-          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <p>Registrado com Sucesso!</p>
-            <button className={styles.modalButton} onClick={closeModal}>Fechar</button>
-          </div>
-        </div>
-      )}
+      <div className={styles.tableWrapper}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Ingresso</th>
+              <th>Avaliação</th>
+              <th>Avaliação 2</th>
+              <th>Entrevista Pais 1</th>
+              <th>Entrevista Pais 2</th>
+              <th>Resultado</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.length > 0 ? (
+              filtered.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.nome}</td>
+                  <td>{p.ingresso}</td>
+                  <td>{p.avaliacao1}</td>
+                  <td>{p.avaliacao2}</td>
+                  <td>{p.entrevista1}</td>
+                  <td>{p.entrevista2}</td>
+                  <td>{p.resultado}</td>
+                  <td>
+                    <button
+                      className={styles.actionButton}
+                      onClick={() => handleView(p.id)}
+                    >
+                      Visualizar
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8" className={styles.noData}>
+                  Nenhum registro encontrado
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
