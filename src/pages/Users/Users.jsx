@@ -9,9 +9,8 @@ import {
   Button,
 } from '@mui/material';
 import styles from './Users.module.css';
-import BackButton from '../../components/BackButton/BackButton';
 import { FaTimes } from 'react-icons/fa';
-
+import Menu from '../../components/Menu/Menu'
 Modal.setAppElement('#root');
 
 const Users = () => {
@@ -55,7 +54,7 @@ const Users = () => {
 
   return (
     <div className={styles.container}>
-              <BackButton />
+        <Menu />
       <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
       <div className={styles.card}>
         <h2 className={styles.title}>Cadastro de Administrador</h2>

@@ -1,0 +1,131 @@
+.topButtons {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--azul);
+  padding: 4px;
+  line-height: 0;
+}
+
+.iconButton:hover,
+.iconButton:focus {
+  outline: none;
+}
+
+.iconBlue {
+  color: var(--azul);
+}
+
+.notificationWrapper {
+  position: relative;
+  z-index: 1050;
+}
+
+.notificationsDropdown {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  background: var(--branco);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 0.8rem;
+  width: 260px;
+}
+
+.notificationsDropdown h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--preto);
+}
+
+.notificationsDropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notificationsDropdown li {
+  font-size: 0.9rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--cinza);
+}
+
+.notificationsDropdown li:last-child {
+  border-bottom: none;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 1200;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 280px;
+  height: 100%;
+  background: var(--branco);
+  box-shadow: 2px 0 16px rgba(0,0,0,0.2);
+  transition: left 0.28s ease;
+  z-index: 1300;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.sidebarOpen {
+  left: 0;
+}
+
+.sidebarItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+  color: var(--preto);
+  transition: background 0.2s ease;
+}
+
+.sidebarItem:hover {
+  background-color: var(--cinza);
+}
+
+.sidebarItem span {
+  font-size: 1rem;
+}
+
+.logoutButton {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  background: none;
+  color: var(--vermelho);
+  font-size: 1rem;
+  transition: background 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: var(--cinza);
+}

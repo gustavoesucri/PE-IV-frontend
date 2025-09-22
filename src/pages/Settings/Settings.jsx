@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Settings.module.css";
 import { X } from "lucide-react";
-import BackButton from "../../components/BackButton/BackButton";
+import Menu from "../../components/Menu/Menu";
 
 const Settings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,7 +61,8 @@ const Settings = () => {
 
   return (
     <div className={styles.container}>
-    <BackButton />
+        <Menu />
+
       <h1 className={styles.title}>Configurações</h1>
 
       <div className={styles.infoBox}>
@@ -92,9 +93,8 @@ const Settings = () => {
         <label className={styles.switchLabel}>
           Notificações do Sistema
           <div
-            className={`${styles.switch} ${
-              notifySystem ? styles.on : styles.off
-            }`}
+            className={`${styles.switch} ${notifySystem ? styles.on : styles.off
+              }`}
             onClick={() => setNotifySystem(!notifySystem)}
           >
             <div className={styles.slider}></div>
@@ -104,9 +104,8 @@ const Settings = () => {
         <label className={styles.switchLabel}>
           Notificações de Alunos por Email
           <div
-            className={`${styles.switch} ${
-              notifyEmail ? styles.on : styles.off
-            }`}
+            className={`${styles.switch} ${notifyEmail ? styles.on : styles.off
+              }`}
             onClick={() => setNotifyEmail(!notifyEmail)}
           >
             <div className={styles.slider}></div>

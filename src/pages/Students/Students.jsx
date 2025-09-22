@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Students.module.css";
-import BackButton from "../../components/BackButton/BackButton";
 import { useNavigate } from "react-router-dom";
+import Menu from "../../components/Menu/Menu";
 
 const Students = () => {
   const navigate = useNavigate();
@@ -35,7 +35,8 @@ const Students = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton />
+        <Menu />
+
       <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
 
       <div className={styles.card}>

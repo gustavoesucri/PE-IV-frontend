@@ -163,3 +163,27 @@
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.topLeftBar {
+  position: absolute;
+  top: 9px;
+  left: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000; /* garante que fique acima do conteúdo */
+}
+
+.topLeftBar > * {
+  z-index: 1001; /* garante que cada item seja clicável */
+}
+
+/* Se o Menu tiver elementos transparentes cobrindo o botão */
+.topLeftBar > div:last-child {
+  pointer-events: auto; /* permite clique no Menu normalmente */
+}
+
+.backButtonWrapper { 
+  pointer-events: auto; /* garante que BackButton seja clicável */
+  z-index: 1002; /* acima de tudo */
+}

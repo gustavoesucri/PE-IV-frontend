@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NotebookPen, X } from "lucide-react";
 import styles from "./StudentsList.module.css";
-import BackButton from "../../../components/BackButton/BackButton";
+import Menu from "../../../components/Menu/Menu";
 
 const studentsData = [
   {
@@ -80,7 +80,8 @@ const StudentsList = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton />
+        <Menu />
+
       <h1 className={styles.title}>Lista de Alunos</h1>
 
       {students.map((student, index) => (

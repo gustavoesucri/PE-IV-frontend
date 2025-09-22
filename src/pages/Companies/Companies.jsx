@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Companies.module.css";
-import BackButton from "../../components/BackButton/BackButton";
+import Menu from "../../components/Menu/Menu";
 
 const Companies = () => {
 
@@ -11,7 +11,8 @@ const Companies = () => {
 
     return (
         <div className={styles.container}>
-            <BackButton />
+        <Menu />
+
             <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
 
             <div className={styles.card}>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./EmploymentPlacementList.module.css";
-import BackButton from "../../../components/BackButton/BackButton";
+import Menu from "../../../components/Menu/Menu";
 
 const mockPlacements = [
   {
@@ -75,7 +75,7 @@ const EmploymentPlacementList = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton />
+        <Menu />
       <h1 className={styles.title}>Lista de Encaminhamentos</h1>
 
       <div className={styles.filters}>

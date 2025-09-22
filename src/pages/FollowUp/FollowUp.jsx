@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import styles from "./FollowUp.module.css";
-import BackButton from "../../components/BackButton/BackButton";
+import Menu from "../../components/Menu/Menu";
 
 const alunosMock = [
   { 
@@ -56,7 +56,8 @@ const FollowUp = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton />
+        <Menu />
+
       <h1 className={styles.title}>Acompanhamento</h1>
 
       <div className={styles.formGroup}>

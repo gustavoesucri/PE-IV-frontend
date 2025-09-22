@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./Control.module.css";
-import BackButton from "../../components/BackButton/BackButton";
+import Menu from "../../components/Menu/Menu";
 
 const mockControls = [
   {
@@ -58,7 +58,8 @@ const Control = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton />
+        <Menu />
+
       <h1 className={styles.title}>Controle de Alunos</h1>
 
       <div className={styles.filters}>

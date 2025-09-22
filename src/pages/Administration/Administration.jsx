@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   FiMenu, FiSettings, FiLogOut,
-  FiBriefcase, FiUsers, FiUser, FiCheckCircle, FiPlus, FiBarChart2, FiFileText, FiUserCheck
+  FiBriefcase, FiUsers, FiUser, FiCheckCircle, FiPlus, FiBarChart2, FiFileText, FiUserCheck,
+  FiGrid
 } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -143,6 +144,9 @@ const Administration = () => {
 
       {/* Menu Lateral */}
       <aside className={`${styles.sidebar} ${showSidebar ? styles.sidebarOpen : ""}`}>
+        <div className={styles.sidebarItem} onClick={() => navigate("/administration")}>
+          <FiGrid size={20} /> <span>Administração</span>
+        </div>
         <div className={styles.sidebarItem} onClick={() => navigate("/settings")}>
           <FiSettings size={20} /><span>Configurações</span>
         </div>

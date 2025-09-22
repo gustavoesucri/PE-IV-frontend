@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./EmploymentPlacement.module.css";
-import BackButton from "../../components/BackButton/BackButton";
 import { useNavigate } from "react-router-dom";
+import Menu from "../../components/Menu/Menu";
 
 const empresasMock = [
   { id: 1, nome: "Tech Solutions" },
@@ -43,7 +43,8 @@ const EmploymentPlacement = () => {
 
   return (
     <div className={styles.container}>
-      <BackButton />
+        <Menu />
+
       <h1 className={styles.pageTitle}>Cadastro de Usuários Encaminhados</h1>
 
       <div className={styles.card}>
