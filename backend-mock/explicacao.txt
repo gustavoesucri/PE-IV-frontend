@@ -1,0 +1,91 @@
+db.json exemplo:
+
+{
+  "users": [
+    {
+      "email": "diretor@email.com",
+      "password": "123456",
+      "name": "Diretor",
+      "role": "diretor"
+    },
+    {
+      "email": "psico@email.com",
+      "password": "123456",
+      "name": "Psicólogo",
+      "role": "psicologo"
+    },
+    {
+      "email": "prof@email.com",
+      "password": "123456",
+      "name": "Professor",
+      "role": "professor"
+    }
+  ]
+}
+
+----------------------------------------------------------------------------------------------------
+Exemplo com role incluído
+POST http://localhost:8000/register
+Content-Type: application/json
+
+{
+  "email": "diretor@email.com",
+  "password": "123456",
+  "name": "Diretor Fulano",
+  "role": "diretor"
+}
+
+✅ Resultado esperado:
+
+O json-server-auth vai:
+
+Adicionar o usuário ao db.json
+
+Criptografar a senha automaticamente
+
+Incluir o campo role como parte do usuário
+
+Retornar um token JWT e os dados do usuário, incluindo role:
+
+{
+  "accessToken": "...",
+  "user": {
+    "email": "diretor@email.com",
+    "name": "Diretor Fulano",
+    "role": "diretor",
+    "id": 1
+  }
+}
+
+⚠️ Importante:
+
+O campo role (ou qualquer outro extra) deve ser enviado no corpo do /register — ele não é adicionado automaticamente.
+
+Você pode definir os papéis que quiser: "diretor", "professor", "psicologo", "admin" etc.
+
+No routes.json, use role:<nome_do_role> para proteger rotas.
+----------------------------------------------------------------------------------------------------
+
+routes.json:
+
+A json-server-auth usa esses códigos:
+
+600: apenas logado
+
+640: logado e dono do recurso
+
+roles personalizadas: usando "role:diretor", "role:professor" etc.
+
+Exemplo de routes.json:
+
+{
+  "/relatorios*": "role:diretor",
+  "/atendimentos*": "role:psicologo",
+  "/turmas*": "role:professor",
+  "/users*": "role:diretor"
+}
+
+---
+Certifique-se que o campo role está presente na criação dos usuários
+
+O json-server-auth insere automaticamente o id, mas os outros campos você define no POST /register.

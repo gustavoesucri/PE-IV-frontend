@@ -1,0 +1,6 @@
+{
+  "/relatorios*": "role:diretor",
+  "/atendimentos*": "role:psicologo",
+  "/turmas*": "role:professor",
+  "/users*": "role:diretor"
+}
