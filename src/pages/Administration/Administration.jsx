@@ -3,7 +3,7 @@ import { FiMenu, FiSettings, FiLogOut, FiBriefcase, FiUsers, FiUser, FiCheckCirc
 import { IoNotificationsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import ReactDraggable from "react-draggable"; // Alias to avoid conflict
+import ReactDraggable from "react-draggable";
 import { ResizableBox } from "react-resizable";
 import styles from "./Administration.module.css";
 import "react-resizable/css/styles.css";
@@ -65,6 +65,9 @@ const Administration = () => {
   const [companies, setCompanies] = useState([]);
   const [notes, setNotes] = useState([{ id: 1, content: "" }]);
 
+  // Single useRef to store all note refs, keyed by note ID
+  const notesRefs = useRef({});
+
   const iconMap = {
     administration: FiGrid,
     settings: FiSettings,
@@ -109,7 +112,6 @@ const Administration = () => {
   const companyDraggableRef = useRef(null);
   const counterRef = useRef(null);
   const statsRef = useRef(null);
-  const notesRefs = notes.map(() => useRef(null));
 
   const availableStudents = [
     {
@@ -222,6 +224,21 @@ const Administration = () => {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [sidebarItems]);
+
+  // Ensure refs are created/updated for each note
+  useEffect(() => {
+    notes.forEach((note) => {
+      if (!notesRefs.current[note.id]) {
+        notesRefs.current[note.id] = React.createRef();
+      }
+    });
+    // Clean up refs for notes that no longer exist
+    Object.keys(notesRefs.current).forEach((key) => {
+      if (!notes.some((note) => note.id === parseInt(key))) {
+        delete notesRefs.current[key];
+      }
+    });
+  }, [notes]);
 
   return (
     <div className={styles.container}>
@@ -427,8 +444,12 @@ const Administration = () => {
 
         {/* Widgets: Blocos de Notas */}
         {notes.map((note, index) => (
-          <ReactDraggable key={note.id} nodeRef={notesRefs[index]} defaultPosition={{ x: 500 + index * 50, y: 500 + index * 50 }}>
-            <div ref={notesRefs[index]}>
+          <ReactDraggable
+            key={note.id}
+            nodeRef={notesRefs.current[note.id]}
+            defaultPosition={{ x: 500 + index * 50, y: 500 + index * 50 }}
+          >
+            <div ref={notesRefs.current[note.id]}>
               <ResizableBox width={400} height={300} minConstraints={[200, 150]} maxConstraints={[600, 400]} className={styles.notesContainer}>
                 <div className={styles.notesContent}>
                   <textarea
