@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { FiMenu, FiSettings, FiLogOut, FiBriefcase, FiUsers, FiUser, FiCheckCircle, FiPlus, FiBarChart2, FiFileText, FiUserCheck, FiGrid } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import ReactDraggable from "react-draggable";
-import { ResizableBox } from "react-resizable";
+import { Rnd } from "react-rnd";
 import styles from "./Administration.module.css";
-import "react-resizable/css/styles.css";
 
 const Administration = () => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -65,8 +63,37 @@ const Administration = () => {
   const [companies, setCompanies] = useState([]);
   const [notes, setNotes] = useState([{ id: 1, content: "" }]);
 
-  // Single useRef to store all note refs, keyed by note ID
-  const notesRefs = useRef({});
+  // Estado para posições e tamanhos dos widgets
+  const defaultPositions = {
+    studentsWidget: { x: 20, y: 60, width: 600, height: 300 },
+    companiesWidget: { x: 640, y: 60, width: 600, height: 300 },
+    counterWidget: { x: 20, y: 385, width: 300, height: 100 },
+    statsWidget: { x: 640, y: 380, width: 400, height: 250 },
+  };
+  notes.forEach((note, index) => {
+    defaultPositions[`noteWidget_${note.id}`] = {
+      x: 325 + index * 50,
+      y: 380,
+      width: 300,
+      height: 150,
+    };
+  });
+
+  const [widgetPositions, setWidgetPositions] = useState(() => {
+    try {
+      const savedPositions = localStorage.getItem("widgetPositions");
+      if (savedPositions) {
+        const parsed = JSON.parse(savedPositions);
+        console.log("Loaded positions from localStorage:", parsed);
+        return { ...defaultPositions, ...parsed };
+      }
+      console.log("No saved positions found, using defaults:", defaultPositions);
+      return defaultPositions;
+    } catch (error) {
+      console.error("Failed to load widget positions from localStorage:", error);
+      return defaultPositions;
+    }
+  });
 
   const iconMap = {
     administration: FiGrid,
@@ -107,11 +134,6 @@ const Administration = () => {
       return initialSidebarItems.map((item) => ({ ...item, icon: iconMap[item.id] }));
     }
   });
-
-  const draggableRef = useRef(null);
-  const companyDraggableRef = useRef(null);
-  const counterRef = useRef(null);
-  const statsRef = useRef(null);
 
   const availableStudents = [
     {
@@ -162,6 +184,44 @@ const Administration = () => {
 
   const navigate = useNavigate();
   const notifications = ["Novo aluno cadastrado: Maria", "Reunião de professores às 15h", "Aluno João está doente"];
+
+  // Função para salvar posições no localStorage
+  const saveWidgetPosition = (widgetId, x, y, width, height) => {
+    try {
+      setWidgetPositions((prev) => {
+        const newPositions = { ...prev, [widgetId]: { x, y, width, height } };
+        console.log(`Saving position for ${widgetId}:`, newPositions[widgetId]);
+        localStorage.setItem("widgetPositions", JSON.stringify(newPositions));
+        return newPositions;
+      });
+    } catch (error) {
+      console.error("Failed to save widget positions to localStorage:", error);
+    }
+  };
+
+  // Atualizar posições dos blocos de notas quando novos forem adicionados
+  useEffect(() => {
+    try {
+      setWidgetPositions((prev) => {
+        const newPositions = { ...prev };
+        notes.forEach((note, index) => {
+          if (!newPositions[`noteWidget_${note.id}`]) {
+            newPositions[`noteWidget_${note.id}`] = {
+              x: 325 + index * 50,
+              y: 380,
+              width: 300,
+              height: 150,
+            };
+            console.log(`Added default position for noteWidget_${note.id}:`, newPositions[`noteWidget_${note.id}`]);
+          }
+        });
+        localStorage.setItem("widgetPositions", JSON.stringify(newPositions));
+        return newPositions;
+      });
+    } catch (error) {
+      console.error("Failed to save widget positions to localStorage:", error);
+    }
+  }, [notes]);
 
   const openSidebar = () => setShowSidebar(true);
   const closeSidebar = () => setShowSidebar(false);
@@ -224,21 +284,6 @@ const Administration = () => {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [sidebarItems]);
-
-  // Ensure refs are created/updated for each note
-  useEffect(() => {
-    notes.forEach((note) => {
-      if (!notesRefs.current[note.id]) {
-        notesRefs.current[note.id] = React.createRef();
-      }
-    });
-    // Clean up refs for notes that no longer exist
-    Object.keys(notesRefs.current).forEach((key) => {
-      if (!notes.some((note) => note.id === parseInt(key))) {
-        delete notesRefs.current[key];
-      }
-    });
-  }, [notes]);
 
   return (
     <div className={styles.container}>
@@ -308,163 +353,200 @@ const Administration = () => {
 
       <main className={styles.mainContent}>
         {/* Widget: Alunos em Acompanhamento */}
-        <ReactDraggable nodeRef={draggableRef} handle={`.${styles.studentsContainerHeader}`} defaultPosition={{ x: 100, y: 100 }}>
-          <div ref={draggableRef}>
-            <ResizableBox width={800} height={400} minConstraints={[300, 200]} maxConstraints={[1000, 600]} className={styles.studentsContainer}>
-              <div>
-                <div className={styles.studentsContainerHeader}>
-                  <h2>Alunos em Acompanhamento</h2>
-                  <div className={styles.addStudentWrapper}>
-                    <button className={styles.iconAdd} aria-label="Adicionar aluno" onClick={toggleAddStudentDropdown}>
-                      <FiPlus size={20} />
-                    </button>
-                    {showAddStudentDropdown && (
-                      <div className={styles.addStudentDropdown}>
-                        <h4>Adicionar Aluno</h4>
-                        <ul>
-                          {availableStudents
-                            .filter((student) => !monitoredStudents.some((monitored) => monitored.nome === student.nome))
-                            .map((student, i) => (
-                              <li key={i} onClick={() => addStudent(student)} role="button" tabIndex={0}>
-                                {student.nome}
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    )}
+        <Rnd
+          default={widgetPositions.studentsWidget}
+          minWidth={300}
+          minHeight={200}
+          maxWidth={1000}
+          maxHeight={600}
+          dragHandleClassName={styles.studentsContainerHeader}
+          className={styles.studentsContainer}
+          cancel={`.${styles.studentsBox}, .${styles.addStudentWrapper}`}
+          onDragStop={(e, d) => saveWidgetPosition("studentsWidget", d.x, d.y, widgetPositions.studentsWidget.width, widgetPositions.studentsWidget.height)}
+          onResizeStop={(e, direction, ref, delta, position) => {
+            saveWidgetPosition("studentsWidget", position.x, position.y, ref.offsetWidth, ref.offsetHeight);
+          }}
+        >
+          <div>
+            <div className={styles.studentsContainerHeader}>
+              <h2>Alunos em Acompanhamento</h2>
+              <div className={styles.addStudentWrapper}>
+                <button className={styles.iconAdd} aria-label="Adicionar aluno" onClick={toggleAddStudentDropdown}>
+                  <FiPlus size={20} />
+                </button>
+                {showAddStudentDropdown && (
+                  <div className={styles.addStudentDropdown}>
+                    <h4>Adicionar Aluno</h4>
+                    <ul>
+                      {availableStudents
+                        .filter((student) => !monitoredStudents.some((monitored) => monitored.nome === student.nome))
+                        .map((student, i) => (
+                          <li key={i} onClick={() => addStudent(student)} role="button" tabIndex={0}>
+                            {student.nome}
+                          </li>
+                        ))}
+                    </ul>
                   </div>
-                </div>
-                <div className={styles.studentsBox}>
-                  {monitoredStudents.map((aluno) => (
-                    <div
-                      key={aluno.id}
-                      className={styles.studentRow}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => openStudentProfile(aluno)}
-                    >
-                      <span className={styles.studentName}>{aluno.nome}</span>
-                      <span className={styles.studentObs}>{aluno.observacaoBreve}</span>
-                    </div>
-                  ))}
-                </div>
+                )}
               </div>
-            </ResizableBox>
+            </div>
+            <div className={styles.studentsBox}>
+              {monitoredStudents.map((aluno) => (
+                <div
+                  key={aluno.id}
+                  className={styles.studentRow}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openStudentProfile(aluno)}
+                >
+                  <span className={styles.studentName}>{aluno.nome}</span>
+                  <span className={styles.studentObs}>{aluno.observacaoBreve}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </ReactDraggable>
+        </Rnd>
 
         {/* Widget: Empresas */}
-        <ReactDraggable nodeRef={companyDraggableRef} handle={`.${styles.studentsContainerHeader}`} defaultPosition={{ x: 200, y: 200 }}>
-          <div ref={companyDraggableRef}>
-            <ResizableBox width={800} height={400} minConstraints={[300, 200]} maxConstraints={[1000, 600]} className={styles.studentsContainer}>
-              <div>
-                <div className={styles.studentsContainerHeader}>
-                  <h2>Empresas</h2>
-                  <div className={styles.addStudentWrapper}>
-                    <button className={styles.iconAdd} aria-label="Adicionar empresa" onClick={toggleAddCompanyDropdown}>
-                      <FiPlus size={20} />
-                    </button>
-                    {showAddCompanyDropdown && (
-                      <div className={styles.addStudentDropdown}>
-                        <h4>Adicionar Empresa</h4>
-                        <ul>
-                          {availableCompanies
-                            .filter((company) => !companies.some((comp) => comp.nome === company.nome))
-                            .map((company, i) => (
-                              <li key={i} onClick={() => addCompany(company)} role="button" tabIndex={0}>
-                                {company.nome}
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    )}
+        <Rnd
+          default={widgetPositions.companiesWidget}
+          minWidth={300}
+          minHeight={200}
+          maxWidth={1000}
+          maxHeight={600}
+          dragHandleClassName={styles.studentsContainerHeader}
+          className={styles.studentsContainer}
+          cancel={`.${styles.studentsBox}, .${styles.addStudentWrapper}`}
+          onDragStop={(e, d) => saveWidgetPosition("companiesWidget", d.x, d.y, widgetPositions.companiesWidget.width, widgetPositions.companiesWidget.height)}
+          onResizeStop={(e, direction, ref, delta, position) => {
+            saveWidgetPosition("companiesWidget", position.x, position.y, ref.offsetWidth, ref.offsetHeight);
+          }}
+        >
+          <div>
+            <div className={styles.studentsContainerHeader}>
+              <h2>Empresas</h2>
+              <div className={styles.addStudentWrapper}>
+                <button className={styles.iconAdd} aria-label="Adicionar empresa" onClick={toggleAddCompanyDropdown}>
+                  <FiPlus size={20} />
+                </button>
+                {showAddCompanyDropdown && (
+                  <div className={styles.addStudentDropdown}>
+                    <h4>Adicionar Empresa</h4>
+                    <ul>
+                      {availableCompanies
+                        .filter((company) => !companies.some((comp) => comp.nome === company.nome))
+                        .map((company, i) => (
+                          <li key={i} onClick={() => addCompany(company)} role="button" tabIndex={0}>
+                            {company.nome}
+                          </li>
+                        ))}
+                    </ul>
                   </div>
-                </div>
-                <div className={styles.studentsBox}>
-                  {companies.map((empresa) => (
-                    <div
-                      key={empresa.id}
-                      className={styles.studentRow}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => openCompanyProfile(empresa)}
-                    >
-                      <span className={styles.studentName}>{empresa.nome}</span>
-                      <span className={styles.studentObs}>{empresa.cnpj}</span>
-                    </div>
-                  ))}
-                </div>
+                )}
               </div>
-            </ResizableBox>
+            </div>
+            <div className={styles.studentsBox}>
+              {companies.map((empresa) => (
+                <div
+                  key={empresa.id}
+                  className={styles.studentRow}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openCompanyProfile(empresa)}
+                >
+                  <span className={styles.studentName}>{empresa.nome}</span>
+                  <span className={styles.studentObs}>{empresa.cnpj}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </ReactDraggable>
+        </Rnd>
 
         {/* Widget: Contador de Empresas Cadastradas */}
-        <ReactDraggable nodeRef={counterRef} defaultPosition={{ x: 300, y: 300 }}>
-          <div ref={counterRef}>
-            <ResizableBox width={300} height={100} minConstraints={[150, 50]} maxConstraints={[500, 200]} className={styles.counterContainer}>
-              <div className={styles.counterText}>
-                <span className={styles.counterNumber}>{companies.length}</span> Empresas cadastradas
-              </div>
-            </ResizableBox>
+        <Rnd
+          default={widgetPositions.counterWidget}
+          minWidth={150}
+          minHeight={50}
+          maxWidth={500}
+          maxHeight={200}
+          className={styles.counterContainer}
+          onDragStop={(e, d) => saveWidgetPosition("counterWidget", d.x, d.y, widgetPositions.counterWidget.width, widgetPositions.counterWidget.height)}
+          onResizeStop={(e, direction, ref, delta, position) => {
+            saveWidgetPosition("counterWidget", position.x, position.y, ref.offsetWidth, ref.offsetHeight);
+          }}
+        >
+          <div className={styles.counterText}>
+            <span className={styles.counterNumber}>{companies.length}</span> Empresas cadastradas
           </div>
-        </ReactDraggable>
+        </Rnd>
 
         {/* Widget: Estatísticas de Alunos */}
-        <ReactDraggable nodeRef={statsRef} defaultPosition={{ x: 400, y: 400 }}>
-          <div ref={statsRef}>
-            <ResizableBox width={500} height={300} minConstraints={[300, 200]} maxConstraints={[800, 500]} className={styles.statsContainer}>
-              <div className={styles.statsContent}>
-                <div className={styles.statItem}>31 Alunos Registrados</div>
-                <div className={styles.statItem}>
-                  25 Alunos no Mercado de Trabalho
-                  <div className={styles.progressContainer}>
-                    <div className={styles.progressBar} style={{ width: `${(25 / 31) * 100}%` }}></div>
-                  </div>
-                  <span className={styles.percentage}>{Math.round((25 / 31) * 100)}%</span>
-                </div>
-                <div className={styles.statItem}>
-                  4 Aprovados
-                  <div className={styles.progressContainer}>
-                    <div className={styles.progressBar} style={{ width: `${(4 / 31) * 100}%` }}></div>
-                  </div>
-                  <span className={styles.percentage}>{Math.round((4 / 31) * 100)}%</span>
-                </div>
-                <div className={styles.statItem}>
-                  2 Reprovados
-                  <div className={styles.progressContainer}>
-                    <div className={styles.progressBar} style={{ width: `${(2 / 31) * 100}%` }}></div>
-                  </div>
-                  <span className={styles.percentage}>{Math.round((2 / 31) * 100)}%</span>
-                </div>
+        <Rnd
+          default={widgetPositions.statsWidget}
+          minWidth={300}
+          minHeight={200}
+          maxWidth={800}
+          maxHeight={500}
+          className={styles.statsContainer}
+          onDragStop={(e, d) => saveWidgetPosition("statsWidget", d.x, d.y, widgetPositions.statsWidget.width, widgetPositions.statsWidget.height)}
+          onResizeStop={(e, direction, ref, delta, position) => {
+            saveWidgetPosition("statsWidget", position.x, position.y, ref.offsetWidth, ref.offsetHeight);
+          }}
+        >
+          <div className={styles.statsContent}>
+            <div className={styles.statItem}>31 Alunos Registrados</div>
+            <div className={styles.statItem}>
+              25 Alunos no Mercado de Trabalho
+              <div className={styles.progressContainer}>
+                <div className={styles.progressBar} style={{ width: `${(25 / 31) * 100}%` }}></div>
               </div>
-            </ResizableBox>
+              <span className={styles.percentage}>{Math.round((25 / 31) * 100)}%</span>
+            </div>
+            <div className={styles.statItem}>
+              4 Aprovados
+              <div className={styles.progressContainer}>
+                <div className={styles.progressBar} style={{ width: `${(4 / 31) * 100}%` }}></div>
+              </div>
+              <span className={styles.percentage}>{Math.round((4 / 31) * 100)}%</span>
+            </div>
+            <div className={styles.statItem}>
+              2 Reprovados
+              <div className={styles.progressContainer}>
+                <div className={styles.progressBar} style={{ width: `${(2 / 31) * 100}%` }}></div>
+              </div>
+              <span className={styles.percentage}>{Math.round((2 / 31) * 100)}%</span>
+            </div>
           </div>
-        </ReactDraggable>
+        </Rnd>
 
         {/* Widgets: Blocos de Notas */}
         {notes.map((note, index) => (
-          <ReactDraggable
+          <Rnd
             key={note.id}
-            nodeRef={notesRefs.current[note.id]}
-            defaultPosition={{ x: 500 + index * 50, y: 500 + index * 50 }}
+            default={widgetPositions[`noteWidget_${note.id}`]}
+            minWidth={200}
+            minHeight={150}
+            maxWidth={600}
+            maxHeight={400}
+            className={styles.notesContainer}
+            cancel={`.${styles.notesTextarea}, .${styles.addNoteButton}`}
+            onDragStop={(e, d) => saveWidgetPosition(`noteWidget_${note.id}`, d.x, d.y, widgetPositions[`noteWidget_${note.id}`].width, widgetPositions[`noteWidget_${note.id}`].height)}
+            onResizeStop={(e, direction, ref, delta, position) => {
+              saveWidgetPosition(`noteWidget_${note.id}`, position.x, position.y, ref.offsetWidth, ref.offsetHeight);
+            }}
           >
-            <div ref={notesRefs.current[note.id]}>
-              <ResizableBox width={400} height={300} minConstraints={[200, 150]} maxConstraints={[600, 400]} className={styles.notesContainer}>
-                <div className={styles.notesContent}>
-                  <textarea
-                    className={styles.notesTextarea}
-                    value={note.content}
-                    onChange={(e) => updateNote(note.id, e.target.value)}
-                    placeholder="Escreva sua nota aqui..."
-                  />
-                  <button className={styles.addNoteButton} onClick={addNewNote}>
-                    <FiPlus size={16} />
-                  </button>
-                </div>
-              </ResizableBox>
+            <div className={styles.notesContent}>
+              <textarea
+                className={styles.notesTextarea}
+                value={note.content}
+                onChange={(e) => updateNote(note.id, e.target.value)}
+                placeholder="Escreva sua nota aqui..."
+              />
+              <button className={styles.addNoteButton} onClick={addNewNote}>
+                <FiPlus size={16} />
+              </button>
             </div>
-          </ReactDraggable>
+          </Rnd>
         ))}
       </main>
 
