@@ -1,4 +1,8 @@
+PASSAR ISSO PARA O CHECKLIST MD. (REVISANDO)
+
 Documento para estruturar e organizar próximos passos
+-----------------------------------------------------
+Lembrete para futuro: toda lógica deverá constar no back-end obrigatoriamente.
 -----------------------------------------------------
 
 Página http://localhost:3000/assessment
@@ -15,6 +19,10 @@ FRONT-END
 
 - Restringir o envio se a 47 não for preenchida.
 
+- (opcional/talvez) A data da avaliação poderá ser pré-preenchida com a data atual.
+
+- Colocar validador de datas (para que não se coloque sem querer datas erradas como ano 2250 ou 1900, por exemplo.)
+
 BACK-END
 
 - Resgatar nome do backend (BD).
@@ -25,7 +33,81 @@ BACK-END
     - Os valores (e talvez as chaves) das respostas 1 a 46.
     - O valor da resposta 47 (e talvez a chave dela)
     - Os valor do campos * e **. Esses talvez possam ser obrigatórios no banco, contudo aceitarão vazio, mas somente se a regra (que também deverá estar no backend) de serem as perguntas com os asteriscos forem de valor igual a 'não'. Ou seja, pergunta = 'não', permite salvar como "". Do contrário, deve ter algum preenchimento.
+    - Data da avaliação.
+    - O avaliador (a princípio, será registrado a partir do usuário logado.)
+    
 
+-----------------------------------------------------
+http://localhost:3000/control
 
+FRONT-END
 
+- Em "Avaliação", colocar "Avaliação 1".
+- Criar um botão de "Limpar Filtros", que faz um reset.
 
+BACK-END
+
+- Deverá vir do backend:
+    - Nome;
+    - Ingresso;
+    - Avaliação 1;
+    - Avaliação 2;
+    - Entrevista pais 1;
+    - Entrevista pais 2;
+    - Resultado.
+
+-----------------------------------------------------
+
+http://localhost:3000/follow-up
+
+FRONT-END
+
+- O "placeholder" "Selecione..." deve ser algo como "Selecione um aluno(a)...".
+
+BACK-END
+
+- Deve vir do back-end:
+    - Lista de Nomes.
+    Após selecionar o nome, deve vir também:
+    - Data de admissão;
+    - Empresa;
+    - Responsável RH;
+
+- Deve ser submetido ao back-end,
+    - Data da visita;
+    - Contato com:;
+    - Parecer geral.
+
+-----------------------------------------------------
+
+http://localhost:3000/employment-placement
+
+NOTA: Verificar acerca da necessidade ter uma rota como employment-placement-list para listar, na horizontal, enquanto esta ficaria para cadastro. Importante lembrar que muitos dos dados já estariam no banco pois cadastrados em outras telas.
+
+FRONT-END
+
+BACK-END
+
+-----------------------------------------------------
+
+rota
+
+FRONT-END
+
+BACK-END
+
+-----------------------------------------------------
+
+rota
+
+FRONT-END
+
+BACK-END
+
+-----------------------------------------------------
+
+rota
+
+FRONT-END
+
+BACK-END
