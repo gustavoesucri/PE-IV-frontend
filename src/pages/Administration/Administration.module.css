@@ -532,3 +532,9 @@
   background: var(--roxo);
   transform: scale(1.1);
 }
+
+.scrollable {
+  max-height: calc(100% - 50px); /* Ajuste conforme a altura do cabeçalho do widget */
+  overflow-y: auto;
+  padding-right: 10px; /* Para evitar sobreposição com a barra de rolagem */
+}

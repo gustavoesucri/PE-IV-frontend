@@ -13,7 +13,151 @@ const Administration = () => {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showAddStudentDropdown, setShowAddStudentDropdown] = useState(false);
   const [showAddCompanyDropdown, setShowAddCompanyDropdown] = useState(false);
-  const [monitoredStudents, setMonitoredStudents] = useState([
+
+  // Estado para alunos monitorados, carregado do localStorage
+  const [monitoredStudents, setMonitoredStudents] = useState(() => {
+    try {
+      const savedStudents = localStorage.getItem("monitoredStudents");
+      return savedStudents ? JSON.parse(savedStudents) : [];
+    } catch (error) {
+      console.error("Failed to load monitoredStudents from localStorage:", error);
+      return [];
+    }
+  });
+
+  // Estado para empresas, carregado do localStorage
+  const [companies, setCompanies] = useState(() => {
+    try {
+      const savedCompanies = localStorage.getItem("companies");
+      return savedCompanies ? JSON.parse(savedCompanies) : [];
+    } catch (error) {
+      console.error("Failed to load companies from localStorage:", error);
+      return [];
+    }
+  });
+
+  // Estado para notas, carregado do localStorage
+  const [notes, setNotes] = useState(() => {
+    try {
+      const savedNotes = localStorage.getItem("notes");
+      return savedNotes ? JSON.parse(savedNotes) : [{ id: 1, content: "" }];
+    } catch (error) {
+      console.error("Failed to load notes from localStorage:", error);
+      return [{ id: 1, content: "" }];
+    }
+  });
+
+  // Estado para posições e tamanhos dos widgets
+  const [widgetPositions, setWidgetPositions] = useState(() => {
+    const defaultPositions = {
+      studentsWidget: { x: 20, y: 60, width: 600, height: 300 },
+      companiesWidget: { x: 640, y: 60, width: 600, height: 300 },
+      counterWidget: { x: 20, y: 385, width: 300, height: 100 },
+      statsWidget: { x: 640, y: 380, width: 400, height: 250 },
+    };
+
+    try {
+      const savedPositions = localStorage.getItem("widgetPositions");
+      const parsed = savedPositions ? JSON.parse(savedPositions) : {};
+      const merged = { ...defaultPositions, ...parsed };
+      notes.forEach((note, index) => {
+        if (!merged[`noteWidget_${note.id}`]) {
+          merged[`noteWidget_${note.id}`] = {
+            x: 325 + index * 50,
+            y: 380,
+            width: 300,
+            height: 150,
+          };
+        }
+      });
+      console.log("Loaded positions from localStorage:", merged);
+      return merged;
+    } catch (error) {
+      console.error("Failed to load widget positions from localStorage:", error);
+      const merged = { ...defaultPositions };
+      notes.forEach((note, index) => {
+        merged[`noteWidget_${note.id}`] = {
+          x: 325 + index * 50,
+          y: 380,
+          width: 300,
+          height: 150,
+        };
+      });
+      return merged;
+    }
+  });
+
+  // Salvar alunos monitorados no localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("monitoredStudents", JSON.stringify(monitoredStudents));
+      console.log("Saved monitoredStudents to localStorage:", monitoredStudents);
+    } catch (error) {
+      console.error("Failed to save monitoredStudents to localStorage:", error);
+    }
+  }, [monitoredStudents]);
+
+  // Salvar empresas no localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("companies", JSON.stringify(companies));
+      console.log("Saved companies to localStorage:", companies);
+    } catch (error) {
+      console.error("Failed to save companies to localStorage:", error);
+    }
+  }, [companies]);
+
+  // Salvar notas no localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("notes", JSON.stringify(notes));
+      console.log("Saved notes to localStorage:", notes);
+    } catch (error) {
+      console.error("Failed to save notes to localStorage:", error);
+    }
+  }, [notes]);
+
+  const iconMap = {
+    administration: FiGrid,
+    settings: FiSettings,
+    students: FiUsers,
+    users: FiUser,
+    companies: FiBriefcase,
+    assessment: FiCheckCircle,
+    control: FiBarChart2,
+    "employment-placement": FiUserCheck,
+    "follow-up": FiFileText,
+  };
+
+  const initialSidebarItems = [
+    { id: "administration", label: "Administração", path: "/administration" },
+    { id: "settings", label: "Configurações", path: "/settings" },
+    { id: "students", label: "Estudantes", path: "/students" },
+    { id: "users", label: "Usuários", path: "/users" },
+    { id: "companies", label: "Empresas", path: "/companies" },
+    { id: "assessment", label: "Avaliação", path: "/assessment" },
+    { id: "control", label: "Controle Interno", path: "/control" },
+    { id: "employment-placement", label: "Encaminhados", path: "/employment-placement" },
+    { id: "follow-up", label: "Acompanhamento", path: "/follow-up" },
+  ];
+
+  const [sidebarItems, setSidebarItems] = useState(() => {
+    try {
+      const savedOrder = localStorage.getItem("sidebarOrder");
+      if (savedOrder) {
+        const parsed = JSON.parse(savedOrder);
+        return parsed
+          .filter((item) => initialSidebarItems.some((initial) => initial.id === item.id))
+          .map((item) => ({ ...item, icon: iconMap[item.id] || FiGrid }));
+      }
+      return initialSidebarItems.map((item) => ({ ...item, icon: iconMap[item.id] }));
+    } catch (error) {
+      console.error("Failed to load sidebar order from localStorage:", error);
+      return initialSidebarItems.map((item) => ({ ...item, icon: iconMap[item.id] }));
+    }
+  });
+
+  const availableStudents = [
     {
       id: 1,
       nome: "Rodrigo Martins",
@@ -59,83 +203,6 @@ const Administration = () => {
         resultado: "Em Experiência",
       },
     },
-  ]);
-  const [companies, setCompanies] = useState([]);
-  const [notes, setNotes] = useState([{ id: 1, content: "" }]);
-
-  // Estado para posições e tamanhos dos widgets
-  const defaultPositions = {
-    studentsWidget: { x: 20, y: 60, width: 600, height: 300 },
-    companiesWidget: { x: 640, y: 60, width: 600, height: 300 },
-    counterWidget: { x: 20, y: 385, width: 300, height: 100 },
-    statsWidget: { x: 640, y: 380, width: 400, height: 250 },
-  };
-  notes.forEach((note, index) => {
-    defaultPositions[`noteWidget_${note.id}`] = {
-      x: 325 + index * 50,
-      y: 380,
-      width: 300,
-      height: 150,
-    };
-  });
-
-  const [widgetPositions, setWidgetPositions] = useState(() => {
-    try {
-      const savedPositions = localStorage.getItem("widgetPositions");
-      if (savedPositions) {
-        const parsed = JSON.parse(savedPositions);
-        console.log("Loaded positions from localStorage:", parsed);
-        return { ...defaultPositions, ...parsed };
-      }
-      console.log("No saved positions found, using defaults:", defaultPositions);
-      return defaultPositions;
-    } catch (error) {
-      console.error("Failed to load widget positions from localStorage:", error);
-      return defaultPositions;
-    }
-  });
-
-  const iconMap = {
-    administration: FiGrid,
-    settings: FiSettings,
-    students: FiUsers,
-    users: FiUser,
-    companies: FiBriefcase,
-    assessment: FiCheckCircle,
-    control: FiBarChart2,
-    "employment-placement": FiUserCheck,
-    "follow-up": FiFileText,
-  };
-
-  const initialSidebarItems = [
-    { id: "administration", label: "Administração", path: "/administration" },
-    { id: "settings", label: "Configurações", path: "/settings" },
-    { id: "students", label: "Estudantes", path: "/students" },
-    { id: "users", label: "Usuários", path: "/users" },
-    { id: "companies", label: "Empresas", path: "/companies" },
-    { id: "assessment", label: "Avaliação", path: "/assessment" },
-    { id: "control", label: "Controle Interno", path: "/control" },
-    { id: "employment-placement", label: "Encaminhados", path: "/employment-placement" },
-    { id: "follow-up", label: "Acompanhamento", path: "/follow-up" },
-  ];
-
-  const [sidebarItems, setSidebarItems] = useState(() => {
-    try {
-      const savedOrder = localStorage.getItem("sidebarOrder");
-      if (savedOrder) {
-        const parsed = JSON.parse(savedOrder);
-        return parsed
-          .filter((item) => initialSidebarItems.some((initial) => initial.id === item.id))
-          .map((item) => ({ ...item, icon: iconMap[item.id] || FiGrid }));
-      }
-      return initialSidebarItems.map((item) => ({ ...item, icon: iconMap[item.id] }));
-    } catch (error) {
-      console.error("Failed to load sidebar order from localStorage:", error);
-      return initialSidebarItems.map((item) => ({ ...item, icon: iconMap[item.id] }));
-    }
-  });
-
-  const availableStudents = [
     {
       id: 4,
       nome: "Ana Pereira",
@@ -199,30 +266,6 @@ const Administration = () => {
     }
   };
 
-  // Atualizar posições dos blocos de notas quando novos forem adicionados
-  useEffect(() => {
-    try {
-      setWidgetPositions((prev) => {
-        const newPositions = { ...prev };
-        notes.forEach((note, index) => {
-          if (!newPositions[`noteWidget_${note.id}`]) {
-            newPositions[`noteWidget_${note.id}`] = {
-              x: 325 + index * 50,
-              y: 380,
-              width: 300,
-              height: 150,
-            };
-            console.log(`Added default position for noteWidget_${note.id}:`, newPositions[`noteWidget_${note.id}`]);
-          }
-        });
-        localStorage.setItem("widgetPositions", JSON.stringify(newPositions));
-        return newPositions;
-      });
-    } catch (error) {
-      console.error("Failed to save widget positions to localStorage:", error);
-    }
-  }, [notes]);
-
   const openSidebar = () => setShowSidebar(true);
   const closeSidebar = () => setShowSidebar(false);
   const handleLogout = () => navigate("/");
@@ -234,21 +277,34 @@ const Administration = () => {
   const toggleAddCompanyDropdown = () => setShowAddCompanyDropdown((v) => !v);
 
   const addStudent = (student) => {
-    setMonitoredStudents([...monitoredStudents, { ...student, id: monitoredStudents.length + 1 }]);
+    setMonitoredStudents((prev) => [...prev, student]);
     setShowAddStudentDropdown(false);
   };
 
   const addCompany = (company) => {
-    setCompanies([...companies, { ...company, id: companies.length + 1 }]);
+    setCompanies((prev) => [...prev, company]);
     setShowAddCompanyDropdown(false);
   };
 
   const addNewNote = () => {
-    setNotes([...notes, { id: Date.now(), content: "" }]);
+    const newNote = { id: Date.now(), content: "" };
+    setNotes((prev) => [...prev, newNote]);
+    setWidgetPositions((prev) => {
+      const newPositions = { ...prev };
+      const index = notes.length; // Index for the new note
+      newPositions[`noteWidget_${newNote.id}`] = {
+        x: 325 + index * 50,
+        y: 380,
+        width: 300,
+        height: 150,
+      };
+      localStorage.setItem("widgetPositions", JSON.stringify(newPositions));
+      return newPositions;
+    });
   };
 
   const updateNote = (id, newContent) => {
-    setNotes(notes.map((note) => (note.id === id ? { ...note, content: newContent } : note)));
+    setNotes((prev) => prev.map((note) => (note.id === id ? { ...note, content: newContent } : note)));
   };
 
   const onDragStart = () => {
@@ -379,7 +435,7 @@ const Administration = () => {
                     <h4>Adicionar Aluno</h4>
                     <ul>
                       {availableStudents
-                        .filter((student) => !monitoredStudents.some((monitored) => monitored.nome === student.nome))
+                        .filter((student) => !monitoredStudents.some((monitored) => monitored.id === student.id))
                         .map((student, i) => (
                           <li key={i} onClick={() => addStudent(student)} role="button" tabIndex={0}>
                             {student.nome}
@@ -390,7 +446,7 @@ const Administration = () => {
                 )}
               </div>
             </div>
-            <div className={styles.studentsBox}>
+            <div className={`${styles.studentsBox} ${styles.scrollable}`}>
               {monitoredStudents.map((aluno) => (
                 <div
                   key={aluno.id}
@@ -434,7 +490,7 @@ const Administration = () => {
                     <h4>Adicionar Empresa</h4>
                     <ul>
                       {availableCompanies
-                        .filter((company) => !companies.some((comp) => comp.nome === company.nome))
+                        .filter((company) => !companies.some((comp) => comp.id === company.id))
                         .map((company, i) => (
                           <li key={i} onClick={() => addCompany(company)} role="button" tabIndex={0}>
                             {company.nome}
@@ -445,7 +501,7 @@ const Administration = () => {
                 )}
               </div>
             </div>
-            <div className={styles.studentsBox}>
+            <div className={`${styles.studentsBox} ${styles.scrollable}`}>
               {companies.map((empresa) => (
                 <div
                   key={empresa.id}
@@ -575,7 +631,7 @@ const Administration = () => {
             </div>
             <div className={styles.infoRow}>
               <span className={styles.label}>Data de Entrada:</span>
-              <span className={styles.value}>{selectedStudent.acompanhamento?.dataEntrada}</span>
+              <span className={styles.value}>{selectedStudent.acompanhamento?.dataEntrada || "N/A"}</span>
             </div>
             <div className={styles.infoGroup}>
               <div className={styles.infoRow}>
@@ -623,7 +679,7 @@ const Administration = () => {
             </div>
             <div className={styles.infoRow}>
               <span className={styles.label}>Resultado:</span>
-              <span className={styles.value}>{selectedStudent.acompanhamento?.resultado}</span>
+              <span className={styles.value}>{selectedStudent.acompanhamento?.resultado || "N/A"}</span>
             </div>
           </div>
         </div>
