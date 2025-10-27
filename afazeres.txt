@@ -90,7 +90,186 @@ BACK-END
 
 -----------------------------------------------------
 
-rota
+rota http://localhost:3000/employment-placement-list (Esta rota não está acessível diretamente vira menu lateral. Deve ser adicionada.)
+
+FRONT-END
+
+- Datas devem ser apresentadas em formato DD/MM/YYYY.
+- Criar um botão de "Limpar Filtros", que faz um reset.
+
+BACK-END
+
+- Deve ir ao back-end quando clicar em Filtrar:
+    - String para busca de nome;
+    - Dado relativo a se é Data de Admissão ou de Data Desligamento;
+    - Data inicial para busca;
+    - Data final para busca.
+
+- Devem vir do back-end:
+    - Nome;
+    - Data Admissão;
+    - Empresa;
+    - Função;
+    - Contato RH;
+    - Data Provável Desligamento;
+
+-----------------------------------------------------
+
+rota http://localhost:3000/students
+
+FRONT-END
+
+BACK-END
+
+-----------------------------------------------------
+
+rota http://localhost:3000/students (Esta rota não está acessível diretamente vira menu lateral. Acredito que deva ser adicionada ou deve ser modificado o UI para não mostrar o Cadastro no primeiro clique, mas sim o botão de listar e o e cadastrar, para o usuário escolher qual.)
+
+FRONT-END
+
+BACK-END
+
+- Deve ser enviado ao back-end:
+    - Nome;
+    - Data de Nascimento;
+    - Observação (como opcional);
+    - Observação detalhada (como opcional).
+    - Status do cadastro, já como Ativo;
+    - Data de entrada do aluno na instituição (pode ser importante);
+    - Deverá ter um espaço no BD para receber a Data de saída do aluno da instituição (será não preenchido de início - ainda a decidir se null ou outro valor).
+-----------------------------------------------------
+
+rota http://localhost:3000/students-list
+
+FRONT-END
+
+- Deve ser criado um filtro de busca por nome.
+- Ao clicar em detalhes, deve mostrar também a Data de entrada do aluno na instituição.
+- Ao clicar em detalhes, deve mostrar também status de Ativo ou Inativo.
+- Ao clicar em detalhes, deve mostrar Data de saída do aluno da instituição (que poderá permancer em branco).
+
+Obs: é possível que seja necessário poderes especiais para realizar, editar ou desfazer alterações no cadastro.
+
+Obs2: Questiono acerca da necessidade de mostrar detalhes para baixo ao clicar no nome. Ou usa-se o ícone ou informações para baixo. Acredito que o ícone permita melhor UX.
+
+BACK-END
+
+Deverá ser enviado ao back-end:
+    - String de filtro de busca por nome.
+
+    - Ao clicar em 'Salvar' dentro de detalhes, podem ser enviados (via patch - ou seja, somente os alterados) os editáveis:
+        - Nome;
+        - Data nascimento;
+        - Observação;
+        - Observação detalhada;
+        - Status do cadastro;
+        - Data de entrada do aluno na instituição;
+        - Data de saída do aluno da instituição.
+
+- Deverá vir do back-end:
+    - Lista com os nomes dos alunos.
+
+    - (além do nome);
+    - Data nascimento;
+    - Observação;
+    - Observação detalhada;
+    - Status do cadastro;
+    - Data de entrada do aluno na instituição;
+    - Data de saída do aluno da instituição.
+
+-----------------------------------------------------
+
+rota http://localhost:3000/companies
+
+FRONT-END
+
+- Adicionar um botão que liste as empresas cadastradas.
+
+BACK-END
+
+-Deverá ser enviado ao back-end:
+    - String de filtro de busca por nome.
+
+    - Ao clicar em 'Salvar' dentro de detalhes, podem ser enviados (via patch - ou seja, somente os alterados) os editáveis:
+        - Nome;
+        - CNPJ;
+        - Rua;
+        - Número;
+        - Bairro;
+        - UF;
+        - CEP;
+
+- Deverá ir ao back-end:
+    - Nome;
+    - CNPJ;
+    - Rua;
+    - Número;
+    - Bairro;
+    - UF;
+    - CEP;
+
+
+-----------------------------------------------------
+
+rota http://localhost:3000/companies-list (CRIAR, mostrará as empresas cadastradas e permitirá edições)
+
+FRONT-END
+
+- Deve ser criada a apresentação da lista de empresas por nome;
+- Deve ser criado um filtro de busca por nome;
+- Deve ser criado um botão de detalhes como no de Estudantes;
+- Dentro do botão de detalhes, deverá ter a apresentação dos dados:
+    - Nome;
+    - CNPJ;
+    - Rua;
+    - Número;
+    - Bairro;
+    - UF;
+    - CEP;
+- Todos os dados em detalhes devem ser passíveis de edição.
+
+BACK-END
+
+- Deverá vir do back-end:
+    - Lista de empresas cadastradas.
+
+    - Nome;
+    - CNPJ;
+    - Rua;
+    - Número;
+    - Bairro;
+    - UF;
+    - CEP;
+
+-----------------------------------------------------
+------ !!!!!  CONTINUAR DAQUI !!!!! -------------
+
+
+rota http://localhost:3000/users
+
+FRONT-END
+
+BACK-END
+
+-----------------------------------------------------
+
+rota http://localhost:3000/user-list (deve ser criada para listar os admin cadastrados)
+
+FRONT-END
+
+BACK-END
+
+-----------------------------------------------------
+
+rota http://localhost:3000/administration
+
+FRONT-END
+
+BACK-END
+
+-----------------------------------------------------
+
+rota http://localhost:3000/settings
 
 FRONT-END
 
@@ -105,9 +284,9 @@ FRONT-END
 BACK-END
 
 -----------------------------------------------------
+GERAL:
+    - Toda página deve ter um botão de voltar que volte para a página que seria a hipoteticamente anterior àquela. Esse botão não deve fazer o mesmo que o botão voltar do navegador. Ele deverá permitir seja possível "voltar" a uma página que não foi acessada antes.
 
-rota
+    - A menos que não seja um campo obrigatório, todos os inputs devem ter validação compatível, seja no momento do preenchimento ou do submit. Obs: Alguns campos podem vir a se tornar obrigatórios a depender do que foi preenchido no restante do formulário.
 
-FRONT-END
-
-BACK-END
+    - Revisão geral de Design UX/UI, principalmente em termos de consistência/padronização. O objetivo é reduzir a carga cognitiva necessária para usar a aplicação.
