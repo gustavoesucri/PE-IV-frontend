@@ -123,7 +123,7 @@ BACK-END
 
 -----------------------------------------------------
 
-rota http://localhost:3000/students (Esta rota não está acessível diretamente vira menu lateral. Acredito que deva ser adicionada ou deve ser modificado o UI para não mostrar o Cadastro no primeiro clique, mas sim o botão de listar e o e cadastrar, para o usuário escolher qual.)
+rota http://localhost:3000/students (Esta rota não está acessível diretamente via menu lateral. Acredito que deva ser adicionada ou deve ser modificado o UI para não mostrar o Cadastro no primeiro clique, mas sim o botão de listar e o e cadastrar, para o usuário escolher qual.)
 
 FRONT-END
 
