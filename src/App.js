@@ -13,6 +13,7 @@ import FollowUp from './pages/FollowUp/FollowUp';
 import EmploymentPlacement from './pages/EmploymentPlacement/EmploymentPlacement';
 import EmploymentPlacementList from './pages/EmploymentPlacement/EmploymentPlacementList/EmploymentPlacementList';
 import StudentsList from './pages/Students/StudentsList/StudentsList';
+import UsersList from './pages/Users/UsersList/UsersList';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/students" element={<Students />} />
           <Route path="/companies" element={<Companies />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users-list" element={<UsersList />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/control" element={<Control />} />
           <Route path="/students-list" element={<StudentsList />} />
