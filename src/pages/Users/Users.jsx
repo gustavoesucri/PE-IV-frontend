@@ -1,155 +1,192 @@
-import React, { useState } from 'react';
-import Modal from 'react-modal';
-import {
-  TextField,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  Button,
-} from '@mui/material';
-import styles from './Users.module.css';
-import { FaTimes } from 'react-icons/fa';
-import Menu from '../../components/Menu/Menu'
-Modal.setAppElement('#root');
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./Users.module.css";
+import Menu from "../../components/Menu/Menu";
 
 const Users = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [category, setCategory] = useState('');
-  const [newCategory, setNewCategory] = useState('');
-  const [categories, setCategories] = useState([
-    'Professor',
-    'Psicólogo',
-    'Diretor',
-  ]);
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    category: "",
+  });
+  const [categories, setCategories] = useState(() => {
+    // Initialize from localStorage
+    const saved = localStorage.getItem("userCategories");
+    return saved ? JSON.parse(saved) : ["Professor", "Psicólogo", "Diretor"];
+  });
+  const [newCategory, setNewCategory] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleCategoryChange = (event) => {
-    setCategory(event.target.value);
+  // Persist categories to localStorage when updated
+  useEffect(() => {
+    localStorage.setItem("userCategories", JSON.stringify(categories));
+  }, [categories]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNewCategoryChange = (event) => {
-    setNewCategory(event.target.value);
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    if (value === "new") {
+      setIsModalOpen(true);
+    } else {
+      setFormData((prev) => ({ ...prev, category: value }));
+    }
+  };
+
+  const handleNewCategoryChange = (e) => {
+    setNewCategory(e.target.value);
   };
 
   const handleAddCategory = () => {
     if (newCategory && !categories.includes(newCategory)) {
-      setCategories([...categories, newCategory]);
-      setNewCategory('');
+      setCategories((prev) => [...prev, newCategory]);
+      setFormData((prev) => ({ ...prev, category: newCategory }));
+      setSuccessMessage("Categoria adicionada com sucesso!");
+      setNewCategory("");
       setIsModalOpen(false);
-      setIsSuccessModalOpen(true);
-      setTimeout(() => setIsSuccessModalOpen(false), 1500);
     }
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    alert('Administrador cadastrado com sucesso!');
-    setUsername('');
-    setPassword('');
-    setCategory('');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.username || !formData.password || !formData.category) {
+      setErrorMessage("Por favor, preencha todos os campos.");
+      return;
+    }
+    // Simulate backend save to localStorage
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    localStorage.setItem(
+      "users",
+      JSON.stringify([...users, { ...formData, id: users.length + 1 }])
+    );
+    setSuccessMessage("Administrador cadastrado com sucesso!");
+    setErrorMessage("");
+    setFormData({ username: "", password: "", category: "" });
+  };
+
+  const handleNavigate = () => {
+    navigate("/users-list");
   };
 
   return (
     <div className={styles.container}>
-        <Menu />
+      <Menu />
       <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
+
       <div className={styles.card}>
         <h2 className={styles.title}>Cadastro de Administrador</h2>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <TextField
-            label="Nome de Usuário"
-            variant="outlined"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <label className={styles.label} htmlFor="username">
+            Nome de Usuário:
+          </label>
+          <input
+            className={styles.input}
+            id="username"
+            name="username"
+            type="text"
+            placeholder="Digite o nome de usuário"
+            value={formData.username}
+            onChange={handleChange}
             required
-            fullWidth
-            margin="normal"
           />
-          <TextField
-            label="Senha"
+
+          <label className={styles.label} htmlFor="password">
+            Senha:
+          </label>
+          <input
+            className={styles.input}
+            id="password"
+            name="password"
             type="password"
-            variant="outlined"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Digite a senha"
+            value={formData.password}
+            onChange={handleChange}
             required
-            fullWidth
-            margin="normal"
           />
 
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Categoria</InputLabel>
-            <Select
-              value={category}
-              onChange={handleCategoryChange}
-              required
-            >
-              {categories.map((cat, index) => (
-                <MenuItem key={index} value={cat}>
-                  {cat}
-                </MenuItem>
-              ))}
-              <MenuItem onClick={() => setIsModalOpen(true)}>+ Nova</MenuItem>
-            </Select>
-          </FormControl>
+          <label className={styles.label} htmlFor="category">
+            Categoria:
+          </label>
+          <select
+            className={styles.input}
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleCategoryChange}
+            required
+          >
+            <option value="" disabled>
+              Selecione uma categoria
+            </option>
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}>
+                {cat}
+              </option>
+            ))}
+            <option value="new">+ Nova</option>
+          </select>
 
-          <button type="submit" className={styles.btn_users}>
+          <button className={styles.button} type="submit">
             Cadastrar
           </button>
         </form>
+
+        {successMessage && (
+          <p className={styles.successMessage}>{successMessage}</p>
+        )}
+        {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
+
+        <button className={styles.secondaryButton} onClick={handleNavigate}>
+          Listar administradores cadastrados
+        </button>
       </div>
 
-      {/* Modal para adicionar nova categoria */}
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        contentLabel="Adicionar Nova Categoria"
-        className={styles.modal}
-        overlayClassName={styles.overlay}
-        closeTimeoutMS={200}
-      >
-        <div className={styles.modalContent}>
-          <button
-            className={styles.closeButton}
-            onClick={() => setIsModalOpen(false)}
-          >
-            <FaTimes />
-          </button>
-          <h2>Nova Categoria</h2>
-          <TextField
-            label="Nome da Categoria"
-            variant="outlined"
-            value={newCategory}
-            onChange={handleNewCategoryChange}
-            fullWidth
-            margin="normal"
-          />
-          <Button
-            onClick={handleAddCategory}
-            variant="contained"
-            color="primary"
-          >
-            Adicionar
-          </Button>
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2>Nova Categoria</h2>
+              <button
+                className={styles.modalClose}
+                onClick={() => setIsModalOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <input
+                type="text"
+                value={newCategory}
+                onChange={handleNewCategoryChange}
+                placeholder="Nome da Categoria"
+                className={styles.input}
+              />
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                onClick={handleAddCategory}
+                className={styles.button}
+                disabled={!newCategory}
+              >
+                Adicionar
+              </button>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className={styles.button}
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
         </div>
-      </Modal>
-
-      {/* Modal de sucesso */}
-      <Modal
-        isOpen={isSuccessModalOpen}
-        onRequestClose={() => setIsSuccessModalOpen(false)}
-        contentLabel="Categoria Adicionada"
-        className={styles.successModal}
-        overlayClassName={styles.overlay}
-        closeTimeoutMS={200}
-      >
-        <div className={styles.successContent}>
-          <p>Categoria adicionada com sucesso!</p>
-        </div>
-      </Modal>
+      )}
     </div>
   );
 };

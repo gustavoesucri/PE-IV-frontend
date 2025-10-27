@@ -142,7 +142,7 @@ BACK-END
 rota http://localhost:3000/students-list
 
 FRONT-END
-
+✔️(Feito.)
 - Deve ser criado um filtro de busca por nome.
 - Ao clicar em detalhes, deve mostrar também a Data de entrada do aluno na instituição.
 - Ao clicar em detalhes, deve mostrar também status de Ativo ou Inativo.
