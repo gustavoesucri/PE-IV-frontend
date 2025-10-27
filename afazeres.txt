@@ -242,18 +242,20 @@ BACK-END
     - CEP;
 
 -----------------------------------------------------
------- !!!!!  CONTINUAR DAQUI !!!!! -------------
-
 
 rota http://localhost:3000/users
 
 FRONT-END
+
+- (para depois) revisar a UI quando se clica em Cadastrar.
 
 BACK-END
 
 -----------------------------------------------------
 
 rota http://localhost:3000/user-list (deve ser criada para listar os admin cadastrados)
+
+Obs: Deverá ser elaborado o que cada tipo de User tem autoridade para fazer dentro do sistema. Para isso, provavelmente, será necessário mais uma página para gerenciar isso.
 
 FRONT-END
 
