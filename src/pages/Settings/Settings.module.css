@@ -75,6 +75,10 @@
   transition: background 0.3s ease;
 }
 
+.switch.on {
+  background: var(--roxo);
+}
+
 .slider {
   width: 22px;
   height: 22px;

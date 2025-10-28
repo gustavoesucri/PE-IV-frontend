@@ -499,3 +499,148 @@ GERAL:
     - A menos que não seja um campo obrigatório, todos os inputs devem ter validação compatível, seja no momento do preenchimento ou do submit. Obs: Alguns campos podem vir a se tornar obrigatórios a depender do que foi preenchido no restante do formulário.
 
     - Revisão geral de Design UX/UI, principalmente em termos de consistência/padronização. O objetivo é reduzir a carga cognitiva necessária para usar a aplicação.
+
+
+
+-----------------------------------------------------
+
+Legenda de Priorização
+Alta Prioridade (Essenciais)
+
+Funcionalidades críticas para o funcionamento básico do sistema e segurança:
+
+Gerenciamento de permissões e cargos.
+
+Melhorias mínimas no sistema de notificações (para garantir que o básico funcione).
+
+Média Prioridade (Importantes, mas não urgentes)
+
+Funcionalidades que melhoram a experiência, mas não impedem o uso:
+
+Sistema de notificações – configurações pessoais.
+
+Página de visualização da lista de acompanhamentos.
+
+Página de visualização da lista de avaliações.
+
+Baixa Prioridade (Melhorias e extras)
+
+Funcionalidades que podem ser feitas depois:
+
+Acompanhamento de progresso do aluno.(Pode ser implementado como complemento na página de Dashboard: Administration)
+
+Se Der Tempo (Funcionalidades avançadas)
+
+Funcionalidades opcionais que podem ser feitas se houver tempo sobrando:
+
+Sistema avançado de notificações (customização avançada).
+
+Plano de Implementação Detalhado
+1. Alta Prioridade (Essenciais para a Funcionalidade Principal)
+Gerenciamento de Permissões e Cargos
+
+Objetivo: Criar uma página para gerenciar permissões de usuários, com possibilidade de configurar permissões por cargo (Professor, Psicólogo, Diretor) e permissões especiais por usuário.
+
+Impacto: Essencial para garantir controle sobre o que cada tipo de usuário pode acessar e modificar no sistema.
+
+Front-end: Criar a interface para visualização e configuração de permissões.
+
+Back-end: Implementar lógica de permissões e cargos no sistema.
+
+Melhorias no Sistema de Notificações
+
+Objetivo: Implementar as melhorias mínimas para garantir que as notificações funcionem corretamente, como eventos importantes (ex: novos registros de alunos, avaliações, etc.) e permitir a ativação/desativação dessas notificações.
+
+Front-end: Adicionar interfaces de gerenciamento de notificações nas configurações do usuário (Settings).
+
+Back-end: Implementar a lógica básica de envio de notificações e armazenamento das preferências do usuário.
+
+2. Média Prioridade (Funcionalidades Importantes, mas podem ser expandidas mais tarde)
+Sistema de Notificações – Configurações Pessoais
+
+Objetivo: Complementar o settings onde os usuários possam definir como receber notificações
+
+Front-end: Complementar o settings com mais configurações pessoais sobre notificações.
+
+Back-end: Implementar lógica para salvar e gerenciar as preferências de notificações do usuário.
+
+Página de Visualização da Lista de Avaliações
+
+Objetivo: Criar uma página para exibir as avaliações de cada aluno, com a possibilidade de visualizar as respostas fornecidas.
+
+Front-end: Criar a interface para visualizar avaliações.
+
+Back-end: Criar endpoints para buscar as avaliações e respostas de cada aluno.
+
+Página de Visualização da Lista de Acompanhamentos
+
+Objetivo: Criar uma página para exibir as observações da página de Acompanhamentos.
+
+Front-end: Criar a interface para visualizar as observações de acompanhamento.
+
+Back-end: Criar endpoints para buscar as observações de acompanhamento dos alunos.
+
+3. Baixa Prioridade (Melhorias e Extras)
+Acompanhamento de Progresso do Aluno
+
+Objetivo: Criar uma página para acompanhar o progresso geral do aluno, incluindo desempenho em avaliações, observações, e outros dados relevantes.
+
+Front-end: Criar a interface para visualizar o progresso do aluno. Ou pode ser implementado e complementado no dashboard para cada usuário. Contudo verificar se não vai ficar muita coisa para ser colocada em uma única tela, o que pode sobrecarregar o usuário com muitas informações.
+
+Back-end: Criar endpoints para exibir informações sobre o progresso do aluno.
+
+4. Se Der Tempo (Funcionalidades Futuras)
+Sistema Avançado de Notificações
+
+Objetivo: Criar um sistema de notificações personalizadas, com opções avançadas de segmentação, como "notificar todos os professores quando uma avaliação é registrada" ou "enviar feedback personalizado aos alunos".
+
+Front-end: Criar a interface para o administrador configurar notificações avançadas e personalizadas.
+
+Back-end: Implementar a lógica para segmentação e personalização das notificações.
+
+Categorias de Usuários e Permissões
+1. Professor
+
+Permissões:
+
+Pode visualizar alunos, registros e avaliações.
+
+Pode criar registros de alunos, mas não pode criar ou editar usuários.
+
+Pode adicionar observações de acompanhamento (se autorizado).
+
+Configurações de Notificações: Pode configurar suas próprias notificações em Settings, mas não tem acesso às configurações globais.
+
+2. Psicólogo
+
+Permissões:
+
+Pode visualizar alunos e adicionar observações de acompanhamento.
+
+Pode visualizar as avaliações dos alunos, mas não pode criar ou editar usuários.
+
+Configurações de Notificações: Pode configurar suas próprias notificações em Settings, mas não pode acessar configurações globais.
+
+3. Diretor (Administrador Master)
+
+Permissões:
+
+Acesso total a todos os recursos do sistema, incluindo criação e edição de usuários.
+
+Pode configurar permissões de outros usuários, definindo cargos e permissões especiais.
+
+Pode gerenciar as notificações do sistema, definindo as preferências globais de notificações.
+
+Acesso a relatórios completos de avaliações e observações de acompanhamento.
+
+Configurações de Notificações: Pode configurar notificações tanto para si mesmo quanto para o sistema, acessando as configurações globais.
+
+Resumo Final
+
+Alta Prioridade: Focar no gerenciamento de permissões e cargos e nas melhorias mínimas do sistema de notificações.
+
+Média Prioridade: Implementar configurações pessoais de notificações e criar as páginas de visualização de avaliações e acompanhamentos.
+
+Baixa Prioridade: Criar a página de acompanhamento de progresso do aluno.
+
+Se Der Tempo: Avançar para o sistema de notificações avançado e personalizações.
