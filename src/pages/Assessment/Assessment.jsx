@@ -8,11 +8,13 @@ const Assessment = () => {
   const [selectedStudent, setSelectedStudent] = useState("");
   const [entryDate, setEntryDate] = useState("");
   const [assesmentDate, setAssesmentDate] = useState("");
-  const [defaultAssessmentDate, setDefaultAssessmentDate] = useState(""); // nova
-  const [evaluationType, setEvaluationType] = useState(""); // nova
+  const [defaultAssessmentDate, setDefaultAssessmentDate] = useState("");
+  const [evaluationType, setEvaluationType] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
+  const [hasConfirmedDate, setHasConfirmedDate] = useState(false);
+
 
   // 🔹 Preenche a data de avaliação com o dia atual
   useEffect(() => {
@@ -67,13 +69,14 @@ const Assessment = () => {
       return showError("A data da avaliação deve estar entre 1960 e hoje.");
     }
 
-    // --- Confirma se a data não foi alterada ---
-    if (assesmentDate === defaultAssessmentDate) {
-      const confirmDate = window.confirm(
-        "A data da avaliação está como a data atual. Deseja manter?"
-      );
-      if (!confirmDate) return;
-    }
+    // --- Confirma a data apenas uma vez ---
+if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
+  setHasConfirmedDate(true);
+  setModalType("confirm");
+  setModalMessage("A data da avaliação está como a data atual. Deseja manter?");
+  setShowModal(true);
+  return;
+}
 
     // --- Validação das perguntas obrigatórias ---
     for (let i = 1; i <= questions.length; i++) {
@@ -254,27 +257,58 @@ const Assessment = () => {
       </div>
 
       {/* Modal de feedback */}
-      {showModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <button
-              className={styles.closeBtn}
-              onClick={() => setShowModal(false)}
-            >
-              <X size={20} />
-            </button>
-            <p
-              className={
-                modalType === "success"
-                  ? styles.modalMessageSuccess
-                  : styles.modalMessageError
-              }
-            >
-              {modalMessage}
-            </p>
-          </div>
+{showModal && (
+  <div className={styles.modalOverlay}>
+    <div className={styles.modal}>
+      <button className={styles.closeBtn} onClick={() => setShowModal(false)}>
+        <X size={20} />
+      </button>
+
+      <p
+        className={
+          modalType === "success"
+            ? styles.modalMessageSuccess
+            : modalType === "confirm"
+            ? styles.modalMessageConfirm
+            : styles.modalMessageError
+        }
+      >
+        {modalMessage}
+      </p>
+
+      {modalType === "confirm" && (
+        <div className={styles.modalButtons}>
+          <button
+            onClick={() => {
+              setShowModal(false);
+              // dispara o envio de forma "normal"
+              const form = document.querySelector("form");
+              if (form) form.requestSubmit();
+            }}
+            className={styles.confirmButton}
+          >
+            Manter
+          </button>
+          <button
+            onClick={() => {
+              setShowModal(false);
+              // limpa e foca no campo da data
+              setAssesmentDate("");
+              setTimeout(() => {
+                document.querySelector("#assessmentDate")?.focus();
+              }, 0);
+            }}
+            className={styles.cancelButton}
+          >
+            Alterar data
+          </button>
         </div>
       )}
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 };
