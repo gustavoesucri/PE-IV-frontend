@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Assessment.module.css";
 import { X } from "lucide-react";
 import parse from 'html-react-parser';
@@ -8,9 +8,18 @@ const Assessment = () => {
   const [selectedStudent, setSelectedStudent] = useState("");
   const [entryDate, setEntryDate] = useState("");
   const [assesmentDate, setAssesmentDate] = useState("");
+  const [defaultAssessmentDate, setDefaultAssessmentDate] = useState(""); // nova
+  const [evaluationType, setEvaluationType] = useState(""); // nova
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [modalType, setModalType] = useState(""); // "success" ou "error"
+  const [modalType, setModalType] = useState("");
+
+  // 🔹 Preenche a data de avaliação com o dia atual
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
+    setAssesmentDate(today);
+    setDefaultAssessmentDate(today);
+  }, []);
 
   const students = [
     "João Silva",
@@ -35,46 +44,87 @@ const Assessment = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    let allAnswered = true;
 
+    // --- Validações básicas ---
     if (!selectedStudent) {
-      setModalType("error");
-      setModalMessage("Selecione um usuário antes de enviar a avaliação!");
-      setShowModal(true);
-      return;
+      return showError("Selecione um usuário antes de enviar a avaliação!");
     }
-
     if (!entryDate) {
-      setModalType("error");
-      setModalMessage("Selecione a data de entrada da avaliação!");
-      setShowModal(true);
-      return;
+      return showError("Selecione a data de entrada da avaliação!");
+    }
+    if (!evaluationType) {
+      return showError("Selecione se é a 1ª ou 2ª avaliação!");
+    }
+    if (!assesmentDate) {
+      return showError("Selecione a data da avaliação!");
     }
 
+    // --- Validação de data ---
+    const date = new Date(assesmentDate);
+    const minDate = new Date("1960-01-01");
+    const maxDate = new Date();
+    if (date < minDate || date > maxDate) {
+      return showError("A data da avaliação deve estar entre 1960 e hoje.");
+    }
+
+    // --- Confirma se a data não foi alterada ---
+    if (assesmentDate === defaultAssessmentDate) {
+      const confirmDate = window.confirm(
+        "A data da avaliação está como a data atual. Deseja manter?"
+      );
+      if (!confirmDate) return;
+    }
+
+    // --- Validação das perguntas obrigatórias ---
     for (let i = 1; i <= questions.length; i++) {
       if (!formData.get(`q${i}`)) {
-        allAnswered = false;
-        break;
+        return showError("Preencha todas as opções antes de enviar a avaliação!");
       }
     }
 
-    if (!allAnswered) {
-      setModalType("error");
-      setModalMessage("Preencha todas as opções antes de enviar a avaliação!");
-      setShowModal(true);
-      return;
+    // --- Questão 12 depende da aberta 2 ---
+    const q12 = formData.get("q12");
+    const open2 = formData.get("openQ2")?.trim();
+    if (q12 !== "nao" && !open2) {
+      return showError("Descreva '*Em que situações demonstra irritações?'");
     }
 
+    // --- Questões 27 e 28 dependem da aberta 3 ---
+    const q27 = formData.get("q27");
+    const q28 = formData.get("q28");
+    const open3 = formData.get("openQ3")?.trim();
+    if ((q27 !== "nao" || q28 !== "nao") && !open3) {
+      return showError(
+        "Preencha '** Caso o aluno faça uso de medicação. Observações:'"
+      );
+    }
+
+    // --- Questão 47 (perfil) obrigatória ---
+    const open1 = formData.get("openQ1")?.trim();
+    if (!open1) {
+      return showError("Responda a questão 47: 'O usuário tem perfil para esta instituição?'");
+    }
+
+    // --- Se tudo ok ---
+    showSuccess(`Avaliação do usuário ${selectedStudent} enviada com sucesso!`);
+  };
+
+  // 🔹 Funções auxiliares
+  const showError = (msg) => {
+    setModalType("error");
+    setModalMessage(msg);
+    setShowModal(true);
+  };
+
+  const showSuccess = (msg) => {
     setModalType("success");
-    setModalMessage(
-      `Avaliação do usuário ${selectedStudent} enviada com sucesso!`
-    );
+    setModalMessage(msg);
     setShowModal(true);
   };
 
   return (
     <div className={styles.container}>
-        <Menu />
+      <Menu />
       {/* <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1> */}
 
       <div className={styles.card}>
@@ -119,8 +169,8 @@ const Assessment = () => {
               <label htmlFor="evaluationType">Avaliação:</label>
               <select
                 id="evaluationType"
-                value={modalType}
-                onChange={(e) => setModalType(e.target.value)} // ou crie um estado específico
+                value={evaluationType}
+                onChange={(e) => setEvaluationType(e.target.value)}
                 className={styles.select}
               >
                 <option value="">-- Avaliação --</option>
