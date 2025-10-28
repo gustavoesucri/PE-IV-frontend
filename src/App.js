@@ -14,6 +14,7 @@ import EmploymentPlacement from './pages/EmploymentPlacement/EmploymentPlacement
 import EmploymentPlacementList from './pages/EmploymentPlacement/EmploymentPlacementList/EmploymentPlacementList';
 import StudentsList from './pages/Students/StudentsList/StudentsList';
 import UsersList from './pages/Users/UsersList/UsersList';
+import CompaniesList from './pages/Companies/CompaniesList/CompaniesList';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/administration" element={<Administration />} />
           <Route path="/students" element={<Students />} />
           <Route path="/companies" element={<Companies />} />
+          <Route path="/companies-list" element={<CompaniesList />} />
           <Route path="/users" element={<Users />} />
           <Route path="/users-list" element={<UsersList />} />
           <Route path="/assessment" element={<Assessment />} />
