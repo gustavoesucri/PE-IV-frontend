@@ -21,7 +21,9 @@ FRONT-END
 
 -OK (opcional/talvez) A data da avaliação poderá ser pré-preenchida com a data atual. Ou seja, pré-preenchida, mas pode ser alterada. Se o usuário não alterar, solicitar confirmação da data de avaliação antes de enviar.
 
-- Colocar validador de datas (para que não se coloque sem querer datas erradas como ano 2250 ou 1900, por exemplo.)
+-OK Colocar validador de datas em Data da Avaliação.
+
+- Colocar validador de datas em Data de Entrada.
 
 BACK-END
 
