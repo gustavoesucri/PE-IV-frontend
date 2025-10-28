@@ -49,17 +49,25 @@ const Assessment = () => {
 
     // --- Validações básicas ---
     if (!selectedStudent) {
+      document.querySelector("#studentSelect")?.focus();
       return showError("Selecione um usuário antes de enviar a avaliação!");
     }
+
     if (!entryDate) {
+      document.querySelector("#entryDate")?.focus();
       return showError("Selecione a data de entrada da avaliação!");
     }
+
     if (!evaluationType) {
+      document.querySelector("#evaluationType")?.focus();
       return showError("Selecione se é a 1ª ou 2ª avaliação!");
     }
+
     if (!assesmentDate) {
+      document.querySelector("#assessmentDate")?.focus();
       return showError("Selecione a data da avaliação!");
     }
+
 
     // --- Validação de data ---
     const date = new Date(assesmentDate);
@@ -79,11 +87,15 @@ if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
 }
 
     // --- Validação das perguntas obrigatórias ---
-    for (let i = 1; i <= questions.length; i++) {
-      if (!formData.get(`q${i}`)) {
-        return showError("Preencha todas as opções antes de enviar a avaliação!");
-      }
+   for (let i = 1; i <= questions.length; i++) {
+  if (!formData.get(`q${i}`)) {
+    const radios = document.getElementsByName(`q${i}`);
+    if (radios.length) {
+      radios[radios.length - 1].focus();
     }
+    return showError(`Preencha a questão ${i} antes de enviar a avaliação!`);
+  }
+}
 
     // --- Questão 12 depende da aberta 2 ---
     const q12 = formData.get("q12");
