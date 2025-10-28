@@ -50,22 +50,23 @@ const Assessment = () => {
     // --- Validações básicas ---
     if (!selectedStudent) {
       document.querySelector("#studentSelect")?.focus();
-      return showError("Selecione um usuário antes de enviar a avaliação!");
+      return showError("Selecione um usuário antes de enviar a avaliação!", "studentSelect");
+
     }
 
     if (!entryDate) {
       document.querySelector("#entryDate")?.focus();
-      return showError("Selecione a data de entrada da avaliação!");
+      return showError("Selecione a data de entrada!", "entryDate");
     }
 
     if (!evaluationType) {
       document.querySelector("#evaluationType")?.focus();
-      return showError("Selecione se é a 1ª ou 2ª avaliação!");
+      return showError("Selecione se é a 1ª ou 2ª avaliação!", "evaluationType");
     }
 
     if (!assesmentDate) {
       document.querySelector("#assessmentDate")?.focus();
-      return showError("Selecione a data da avaliação!");
+      return showError("Selecione a data da avaliação!", "assessmentDate");
     }
 
 
@@ -78,33 +79,57 @@ const Assessment = () => {
     }
 
     // --- Confirma a data apenas uma vez ---
-if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
-  setHasConfirmedDate(true);
-  setModalType("confirm");
-  setModalMessage("A data da avaliação está como a data atual. Deseja manter?");
-  setShowModal(true);
-  return;
-}
+    if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
+      setHasConfirmedDate(true);
+      setModalType("confirm");
+      setModalMessage("A data da avaliação está como a data atual. Deseja manter?");
+      setShowModal(true);
+      return;
+    }
 
     // --- Validação das perguntas obrigatórias ---
-   for (let i = 1; i <= questions.length; i++) {
+ for (let i = 1; i <= questions.length; i++) {
   if (!formData.get(`q${i}`)) {
     const radios = document.getElementsByName(`q${i}`);
     if (radios.length) {
+      const row = radios[0].closest("tr");
+
+      // adiciona classe persistente de destaque
+      row.classList.add(styles.focusRow);
+
+      // adiciona listener em todos os radios para remover quando o usuário marcar
+      radios.forEach((radio) => {
+        radio.addEventListener("change", () => {
+          // se algum radio estiver marcado, remove a outline
+          const isSelected = Array.from(radios).some(r => r.checked);
+          if (isSelected) {
+            row.classList.remove(styles.focusRow);
+          }
+        });
+      });
+
+      // foca no último radio (opcional)
       radios[radios.length - 1].focus();
     }
+
     return showError(`Preencha a questão ${i} antes de enviar a avaliação!`);
   }
 }
 
-    // --- Questão 12 depende da aberta 2 ---
+    // --- Questão 47 (perfil) obrigatória ---
+    const open1 = formData.get("openQ1")?.trim();
+    if (!open1) {
+      return showError("Responda a questão 47: 'O usuário tem perfil para esta instituição?'");
+    }
+
+    // --- Questão 12 da qual a aberta 2 depende ---
     const q12 = formData.get("q12");
     const open2 = formData.get("openQ2")?.trim();
     if (q12 !== "nao" && !open2) {
       return showError("Descreva '*Em que situações demonstra irritações?'");
     }
 
-    // --- Questões 27 e 28 dependem da aberta 3 ---
+    // --- Questões 27 e 28 das quais a aberta 3 depende ---
     const q27 = formData.get("q27");
     const q28 = formData.get("q28");
     const open3 = formData.get("openQ3")?.trim();
@@ -114,22 +139,25 @@ if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
       );
     }
 
-    // --- Questão 47 (perfil) obrigatória ---
-    const open1 = formData.get("openQ1")?.trim();
-    if (!open1) {
-      return showError("Responda a questão 47: 'O usuário tem perfil para esta instituição?'");
-    }
-
     // --- Se tudo ok ---
     showSuccess(`Avaliação do usuário ${selectedStudent} enviada com sucesso!`);
   };
 
   // 🔹 Funções auxiliares
-  const showError = (msg) => {
+  const showError = (msg, fieldId) => {
     setModalType("error");
     setModalMessage(msg);
     setShowModal(true);
+
+    if (fieldId) {
+      const el = document.querySelector(`#${fieldId}`);
+      if (el) {
+        el.classList.add(styles.errorField);
+        el.focus();
+      }
+    }
   };
+
 
   const showSuccess = (msg) => {
     setModalType("success");
@@ -155,7 +183,10 @@ if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
               <select
                 id="studentSelect"
                 value={selectedStudent}
-                onChange={(e) => setSelectedStudent(e.target.value)}
+                onChange={(e) => {
+                  setSelectedStudent(e.target.value);
+                  e.target.classList.remove(styles.errorField); // remove o destaque
+                }}
                 className={styles.select}
               >
                 <option value="">-- Escolha um usuário --</option>
@@ -174,7 +205,10 @@ if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
                 type="date"
                 id="entryDate"
                 value={entryDate}
-                onChange={(e) => setEntryDate(e.target.value)}
+                onChange={(e) => {
+                  setEntryDate(e.target.value);
+                  e.target.classList.remove(styles.errorField);
+                }}
                 className={styles.dateInput}
               />
             </div>
@@ -185,7 +219,10 @@ if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
               <select
                 id="evaluationType"
                 value={evaluationType}
-                onChange={(e) => setEvaluationType(e.target.value)}
+                onChange={(e) => {
+                  setEvaluationType(e.target.value);
+                  e.target.classList.remove(styles.errorField);
+                }}
                 className={styles.select}
               >
                 <option value="">-- Avaliação --</option>
@@ -201,7 +238,10 @@ if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
                 type="date"
                 id="assessmentDate"
                 value={assesmentDate}
-                onChange={(e) => setAssesmentDate(e.target.value)}
+                onChange={(e) => {
+                  setAssesmentDate(e.target.value);
+                  e.target.classList.remove(styles.errorField);
+                }}
                 className={styles.dateInput}
               />
             </div>

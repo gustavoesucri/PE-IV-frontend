@@ -9,17 +9,17 @@ Página http://localhost:3000/assessment
 
 FRONT-END
 
-- Se na Questão 12 a resposta não for "não", adicionar restrição da submissão do formulário enquanto não for preenchido o textarea "*Em que situações demonstra irritações?"
+-OK Se na Questão 12 a resposta não for "não", adicionar restrição da submissão do formulário enquanto não for preenchido o textarea "*Em que situações demonstra irritações?"
 
-- Se na Questão 27 ou(operador lógico) 28 a resposta não for "não", adicionar restrição da submissão do formulário enquanto não for preenchido o textarea "** Caso o aluno faça uso de medicação. Observações:"
+-OK Se na Questão 27 ou(operador lógico) 28 a resposta não for "não", adicionar restrição da submissão do formulário enquanto não for preenchido o textarea "** Caso o aluno faça uso de medicação. Observações:"
 
-- Restringir o envio se não for selecionada se é a 1a ou 2a avaliação.
+-OK Restringir o envio se não for selecionada se é a 1a ou 2a avaliação.
 
-- Restringir o envio se não for selecionada a data da avaliação.
+-OK Restringir o envio se não for selecionada a data da avaliação.
 
-- Restringir o envio se a 47 não for preenchida.
+-OK Restringir o envio se a 47 não for preenchida.
 
-- (opcional/talvez) A data da avaliação poderá ser pré-preenchida com a data atual. Ou seja, pré-preenchida, mas pode ser alterada. Se o usuário não alterar, solicitar confirmação da data de avaliação antes de enviar.
+-OK (opcional/talvez) A data da avaliação poderá ser pré-preenchida com a data atual. Ou seja, pré-preenchida, mas pode ser alterada. Se o usuário não alterar, solicitar confirmação da data de avaliação antes de enviar.
 
 - Colocar validador de datas (para que não se coloque sem querer datas erradas como ano 2250 ou 1900, por exemplo.)
 

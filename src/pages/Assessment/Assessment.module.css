@@ -258,6 +258,41 @@ th {
   cursor: pointer;
 }
 
+/* Foco normal (quando clicado ou via Tab) */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--azul);
+  /* outline-offset: 2px; */
+  transition: outline 0.1s ease-in-out;
+}
 
+/* Foco permanente quando há erro */
+.errorField {
+  outline: 2px solid var(--azul);
+  outline-offset: 1px;
+}
 
+/* Remove outline apenas nos radio buttons */
+input[type="radio"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.errorRow {
+  outline: 2px solid var(--azul);
+  outline-offset: -1px; /* para o outline ficar contornando toda a linha */
+}
+
+/* Outline na linha inteira quando qualquer radio estiver focado */
+/* tr:has(input[type="radio"]:focus) {
+  outline: 2px solid var(--azul);
+  outline-offset: -1px; /* contorna toda a linha */
+/*} */
+
+/* Linha destacada quando o usuário ainda não respondeu */
+.focusRow {
+  outline: 2px solid var(--azul);
+  outline-offset: -1px;
+}
 
