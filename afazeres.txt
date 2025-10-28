@@ -215,7 +215,7 @@ rota http://localhost:3000/companies-list (CRIAR, mostrará as empresas cadastra
 
 
 FRONT-END
-
+✔️(Feito)
 - Deve ser criada a apresentação da lista de empresas por nome;
 - Deve ser criado um filtro de busca por nome;
 - Deve ser criado um botão de detalhes como no de Estudantes;

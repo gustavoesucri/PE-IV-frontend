@@ -36,9 +36,6 @@ const Students = () => {
   return (
     <div className={styles.container}>
         <Menu />
-
-      <h1 className={styles.pageTitle}>Sistema de Gestão de Alunos</h1>
-
       <div className={styles.card}>
         <h2 className={styles.title}>Cadastro de Alunos</h2>
 
