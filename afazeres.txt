@@ -213,6 +213,7 @@ BACK-END
 
 rota http://localhost:3000/companies-list (CRIAR, mostrará as empresas cadastradas e permitirá edições)
 
+
 FRONT-END
 
 - Deve ser criada a apresentação da lista de empresas por nome;
@@ -256,7 +257,7 @@ BACK-END
 rota http://localhost:3000/user-list (deve ser criada para listar os admin cadastrados)
 
 FRONT-END
-
+✔️(Feito)
 BACK-END
 
 -----------------------------------------------------
