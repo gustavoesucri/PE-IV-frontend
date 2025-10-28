@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiMenu, FiSettings, FiLogOut, FiBriefcase, FiUsers,
@@ -31,12 +31,32 @@ const Menu = () => {
   const initialSidebarItems = [
     { id: "administration", label: "Administração", path: "/administration" },
     { id: "settings", label: "Configurações", path: "/settings" },
-    { id: "students", label: "Estudantes", path: "/students" },
-    { id: "users", label: "Usuários", path: "/users" },
-    { id: "companies", label: "Empresas", path: "/companies" },
+    {
+      id: "students",
+      label: "Estudantes",
+      path: "/students",
+      submenu: [{ label: "Lista de Estudantes", path: "/students-list" }]
+    },
+    {
+      id: "users",
+      label: "Usuários",
+      path: "/users",
+      submenu: [{ label: "Lista de Usuários", path: "/users-list" }]
+    },
+    {
+      id: "companies",
+      label: "Empresas",
+      path: "/companies",
+      submenu: [{ label: "Lista de Empresas", path: "/companies-list" }]
+    },
+    {
+      id: "employment-placement",
+      label: "Encaminhados",
+      path: "/employment-placement",
+      submenu: [{ label: "Lista de Encaminhados", path: "/employment-placement-list" }]
+    },
     { id: "assessment", label: "Avaliação", path: "/assessment" },
     { id: "control", label: "Controle Interno", path: "/control" },
-    { id: "employment-placement", label: "Encaminhados", path: "/employment-placement" },
     { id: "follow-up", label: "Acompanhamento", path: "/follow-up" },
   ];
 
@@ -47,27 +67,28 @@ const Menu = () => {
         const parsed = JSON.parse(savedOrder);
         return parsed
           .filter(item => initialSidebarItems.some(initial => initial.id === item.id))
-          .map(item => ({
-            ...item,
-            icon: iconMap[item.id] || FiGrid
-          }));
+          .map(item => {
+            const original = initialSidebarItems.find(i => i.id === item.id);
+            return {
+              ...item,
+              icon: iconMap[item.id] || FiGrid,
+              submenu: original?.submenu || []
+            };
+          });
       }
       return initialSidebarItems.map(item => ({
         ...item,
-        icon: iconMap[item.id]
+        icon: iconMap[item.id] || FiGrid,
+        submenu: item.submenu || []
       }));
     } catch (error) {
-      console.error("Failed to load sidebar order from localStorage:", error);
       return initialSidebarItems.map(item => ({
         ...item,
-        icon: iconMap[item.id]
+        icon: iconMap[item.id] || FiGrid,
+        submenu: item.submenu || []
       }));
     }
   });
-
-  useEffect(() => {
-    console.log("Sidebar items in Menu.jsx:", sidebarItems.map(item => item.id));
-  }, [sidebarItems]);
 
   const notifications = [
     "Novo aluno cadastrado: Maria",
@@ -75,12 +96,7 @@ const Menu = () => {
     "Aluno João está doente"
   ];
 
-  const onDragStart = () => {
-    console.log("Drag started in Menu.jsx");
-  };
-
   const onDragEnd = (result) => {
-    console.log("Drag ended in Menu.jsx:", result);
     if (!result.destination) return;
     const reorderedItems = Array.from(sidebarItems);
     const [movedItem] = reorderedItems.splice(result.source.index, 1);
@@ -90,7 +106,7 @@ const Menu = () => {
       const itemsToSave = reorderedItems.map(({ id, label, path }) => ({ id, label, path }));
       localStorage.setItem("sidebarOrder", JSON.stringify(itemsToSave));
     } catch (error) {
-      console.error("Failed to save sidebar order to localStorage:", error);
+      console.error("Failed to save sidebar order:", error);
     }
   };
 
@@ -120,11 +136,11 @@ const Menu = () => {
 
       {sidebarOpen && <div className={styles.overlay} onClick={closeSidebar} />}
 
-      <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd}>
         <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
           {sidebarOpen && (
             <Droppable droppableId="sidebar">
-              {(provided, snapshot) => (
+              {(provided) => (
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
@@ -137,16 +153,39 @@ const Menu = () => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          className={`${styles.sidebarItem} ${
-                            snapshot.isDragging ? styles.dragging : ""
-                          }`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(item.path);
-                          }}
+                          className={`${styles.menuGroup} ${snapshot.isDragging ? styles.dragging : ""}`}
                         >
-                          {item.icon ? <item.icon size={20} /> : <FiGrid size={20} />}
-                          <span>{item.label}</span>
+                          {/* Item Principal - SEMPRE clicável */}
+                          <div
+                            className={styles.mainItem}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(item.path);
+                              closeSidebar();
+                            }}
+                          >
+                            {item.icon ? <item.icon size={20} /> : <FiGrid size={20} />}
+                            <span>{item.label}</span>
+                          </div>
+
+                          {/* Submenu */}
+                          {item.submenu?.length > 0 && (
+                            <div className={styles.submenu}>
+                              {item.submenu.map((sub, i) => (
+                                <div
+                                  key={i}
+                                  className={styles.subItem}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(sub.path);
+                                    closeSidebar();
+                                  }}
+                                >
+                                  {sub.label}
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
                     </Draggable>

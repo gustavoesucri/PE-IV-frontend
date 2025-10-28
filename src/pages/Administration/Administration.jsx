@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FiMenu, FiSettings, FiLogOut, FiBriefcase, FiUsers, FiUser, FiCheckCircle, FiPlus, FiBarChart2, FiFileText, FiUserCheck, FiGrid } from "react-icons/fi";
-import { IoNotificationsOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { FiPlus } from "react-icons/fi";
 import { Rnd } from "react-rnd";
+import Menu from "../../components/Menu/Menu"; // Ajuste o caminho conforme sua estrutura
 import styles from "./Administration.module.css";
 
 const Administration = () => {
-  const [showNotifications, setShowNotifications] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showAddStudentDropdown, setShowAddStudentDropdown] = useState(false);
@@ -117,46 +113,6 @@ const Administration = () => {
     }
   }, [notes]);
 
-  const iconMap = {
-    administration: FiGrid,
-    settings: FiSettings,
-    students: FiUsers,
-    users: FiUser,
-    companies: FiBriefcase,
-    assessment: FiCheckCircle,
-    control: FiBarChart2,
-    "employment-placement": FiUserCheck,
-    "follow-up": FiFileText,
-  };
-
-  const initialSidebarItems = [
-    { id: "administration", label: "Administração", path: "/administration" },
-    { id: "settings", label: "Configurações", path: "/settings" },
-    { id: "students", label: "Estudantes", path: "/students" },
-    { id: "users", label: "Usuários", path: "/users" },
-    { id: "companies", label: "Empresas", path: "/companies" },
-    { id: "assessment", label: "Avaliação", path: "/assessment" },
-    { id: "control", label: "Controle Interno", path: "/control" },
-    { id: "employment-placement", label: "Encaminhados", path: "/employment-placement" },
-    { id: "follow-up", label: "Acompanhamento", path: "/follow-up" },
-  ];
-
-  const [sidebarItems, setSidebarItems] = useState(() => {
-    try {
-      const savedOrder = localStorage.getItem("sidebarOrder");
-      if (savedOrder) {
-        const parsed = JSON.parse(savedOrder);
-        return parsed
-          .filter((item) => initialSidebarItems.some((initial) => initial.id === item.id))
-          .map((item) => ({ ...item, icon: iconMap[item.id] || FiGrid }));
-      }
-      return initialSidebarItems.map((item) => ({ ...item, icon: iconMap[item.id] }));
-    } catch (error) {
-      console.error("Failed to load sidebar order from localStorage:", error);
-      return initialSidebarItems.map((item) => ({ ...item, icon: iconMap[item.id] }));
-    }
-  });
-
   const availableStudents = [
     {
       id: 1,
@@ -249,9 +205,6 @@ const Administration = () => {
     },
   ];
 
-  const navigate = useNavigate();
-  const notifications = ["Novo aluno cadastrado: Maria", "Reunião de professores às 15h", "Aluno João está doente"];
-
   // Função para salvar posições no localStorage
   const saveWidgetPosition = (widgetId, x, y, width, height) => {
     try {
@@ -266,9 +219,6 @@ const Administration = () => {
     }
   };
 
-  const openSidebar = () => setShowSidebar(true);
-  const closeSidebar = () => setShowSidebar(false);
-  const handleLogout = () => navigate("/");
   const openStudentProfile = (student) => setSelectedStudent(student);
   const closeStudentProfile = () => setSelectedStudent(null);
   const openCompanyProfile = (company) => setSelectedCompany(company);
@@ -307,105 +257,24 @@ const Administration = () => {
     setNotes((prev) => prev.map((note) => (note.id === id ? { ...note, content: newContent } : note)));
   };
 
-  const onDragStart = () => {
-    console.log("Drag started in Administration.jsx");
-  };
-
-  const onDragEnd = (result) => {
-    console.log("Drag ended in Administration.jsx:", result);
-    if (!result.destination) return;
-    const reorderedItems = Array.from(sidebarItems);
-    const [movedItem] = reorderedItems.splice(result.source.index, 1);
-    reorderedItems.splice(result.destination.index, 0, movedItem);
-    setSidebarItems(reorderedItems);
-    try {
-      const itemsToSave = reorderedItems.map(({ id, label, path }) => ({ id, label, path }));
-      localStorage.setItem("sidebarOrder", JSON.stringify(itemsToSave));
-    } catch (error) {
-      console.error("Failed to save sidebar order to localStorage:", error);
-    }
-  };
-
+  // Cleanup no unmount para fechar modais
   useEffect(() => {
-    console.log("Sidebar items in Administration.jsx:", sidebarItems.map((item) => item.id));
     const onKeyDown = (e) => {
       if (e.key === "Escape") {
-        closeSidebar();
-        setSelectedStudent(null);
-        setSelectedCompany(null);
+        closeStudentProfile();
+        closeCompanyProfile();
         setShowAddStudentDropdown(false);
         setShowAddCompanyDropdown(false);
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [sidebarItems]);
+  }, []);
 
   return (
     <div className={styles.container}>
-      <div className={styles.topButtons}>
-        <button className={styles.iconButton} aria-label="Abrir menu" onClick={openSidebar}>
-          <FiMenu size={26} />
-        </button>
-        <div className={styles.notificationWrapper}>
-          <button
-            className={`${styles.iconButton} ${styles.iconBlue}`}
-            aria-label="Abrir notificações"
-            onClick={() => setShowNotifications((v) => !v)}
-          >
-            <IoNotificationsOutline size={28} />
-          </button>
-          {showNotifications && !showSidebar && (
-            <div className={styles.notificationsDropdown}>
-              <h4>Notificações</h4>
-              <ul>
-                {notifications.map((n, i) => (
-                  <li key={i}>{n}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {showSidebar && <div className={styles.overlay} onClick={closeSidebar} />}
-
-      <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
-        <aside className={`${styles.sidebar} ${showSidebar ? styles.sidebarOpen : ""}`}>
-          {showSidebar && (
-            <Droppable droppableId="sidebar">
-              {(provided, snapshot) => (
-                <div {...provided.droppableProps} ref={provided.innerRef} className={styles.droppableContainer}>
-                  {sidebarItems.map((item, index) => (
-                    <Draggable key={item.id} draggableId={String(item.id)} index={index}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={`${styles.sidebarItem} ${snapshot.isDragging ? styles.dragging : ""}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(item.path);
-                          }}
-                        >
-                          {item.icon ? <item.icon size={20} /> : <FiGrid size={20} />}
-                          <span>{item.label}</span>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          )}
-          <div className={styles.logoutButton} onClick={handleLogout}>
-            <FiLogOut size={20} />
-            <span>Sair</span>
-          </div>
-        </aside>
-      </DragDropContext>
+      {/* Menu Componente Importado */}
+      <Menu />
 
       <main className={styles.mainContent}>
         {/* Widget: Alunos em Acompanhamento */}
@@ -606,84 +475,86 @@ const Administration = () => {
         ))}
       </main>
 
-      {selectedStudent && (
-        <div className={styles.modalOverlay} onClick={closeStudentProfile}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeModal} onClick={closeStudentProfile}>
-              ×
-            </button>
-            <h2>Perfil do Aluno</h2>
-            <div className={styles.infoRow}>
-              <span className={styles.label}>Nome Completo:</span>
-              <span className={styles.value}>{selectedStudent.nome}</span>
-            </div>
-            <div className={styles.infoRow}>
-              <span className={styles.label}>Data de Nascimento:</span>
-              <span className={styles.value}>{selectedStudent.dataNascimento}</span>
-            </div>
-            <div className={styles.infoRow}>
-              <span className={styles.label}>Observação Breve:</span>
-              <span className={styles.value}>{selectedStudent.observacaoBreve}</span>
-            </div>
-            <div className={styles.infoRow}>
-              <span className={styles.label}>Observação Detalhada:</span>
-              <span className={styles.value}>{selectedStudent.observacaoDetalhada}</span>
-            </div>
-            <div className={styles.infoRow}>
-              <span className={styles.label}>Data de Entrada:</span>
-              <span className={styles.value}>{selectedStudent.acompanhamento?.dataEntrada || "N/A"}</span>
-            </div>
-            <div className={styles.infoGroup}>
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Av1:</span>
-                <span
-                  className={`${styles.value} ${styles.iconStatus} ${
-                    selectedStudent.acompanhamento?.av1 ? styles.iconGreen : styles.iconRed
-                  }`}
-                >
-                  {selectedStudent.acompanhamento?.av1 ? "✔" : "X"}
-                </span>
-              </div>
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Av2:</span>
-                <span
-                  className={`${styles.value} ${styles.iconStatus} ${
-                    selectedStudent.acompanhamento?.av2 ? styles.iconGreen : styles.iconRed
-                  }`}
-                >
-                  {selectedStudent.acompanhamento?.av2 ? "✔" : "X"}
-                </span>
-              </div>
-            </div>
-            <div className={styles.infoGroup}>
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Entrevista Pais:</span>
-                <span
-                  className={`${styles.value} ${styles.iconStatus} ${
-                    selectedStudent.acompanhamento?.entrevista1 ? styles.iconGreen : styles.iconRed
-                  }`}
-                >
-                  {selectedStudent.acompanhamento?.entrevista1 ? "✔" : "X"}
-                </span>
-              </div>
-              <div className={styles.infoRow}>
-                <span className={styles.label}>Entrevista Pais 2:</span>
-                <span
-                  className={`${styles.value} ${styles.iconStatus} ${
-                    selectedStudent.acompanhamento?.entrevista2 ? styles.iconGreen : styles.iconRed
-                  }`}
-                >
-                  {selectedStudent.acompanhamento?.entrevista2 ? "✔" : "X"}
-                </span>
-              </div>
-            </div>
-            <div className={styles.infoRow}>
-              <span className={styles.label}>Resultado:</span>
-              <span className={styles.value}>{selectedStudent.acompanhamento?.resultado || "N/A"}</span>
-            </div>
+{selectedStudent && (
+  <div className={styles.modalOverlay} onClick={closeStudentProfile}>
+    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+      <button className={styles.closeModal} onClick={closeStudentProfile}>
+        ×
+      </button>
+      <h2>Perfil do Aluno</h2>
+      <div className={styles.infoGroup}>
+        <div className={styles.infoRow}>
+          <span className={styles.label}>Nome Completo:</span>
+          <span className={styles.value}>{selectedStudent.nome}</span>
+        </div>
+        <div className={styles.infoRow}>
+          <span className={styles.label}>Data de Nascimento:</span>
+          <span className={styles.value}>{selectedStudent.dataNascimento}</span>
+        </div>
+        <div className={styles.infoRow}>
+          <span className={styles.label}>Observação Breve:</span>
+          <span className={styles.value}>{selectedStudent.observacaoBreve}</span>
+        </div>
+        <div className={styles.infoRow}>
+          <span className={styles.label}>Observação Detalhada:</span>
+          <span className={styles.value}>{selectedStudent.observacaoDetalhada}</span>
+        </div>
+        <div className={styles.infoRow}>
+          <span className={styles.label}>Data de Entrada:</span>
+          <span className={styles.value}>{selectedStudent.acompanhamento?.dataEntrada || "N/A"}</span>
+        </div>
+        <div className={styles.infoGroup}>
+          <div className={styles.infoRow}>
+            <span className={styles.label}>Av1:</span>
+            <span
+              className={`${styles.value} ${styles.iconStatus} ${
+                selectedStudent.acompanhamento?.av1 ? styles.iconGreen : styles.iconRed
+              }`}
+            >
+              {selectedStudent.acompanhamento?.av1 ? "Check" : "X"}
+            </span>
+          </div>
+          <div className={styles.infoRow}>
+            <span className={styles.label}>Av2:</span>
+            <span
+              className={`${styles.value} ${styles.iconStatus} ${
+                selectedStudent.acompanhamento?.av2 ? styles.iconGreen : styles.iconRed
+              }`}
+            >
+              {selectedStudent.acompanhamento?.av2 ? "Check" : "X"}
+            </span>
           </div>
         </div>
-      )}
+        <div className={styles.infoGroup}>
+          <div className={styles.infoRow}>
+            <span className={styles.label}>Entrevista Pais:</span>
+            <span
+              className={`${styles.value} ${styles.iconStatus} ${
+                selectedStudent.acompanhamento?.entrevista1 ? styles.iconGreen : styles.iconRed
+              }`}
+            >
+              {selectedStudent.acompanhamento?.entrevista1 ? "Check" : "X"}
+            </span>
+          </div>
+          <div className={styles.infoRow}>
+            <span className={styles.label}>Entrevista Pais 2:</span>
+            <span
+              className={`${styles.value} ${styles.iconStatus} ${
+                selectedStudent.acompanhamento?.entrevista2 ? styles.iconGreen : styles.iconRed
+              }`}
+            >
+              {selectedStudent.acompanhamento?.entrevista2 ? "Check" : "X"}
+            </span>
+          </div>
+        </div>
+        <div className={styles.infoRow}>
+          <span className={styles.label}>Resultado:</span>
+          <span className={styles.value}>{selectedStudent.acompanhamento?.resultado || "N/A"}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
       {selectedCompany && (
         <div className={styles.modalOverlay} onClick={closeCompanyProfile}>
@@ -692,15 +563,15 @@ const Administration = () => {
               ×
             </button>
             <h2>Perfil da Empresa</h2>
-            <div className={styles.infoRow}>
-              <span className={styles.label}>Nome:</span>
-              <span className={styles.value}>{selectedCompany.nome}</span>
-            </div>
-            <div className={styles.infoRow}>
-              <span className={styles.label}>CNPJ:</span>
-              <span className={styles.value}>{selectedCompany.cnpj}</span>
-            </div>
             <div className={styles.infoGroup}>
+              <div className={styles.infoRow}>
+                <span className={styles.label}>Nome:</span>
+                <span className={styles.value}>{selectedCompany.nome}</span>
+              </div>
+              <div className={styles.infoRow}>
+                <span className={styles.label}>CNPJ:</span>
+                <span className={styles.value}>{selectedCompany.cnpj}</span>
+              </div>
               <h3>Endereço</h3>
               <div className={styles.infoRow}>
                 <span className={styles.label}>Rua:</span>

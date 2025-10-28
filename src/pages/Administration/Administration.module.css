@@ -6,186 +6,18 @@
   position: relative;
 }
 
-.topButtons {
-  position: fixed;
-  top: 1rem;
-  left: 1rem;
-  right: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 1000;
-}
-
-.iconButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--azul);
-  padding: 4px;
-  line-height: 0;
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.iconButton:hover,
-.iconButton:focus {
-  outline: none;
-  transform: scale(1.1);
-  color: var(--roxo);
-}
-
-.iconBlue {
-  color: var(--azul);
-}
-
-.iconAdd {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--branco);
-  padding: 4px;
-  line-height: 0;
-  transition: transform 0.2s ease;
-}
-
-.iconAdd:hover {
-  transform: rotate(90deg);
-}
-
-.notificationWrapper {
-  position: relative;
-  z-index: 1050;
-}
-
-.notificationsDropdown {
-  position: absolute;
-  right: 0;
-  top: 40px;
-  background: var(--branco);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 0.8rem;
-  width: 260px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  opacity: 0;
-  transform: translateY(-10px);
-  animation: fadeIn 0.3s forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.notificationsDropdown h4 {
-  margin: 0 0 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--preto);
-}
-
-.notificationsDropdown ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.notificationsDropdown li {
-  font-size: 0.9rem;
-  padding: 0.45rem 0;
-  border-bottom: 1px solid var(--cinza);
-  transition: background 0.2s ease;
-}
-
-.notificationsDropdown li:hover {
-  background-color: var(--cinza-claro);
-}
-
-.notificationsDropdown li:last-child {
-  border-bottom: none;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  z-index: 1200;
-}
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -280px;
-  width: 280px;
-  height: 100%;
-  background: var(--branco);
-  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.2);
-  transition: left 0.28s ease;
-  z-index: 1300;
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  overflow: visible;
-}
-
-.sidebarOpen {
-  left: 0;
-}
-
-.sidebarItem {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 0.5rem;
-  color: var(--preto);
-  transition: background 0.2s ease, transform 0.2s ease;
-  position: relative;
-  z-index: 10;
-  user-select: none;
-}
-
-.sidebarItem:hover {
-  background-color: var(--cinza);
-  transform: translateX(5px);
-}
-
-.sidebarItem span {
-  font-size: 1rem;
-}
-
-.logoutButton {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  background: none;
-  color: var(--vermelho);
-  font-size: 1rem;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.logoutButton:hover {
-  background-color: var(--cinza);
-  transform: translateX(5px);
-}
-
+/* Estilos para o conteúdo principal - ajustado para o menu importado */
 .mainContent {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  padding-top: 5rem;
+  height: calc(100vh - 60px); /* Ajustado para dar espaço ao menu */
+  padding-top: 3rem; /* Reduzido pois o menu já tem seu próprio espaço */
   position: relative;
+  overflow: hidden;
 }
 
+/* Estilos dos Widgets */
 .studentsContainer {
   background: var(--branco);
   border-radius: 12px;
@@ -194,6 +26,7 @@
   cursor: move;
   overflow: hidden;
   transition: box-shadow 0.3s ease;
+  z-index: 10;
 }
 
 .studentsContainer:hover {
@@ -217,6 +50,20 @@
   font-size: 1.2rem;
 }
 
+.iconAdd {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--branco);
+  padding: 4px;
+  line-height: 0;
+  transition: transform 0.2s ease;
+}
+
+.iconAdd:hover {
+  transform: rotate(90deg);
+}
+
 .addStudentWrapper {
   position: relative;
 }
@@ -234,6 +81,13 @@
   transition: opacity 0.3s ease;
   opacity: 0;
   animation: fadeIn 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .addStudentDropdown h4 {
@@ -292,6 +146,17 @@
   background: var(--cinza);
 }
 
+.studentName {
+  font-weight: 600;
+  color: var(--preto);
+}
+
+.studentObs {
+  color: var(--cinza-escuro);
+  font-size: 0.9rem;
+}
+
+/* Modal Styles */
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -299,7 +164,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1500;
+  z-index: 2000;
   animation: fadeIn 0.3s ease;
 }
 
@@ -342,6 +207,13 @@
   margin-bottom: 1rem;
 }
 
+.infoGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
 .label {
   font-weight: 600;
   width: 150px;
@@ -355,28 +227,12 @@
 
 .modalContent h2 {
   color: var(--azul);
+  margin-bottom: 1rem;
 }
 
 .modalContent h3 {
   color: var(--roxo);
   margin-bottom: 0.5rem;
-}
-
-.react-resizable-handle {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  bottom: 0;
-  right: 0;
-  background: transparent;
-  cursor: se-resize;
-}
-
-.infoGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
 }
 
 .iconStatus {
@@ -392,14 +248,7 @@
   color: var(--vermelho);
 }
 
-.dragging {
-  background-color: #e0e7ff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  cursor: grabbing;
-}
-
-/* Novos estilos para widgets adicionais */
-
+/* Contador Widget */
 .counterContainer {
   background: var(--branco);
   border-radius: 12px;
@@ -410,6 +259,7 @@
   align-items: center;
   justify-content: center;
   transition: box-shadow 0.3s ease;
+  z-index: 10;
 }
 
 .counterContainer:hover {
@@ -420,13 +270,16 @@
   font-size: 1.2rem;
   color: var(--preto);
   text-align: center;
+  padding: 1rem;
 }
 
 .counterNumber {
   color: var(--azul);
   font-weight: bold;
+  font-size: 1.5rem;
 }
 
+/* Stats Widget */
 .statsContainer {
   background: var(--branco);
   border-radius: 12px;
@@ -435,6 +288,7 @@
   cursor: move;
   padding: 1rem;
   transition: box-shadow 0.3s ease;
+  z-index: 10;
 }
 
 .statsContainer:hover {
@@ -479,6 +333,7 @@
   margin-left: 0.5rem;
 }
 
+/* Notes Widget */
 .notesContainer {
   background: var(--cinza-claro);
   border-radius: 12px;
@@ -487,6 +342,7 @@
   cursor: move;
   padding: 0.5rem;
   transition: box-shadow 0.3s ease;
+  z-index: 10;
 }
 
 .notesContainer:hover {
@@ -533,8 +389,20 @@
   transform: scale(1.1);
 }
 
+/* Scrollable content */
 .scrollable {
-  max-height: calc(100% - 50px); /* Ajuste conforme a altura do cabeçalho do widget */
+  max-height: calc(100% - 50px);
   overflow-y: auto;
-  padding-right: 10px; /* Para evitar sobreposição com a barra de rolagem */
+  padding-right: 10px;
+}
+
+/* Handle para redimensionamento */
+.react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  background: transparent;
+  cursor: se-resize;
 }
