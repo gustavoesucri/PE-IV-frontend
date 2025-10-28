@@ -456,9 +456,15 @@ BACK-END
 
 rota http://localhost:3000/administration
 
+Obs: Aqui há a necessidade de verificar quais Dashboards serão feitos/utilizados.
+
 FRONT-END
 
+- Aqui há a necessidade de verificar quais Dashboards serão feitos/utilizados.
+
 BACK-END
+
+- De acordo com cada dashboard. Geralmente listas mais completas de dados.
 
 -----------------------------------------------------
 
@@ -466,7 +472,22 @@ rota http://localhost:3000/settings
 
 FRONT-END
 
+- Listar e-mail atualmente cadastrado do usuário;
+
+
 BACK-END
+
+- Deverá ir ao back-end:
+    - id user;
+    - E-mail;
+
+    - Booleano de Notificações do Sistema;
+    - Booleano Notificações de Alunos por E-mail;
+
+    - Se alterada senha:
+        - Senha antiga;
+        - Nova senha;
+        - Nova senha repetida.
 
 -----------------------------------------------------
 GERAL:
