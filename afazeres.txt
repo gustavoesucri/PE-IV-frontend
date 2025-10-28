@@ -401,21 +401,56 @@ BACK-END
 
 rota http://localhost:3000/users
 
+Obs: Esta página já está presumindo que um admin de alto nível hierarquico está com acesso. Mas esse acesso veio de onde, foi fornecido por quem?
+
 FRONT-END
 
-- (para depois) revisar a UI quando se clica em Cadastrar.
+- (para depois) revisar a UI quando se clica em Cadastrar. Está 
 
 BACK-END
 
+- Deverá ir ao back-end:
+    - Username;
+    - Senha; (validação também...)
+    - Categoria;
+
+- Deverá vir do backend:
+    - Resposta com negativa se o username já existir. Ou mensagem de sucesso.
+
 -----------------------------------------------------
 
-rota http://localhost:3000/user-list (deve ser criada para listar os admin cadastrados)
+rota http://localhost:3000/user-list (deve ser criada para listar os admin cadastrados. Quem terá acesso é algum tipo de admin master)
 
 Obs: Deverá ser elaborado o que cada tipo de User tem autoridade para fazer dentro do sistema. Para isso, provavelmente, será necessário mais uma página para gerenciar isso.
 
 FRONT-END
+- Lista de user cadastrados.
+- Botão de edição que abre uma janela para visualizar e editar as permissões e outros atributos.
+- Na janela:
+    - Edição de nome;
+    - Edição de Categoria, nível hierárquico;
+    - Botão de edição de senha.
+        - Em edição de senha:
+            - A senha antiga;
+            - A senha nova;
+            - A repetição da senha nova;
+            - Um botão de Trocar Senha confirmando a alteração (isso deverá disparar eventos como e-mail, etc)
 
 BACK-END
+
+- Deverá vir do back-end:
+    - Lista de users/admins.
+    - Outros dados quando clicar para editar, como nível hierárquico.
+
+    Obs: A senha não vem do backend. Ela só é verificada lá, mas nunca vem pro front (a menos que haja uma solicitação de envio da senha por e-mail - se essa feature for existir. Não há necessidade, pode-se trabalhar somente com troca de senha, por exemplo.)
+
+- Deverá ir ao back-end (usando PATCH):
+    - Nome cadastrado;
+    - Categoria;
+    - Senha antiga (para confirmar numa mudança);
+    - Senha nova;
+    - Senha nova (repetida, para confirmação, já que a lógica do front deve existir no back-end);
+    - Eventuais outros dados.
 
 -----------------------------------------------------
 
