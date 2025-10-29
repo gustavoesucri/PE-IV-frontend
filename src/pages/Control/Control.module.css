@@ -1,7 +1,7 @@
 .container {
   background-color: var(--branco);
   padding: 2rem;
-  max-width: 1002px;
+  max-width: 1050px;
   margin: 2rem auto;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
@@ -83,8 +83,8 @@
   background-color: var(--roxo);
 }
 
-.filterButton {
-  background-color: var(--roxo);
+.filterButton, .clearButton {
+  background-color: var(--azul);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -94,7 +94,11 @@
   transition: background-color 0.2s ease;
 }
 
-.filterButton:hover {
-  background-color: var(--azul);
+.clearButton {
+  background-color: var(--verde);
+}
+
+.filterButton:hover, .clearButton:hover {
+  background-color: var(--roxo);
   transition: 0.5s;
 }

@@ -52,6 +52,14 @@ const Control = () => {
     setFiltered(results);
   };
 
+  const handleClear = () => {
+    setSearch("");
+    setDateType("ingresso");
+    setDateFrom("");
+    setDateTo("");
+    // setFiltered(mockControls);
+  };
+
   const handleView = (id) => {
     alert(`Visualizar registro ID: ${id}`);
   };
@@ -100,6 +108,9 @@ const Control = () => {
 
         <button onClick={handleFilter} className={styles.filterButton}>
           Filtrar
+        </button>
+        <button onClick={handleClear} className={styles.clearButton}>
+          Limpar
         </button>
       </div>
 
