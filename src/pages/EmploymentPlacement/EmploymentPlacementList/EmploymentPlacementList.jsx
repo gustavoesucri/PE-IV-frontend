@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { format } from "date-fns";
 import styles from "./EmploymentPlacementList.module.css";
 import Menu from "../../../components/Menu/Menu";
 
@@ -73,9 +74,12 @@ const EmploymentPlacementList = () => {
     setSelectedPlacement(null);
   };
 
+  // função de formatação usando date-fns
+  const formatDate = (dateString) => format(new Date(dateString), 'dd/MM/yyyy');
+
   return (
     <div className={styles.container}>
-        <Menu />
+      <Menu />
       <h1 className={styles.title}>Lista de Encaminhamentos</h1>
 
       <div className={styles.filters}>
@@ -133,11 +137,11 @@ const EmploymentPlacementList = () => {
               filteredPlacements.map(p => (
                 <tr key={p.id}>
                   <td>{p.nome}</td>
-                  <td>{p.admissao}</td>
+                  <td>{formatDate(p.admissao)}</td>
                   <td>{p.empresa}</td>
                   <td>{p.funcao}</td>
                   <td>{p.contatoRh}</td>
-                  <td>{p.desligamento}</td>
+                  <td>{formatDate(p.desligamento)}</td>
                   <td>
                     <button
                       className={styles.actionButton}
@@ -170,11 +174,11 @@ const EmploymentPlacementList = () => {
             <div className={styles.modalContent}>
               <p>Visualizar registro ID: {selectedPlacement.id}</p>
               <p><strong>Nome:</strong> {selectedPlacement.nome}</p>
-              <p><strong>Data de Admissão:</strong> {selectedPlacement.admissao}</p>
+              <p><strong>Data de Admissão:</strong> {formatDate(selectedPlacement.admissao)}</p>
               <p><strong>Empresa:</strong> {selectedPlacement.empresa}</p>
               <p><strong>Função:</strong> {selectedPlacement.funcao}</p>
               <p><strong>Contato RH:</strong> {selectedPlacement.contatoRh}</p>
-              <p><strong>Provável Desligamento:</strong> {selectedPlacement.desligamento}</p>
+              <p><strong>Provável Desligamento:</strong> {formatDate(selectedPlacement.desligamento)}</p>
             </div>
 
             <div className={styles.modalFooter}>
