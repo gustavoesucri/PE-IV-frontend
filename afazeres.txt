@@ -25,6 +25,8 @@ FRONT-END
 
 -OK Colocar validador de datas em Data de Entrada.
 
+-(opcional - futuro) Enviar para uma tela de revisão de dados.
+
 BACK-END
 
 - Resgatar nome do backend (BD).
