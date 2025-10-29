@@ -23,7 +23,7 @@ FRONT-END
 
 -OK Colocar validador de datas em Data da Avaliação.
 
-- Colocar validador de datas em Data de Entrada.
+-OK Colocar validador de datas em Data de Entrada.
 
 BACK-END
 

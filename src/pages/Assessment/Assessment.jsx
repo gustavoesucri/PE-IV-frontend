@@ -7,7 +7,7 @@ import Menu from "../../components/Menu/Menu";
 const Assessment = () => {
   const [selectedStudent, setSelectedStudent] = useState("");
   const [entryDate, setEntryDate] = useState("");
-  const [assesmentDate, setAssesmentDate] = useState("");
+  const [assessmentDate, setAssessmentDate] = useState("");
   const [defaultAssessmentDate, setDefaultAssessmentDate] = useState("");
   const [evaluationType, setEvaluationType] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -19,7 +19,7 @@ const Assessment = () => {
   // 🔹 Preenche a data de avaliação com o dia atual
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
-    setAssesmentDate(today);
+    setAssessmentDate(today);
     setDefaultAssessmentDate(today);
   }, []);
 
@@ -43,6 +43,19 @@ const Assessment = () => {
     { value: "nao", label: "Não" },
   ]; // Alterada a ordem dos critérios para representar uma escala de maior intensidade para a menor. Isso sobrecarrega menos cognitivamente o usuário que preenche e o que lê.
 
+  const validateDate = (dateStr, fieldName) => {
+    const date = new Date(dateStr);
+    const min = new Date("1960-01-01");
+    const max = new Date();
+
+    if (!dateStr) return `${fieldName} é obrigatória.`;
+    if (date < min || date > max) {
+      return `${fieldName} deve estar entre 1960 e hoje.`;
+    }
+    return null;
+  };
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -59,27 +72,32 @@ const Assessment = () => {
       return showError("Selecione a data de entrada!", "entryDate");
     }
 
+    const entryDateError = validateDate(entryDate, "Data de entrada");
+    if (entryDateError) {
+      showError(entryDateError);
+      document.getElementById("entryDate").focus();
+      return;
+    }
+
     if (!evaluationType) {
       document.querySelector("#evaluationType")?.focus();
       return showError("Selecione se é a 1ª ou 2ª avaliação!", "evaluationType");
     }
 
-    if (!assesmentDate) {
+    if (!assessmentDate) {
       document.querySelector("#assessmentDate")?.focus();
       return showError("Selecione a data da avaliação!", "assessmentDate");
     }
 
-
-    // --- Validação de data ---
-    const date = new Date(assesmentDate);
-    const minDate = new Date("1960-01-01");
-    const maxDate = new Date();
-    if (date < minDate || date > maxDate) {
-      return showError("A data da avaliação deve estar entre 1960 e hoje.");
+    const assessmentDateError = validateDate(assessmentDate, "Data da avaliação");
+    if (assessmentDateError) {
+      showError(assessmentDateError);
+      document.getElementById("assessmentDate").focus();
+      return;
     }
 
     // --- Confirma a data apenas uma vez ---
-    if (assesmentDate === defaultAssessmentDate && !hasConfirmedDate) {
+    if (assessmentDate === defaultAssessmentDate && !hasConfirmedDate) {
       setHasConfirmedDate(true);
       setModalType("confirm");
       setModalMessage("A data da avaliação está como a data atual. Deseja manter?");
@@ -88,33 +106,33 @@ const Assessment = () => {
     }
 
     // --- Validação das perguntas obrigatórias ---
- for (let i = 1; i <= questions.length; i++) {
-  if (!formData.get(`q${i}`)) {
-    const radios = document.getElementsByName(`q${i}`);
-    if (radios.length) {
-      const row = radios[0].closest("tr");
+    for (let i = 1; i <= questions.length; i++) {
+      if (!formData.get(`q${i}`)) {
+        const radios = document.getElementsByName(`q${i}`);
+        if (radios.length) {
+          const row = radios[0].closest("tr");
 
-      // adiciona classe persistente de destaque
-      row.classList.add(styles.focusRow);
+          // adiciona classe persistente de destaque
+          row.classList.add(styles.focusRow);
 
-      // adiciona listener em todos os radios para remover quando o usuário marcar
-      radios.forEach((radio) => {
-        radio.addEventListener("change", () => {
-          // se algum radio estiver marcado, remove a outline
-          const isSelected = Array.from(radios).some(r => r.checked);
-          if (isSelected) {
-            row.classList.remove(styles.focusRow);
-          }
-        });
-      });
+          // adiciona listener em todos os radios para remover quando o usuário marcar
+          radios.forEach((radio) => {
+            radio.addEventListener("change", () => {
+              // se algum radio estiver marcado, remove a outline
+              const isSelected = Array.from(radios).some(r => r.checked);
+              if (isSelected) {
+                row.classList.remove(styles.focusRow);
+              }
+            });
+          });
 
-      // foca no último radio (opcional)
-      radios[radios.length - 1].focus();
+          // foca no último radio (opcional)
+          radios[radios.length - 1].focus();
+        }
+
+        return showError(`Preencha a questão ${i} antes de enviar a avaliação!`);
+      }
     }
-
-    return showError(`Preencha a questão ${i} antes de enviar a avaliação!`);
-  }
-}
 
     // --- Questão 47 (perfil) obrigatória ---
     const open1 = formData.get("openQ1")?.trim();
@@ -237,9 +255,9 @@ const Assessment = () => {
               <input
                 type="date"
                 id="assessmentDate"
-                value={assesmentDate}
+                value={assessmentDate}
                 onChange={(e) => {
-                  setAssesmentDate(e.target.value);
+                  setAssessmentDate(e.target.value);
                   e.target.classList.remove(styles.errorField);
                 }}
                 className={styles.dateInput}
@@ -309,56 +327,56 @@ const Assessment = () => {
       </div>
 
       {/* Modal de feedback */}
-{showModal && (
-  <div className={styles.modalOverlay}>
-    <div className={styles.modal}>
-      <button className={styles.closeBtn} onClick={() => setShowModal(false)}>
-        <X size={20} />
-      </button>
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <button className={styles.closeBtn} onClick={() => setShowModal(false)}>
+              <X size={20} />
+            </button>
 
-      <p
-        className={
-          modalType === "success"
-            ? styles.modalMessageSuccess
-            : modalType === "confirm"
-            ? styles.modalMessageConfirm
-            : styles.modalMessageError
-        }
-      >
-        {modalMessage}
-      </p>
+            <p
+              className={
+                modalType === "success"
+                  ? styles.modalMessageSuccess
+                  : modalType === "confirm"
+                    ? styles.modalMessageConfirm
+                    : styles.modalMessageError
+              }
+            >
+              {modalMessage}
+            </p>
 
-      {modalType === "confirm" && (
-        <div className={styles.modalButtons}>
-          <button
-            onClick={() => {
-              setShowModal(false);
-              // dispara o envio de forma "normal"
-              const form = document.querySelector("form");
-              if (form) form.requestSubmit();
-            }}
-            className={styles.confirmButton}
-          >
-            Manter
-          </button>
-          <button
-            onClick={() => {
-              setShowModal(false);
-              // limpa e foca no campo da data
-              setAssesmentDate("");
-              setTimeout(() => {
-                document.querySelector("#assessmentDate")?.focus();
-              }, 0);
-            }}
-            className={styles.cancelButton}
-          >
-            Alterar data
-          </button>
+            {modalType === "confirm" && (
+              <div className={styles.modalButtons}>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    // dispara o envio de forma "normal"
+                    const form = document.querySelector("form");
+                    if (form) form.requestSubmit();
+                  }}
+                  className={styles.confirmButton}
+                >
+                  Manter
+                </button>
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    // limpa e foca no campo da data
+                    setAssessmentDate("");
+                    setTimeout(() => {
+                      document.querySelector("#assessmentDate")?.focus();
+                    }, 0);
+                  }}
+                  className={styles.cancelButton}
+                >
+                  Alterar data
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </div>
-  </div>
-)}
 
 
     </div>
