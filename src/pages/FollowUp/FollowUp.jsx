@@ -66,7 +66,7 @@ const FollowUp = () => {
           onChange={(e) => setSelectedStudentId(e.target.value)}
           className={styles.input}
         >
-          <option value="">Selecione...</option>
+          <option value="">-- Selecione um aluno(a)...</option>
           {alunosMock.map(aluno => (
             <option key={aluno.id} value={aluno.id}>{aluno.nome}</option>
           ))}
