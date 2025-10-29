@@ -77,7 +77,7 @@ const Control = () => {
           className={styles.input}
         >
           <option value="ingresso">Ingresso</option>
-          <option value="avaliacao1">Avaliação</option>
+          <option value="avaliacao1">Avaliação 1</option>
           <option value="avaliacao2">Avaliação 2</option>
           <option value="entrevista1">Entrevista Pais 1</option>
           <option value="entrevista2">Entrevista Pais 2</option>
@@ -109,7 +109,7 @@ const Control = () => {
             <tr>
               <th>Nome</th>
               <th>Ingresso</th>
-              <th>Avaliação</th>
+              <th>Avaliação 1</th>
               <th>Avaliação 2</th>
               <th>Entrevista Pais 1</th>
               <th>Entrevista Pais 2</th>

@@ -46,7 +46,7 @@ http://localhost:3000/control
 
 FRONT-END
 
-- Em "Avaliação", colocar "Avaliação 1".
+-OK Em "Avaliação", colocar "Avaliação 1".
 - Criar um botão de "Limpar Filtros", que faz um reset.
 
 BACK-END
