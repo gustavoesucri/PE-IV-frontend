@@ -100,7 +100,7 @@ FRONT-END
 
 -OK (feito usando a lib date-fns) Datas devem ser apresentadas em formato DD/MM/YYYY.
 -OK Criar um botão de "Limpar Filtros", que faz um reset.
-- Limitar datas com validador.
+-OK Limitar datas com validador (na verdade, só validei com data menor e maior.)
 - (opcional - futuro) Fazer datas nos filtros serem sempre DD/MM/YYYY (meu PC não é em PT-BR e mostra MM/DD/YYYY).
 
 BACK-END

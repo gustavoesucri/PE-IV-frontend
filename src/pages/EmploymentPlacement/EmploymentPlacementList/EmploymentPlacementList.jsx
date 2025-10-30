@@ -2,6 +2,7 @@ import { useState } from "react";
 import { format } from "date-fns";
 import styles from "./EmploymentPlacementList.module.css";
 import Menu from "../../../components/Menu/Menu";
+import { X } from "lucide-react";
 
 const mockPlacements = [
   {
@@ -39,12 +40,27 @@ const EmploymentPlacementList = () => {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [filteredPlacements, setFilteredPlacements] = useState(mockPlacements);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState("");
 
   // controle do modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPlacement, setSelectedPlacement] = useState(null);
 
+  const validateDates = () => {
+  if (dateFrom && dateTo && new Date(dateFrom) > new Date(dateTo)) {
+    setModalType("error");
+    setModalMessage("Para filtrar, a data inicial não pode ser maior que a data final.");
+    setShowModal(true);
+    return false;
+  }
+    return true;
+  };
+
   const handleFilter = () => {
+    if (!validateDates()) return; // ← aqui
+
     let results = mockPlacements.filter(p =>
       p.nome.toLowerCase().includes(search.toLowerCase())
     );
@@ -199,6 +215,27 @@ const EmploymentPlacementList = () => {
           </div>
         </div>
       )}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <button className={styles.closeBtn} onClick={() => setShowModal(false)}>
+              <X size={20} />
+            </button>
+
+            <p
+              className={
+                modalType === "success"
+                  ? styles.modalMessageSuccess
+                  : modalType === "confirm"
+                    ? styles.modalMessageConfirm
+                    : styles.modalMessageError
+              }
+            >
+              {modalMessage}
+            </p>
+    </div>
+  </div>
+)}
     </div>
   );
 };
