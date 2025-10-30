@@ -134,21 +134,28 @@ BACK-END
     - Observação detalhada (como opcional).
     - Status do cadastro, já como Ativo;
     - Data de entrada do aluno na instituição (pode ser importante);
-    - Deverá ter um espaço no BD para receber a Data de saída do aluno da instituição (será não preenchido de início - ainda a decidir se null ou outro valor).
+    - Deverá ter um espaço no BD para receber a Data de Desligamento do aluno da instituição (será não preenchido de início - ainda a decidir se null ou outro valor).
 -----------------------------------------------------
 
-rota http://localhost:3000/students-list (Esta rota não está acessível diretamente via menu lateral. Acredito que deva ser adicionada ou deve ser modificado o UI para não mostrar o Cadastro no primeiro clique, mas sim o botão de listar e o e cadastrar, para o usuário escolher qual.)
+rota http://localhost:3000/students-list
 
 FRONT-END
 ✔️(Feito.)
 - Deve ser criado um filtro de busca por nome.
-- Ao clicar em detalhes, deve mostrar também a Data de entrada do aluno na instituição.
+- Ao clicar em detalhes, deve mostrar também a Data de Ingresso do aluno na instituição.
 - Ao clicar em detalhes, deve mostrar também status de Ativo ou Inativo.
-- Ao clicar em detalhes, deve mostrar Data de saída do aluno da instituição (que poderá permancer em branco).
+- Ao clicar em detalhes, deve mostrar Data de Desligamento do aluno da instituição (que poderá permancer em branco).
+- Criar botão "Limpar" filtros.
+- Campo Data de Nascimento é desnecessário na lista (pode ficar dentro do Editar junto com as outra informações.). Portanto, remover (substituir por Data de Ingresso).
+- O campo Observação também não me parece necessário na listagem. O que se quer é principalmente o nome, além de Data de Ingresso (e, talvez, Data de Desligamento também).
+- Colocar na lista a Data de Ingresso.
+- (opcional) Colocar na lista Data de Desligamento.
+- (opcional) Se colocar a Data de Desligamento também, colocar um seletor para indicar se no Filtro se quer a Data de Ingresso ou a Data de Desligamento.
+- Colocar uma validação com modal de alerta dizendo que a data inicial da filtragem não pode ser maior que a final. (Já feito em /employment-placement-list)
 
 Obs: é possível que seja necessário poderes especiais para realizar, editar ou desfazer alterações no cadastro.
 
-Obs2: Questiono acerca da necessidade de mostrar detalhes para baixo ao clicar no nome. Ou usa-se o ícone ou informações para baixo. Acredito que o ícone permita melhor UX.
+-OK Obs2: Questiono acerca da necessidade de mostrar detalhes para baixo ao clicar no nome. Ou usa-se o ícone ou informações para baixo. Acredito que o ícone permita melhor UX.
 
 BACK-END
 
@@ -496,7 +503,7 @@ GERAL:
 
     - Revisão geral de Design UX/UI, principalmente em termos de consistência/padronização. O objetivo é reduzir a carga cognitiva necessária para usar a aplicação.
 
-
+    - Modularizar criando componentes. Exemplo: Os modais, algumas funções de validação, talvez os sistemas de filtragem... e algumas CSS. (Isso facilitará a manutenção, escalabilidade e padronização da aplicação.)
 
 -----------------------------------------------------
 
