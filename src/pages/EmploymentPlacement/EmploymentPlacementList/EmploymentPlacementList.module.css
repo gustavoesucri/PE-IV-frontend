@@ -188,6 +188,7 @@
   z-index: 1002; /* acima de tudo */
 }
 
+/* Botões de Filtrar e Limpar */
 .filterButton, .clearButton {
   background-color: var(--azul);
   color: white;

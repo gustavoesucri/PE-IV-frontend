@@ -197,3 +197,24 @@
     transform: translateY(0);
   }
 }
+
+/* Botões de Filtrar e Limpar */
+.filterButton, .clearButton {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clearButton {
+  background-color: var(--verde);
+}
+
+.filterButton:hover, .clearButton:hover {
+  background-color: var(--roxo);
+  transition: 0.5s;
+}

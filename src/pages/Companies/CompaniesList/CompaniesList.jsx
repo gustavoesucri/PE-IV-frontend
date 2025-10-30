@@ -183,6 +183,13 @@ const CompaniesList = () => {
     return cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, "$1.$2.$3/$4-$5");
   };
 
+  const handleClear = () => {
+    setSearch("");
+    setCnpjFilter("");
+    setStateFilter("");
+    // setFilteredCompanies(companies);
+  };
+
   return (
     <div className={styles.container}>
       <Menu />
@@ -201,7 +208,7 @@ const CompaniesList = () => {
           type="text"
           placeholder="Buscar por CNPJ..."
           value={cnpjFilter}
-          onChange={(e) => setCnpjFilter(e.target.value)}
+          onChange={(e) => setCnpjFilter(e.target.value.replace(/\D/g, ""))} // Aceita somente números
           className={styles.input}
         />
 
@@ -220,6 +227,9 @@ const CompaniesList = () => {
 
         <button onClick={handleFilter} className={styles.filterButton}>
           Filtrar
+        </button>
+        <button onClick={handleClear} className={styles.clearButton}>
+          Limpar
         </button>
       </div>
 

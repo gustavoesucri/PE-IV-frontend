@@ -169,7 +169,7 @@ FRONT-END
     -OK CEP;
 -OK Todos os dados em detalhes devem ser passíveis de edição.
 -OK (opcional) Permitir Busca por CNPJ (parcial).
-- Criar um botão de "Limpar" filtros.
+-OK Criar um botão de "Limpar" filtros.
 
 BACK-END
 
