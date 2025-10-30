@@ -121,53 +121,6 @@ BACK-END
 
 -----------------------------------------------------
 
-rota http://localhost:3000/students-list
-
-FRONT-END
-✔️(Feito.)
-- Deve ser criado um filtro de busca por nome.
-- Ao clicar em detalhes, deve mostrar também a Data de Ingresso do aluno na instituição.
-- Ao clicar em detalhes, deve mostrar também status de Ativo ou Inativo.
-- Ao clicar em detalhes, deve mostrar Data de Desligamento do aluno da instituição (que poderá permancer em branco).
-- Criar botão "Limpar" filtros.
-- Campo Data de Nascimento é desnecessário na lista (pode ficar dentro do Editar junto com as outra informações.). Portanto, remover (substituir por Data de Ingresso).
-- O campo Observação também não me parece necessário na listagem. O que se quer é principalmente o nome, além de Data de Ingresso (e, talvez, Data de Desligamento também).
-- Colocar na lista a Data de Ingresso.
-- (opcional) Colocar na lista Data de Desligamento.
-- (opcional) Se colocar a Data de Desligamento também, colocar um seletor para indicar se no Filtro se quer a Data de Ingresso ou a Data de Desligamento.
-- Colocar uma validação com modal de alerta dizendo que a data inicial da filtragem não pode ser maior que a final. (Já feito em /employment-placement-list)
-
-Obs: é possível que seja necessário poderes especiais para realizar, editar ou desfazer alterações no cadastro.
-
--OK Obs2: Questiono acerca da necessidade de mostrar detalhes para baixo ao clicar no nome. Ou usa-se o ícone ou informações para baixo. Acredito que o ícone permita melhor UX.
-
-BACK-END
-
-Deverá ser enviado ao back-end:
-    - String de filtro de busca por nome.
-
-    - Ao clicar em 'Salvar' dentro de detalhes, podem ser enviados (via patch - ou seja, somente os alterados) os editáveis:
-        - Nome;
-        - Data nascimento;
-        - Observação;
-        - Observação detalhada;
-        - Status do cadastro;
-        - Data de entrada do aluno na instituição;
-        - Data de saída do aluno da instituição.
-
-- Deverá vir do back-end:
-    - Lista com os nomes dos alunos.
-
-    - (além do nome);
-    - Data nascimento;
-    - Observação;
-    - Observação detalhada;
-    - Status do cadastro;
-    - Data de entrada do aluno na instituição;
-    - Data de saída do aluno da instituição.
-
------------------------------------------------------
-
 rota http://localhost:3000/companies
 
 FRONT-END
@@ -201,7 +154,6 @@ BACK-END
 -----------------------------------------------------
 
 rota http://localhost:3000/companies-list
-
 
 FRONT-END
 -OK Deve ser criada a apresentação da lista de empresas por nome;
@@ -238,6 +190,10 @@ rota http://localhost:3000/students
 
 FRONT-END
 
+- Colocar Data de Ingresso do aluno na instituição.
+
+- Provavelmente, será necessário colocar o CPF do aluno.
+
 BACK-END
 
 - Deve ser enviado ao back-end:
@@ -246,8 +202,56 @@ BACK-END
     - Observação (como opcional);
     - Observação detalhada (como opcional).
     - Status do cadastro, já como Ativo;
-    - Data de entrada do aluno na instituição (pode ser importante);
-    - Deverá ter um espaço no BD para receber a Data de saída do aluno da instituição (será não preenchido de início - ainda a decidir se null ou outro valor).
+    - Data de Ingresso do aluno na instituição (pode ser importante);
+    - Deverá ter um espaço no BD para receber a Data de Desligamento do aluno da instituição (será não preenchido de início - ainda a decidir se null ou outro valor).
+    - Provavelmente, será necessário colocar o CPF do aluno.
+-----------------------------------------------------
+
+rota http://localhost:3000/students-list
+
+FRONT-END
+-OK Deve ser criado um filtro de busca por nome.
+- Ao clicar em detalhes, deve mostrar também a Data de Ingresso do aluno na instituição.
+- Ao clicar em detalhes, deve mostrar também status de Ativo ou Inativo.
+- Ao clicar em detalhes, deve mostrar Data de Desligamento do aluno da instituição (que poderá permancer em branco).
+- Criar botão "Limpar" filtros.
+- Campo Data de Nascimento é desnecessário na lista (pode ficar dentro do Editar junto com as outra informações.). Portanto, remover (substituir por Data de Ingresso).
+- O campo Observação também não me parece necessário na listagem. O que se quer na lista é principalmente o Nome, além de Data de Ingresso (e, talvez, Data de Desligamento também).
+- Colocar na lista a Data de Ingresso.
+- (opcional) Colocar na lista Data de Desligamento.
+- (opcional) Se colocar a Data de Desligamento também, colocar um seletor para indicar se no Filtro se quer a Data de Ingresso ou a Data de Desligamento.
+- Colocar uma validação com modal de alerta dizendo que a data inicial da filtragem não pode ser maior que a final. (Já feito em /employment-placement-list)
+- Colocar Status do aluno (Ativo/Inativo) na lista.
+- Colocar Status do aluno (Ativo/Inativo) na filtragem, para isso usar um seletor assim: 'Status: [Todos, Ativo, Inativo]'.
+
+Obs: é possível que seja necessário poderes especiais para realizar, editar ou desfazer alterações no cadastro.
+
+-OK Obs2: Questiono acerca da necessidade de mostrar detalhes para baixo ao clicar no nome. Ou usa-se o ícone ou informações para baixo. Acredito que o ícone permita melhor UX.
+
+BACK-END
+
+Deverá ser enviado ao back-end:
+    - String de filtro de busca por nome.
+
+    - Ao clicar em 'Salvar' dentro de detalhes, podem ser enviados (via patch - ou seja, somente os alterados) os editáveis:
+        - Nome;
+        - Data nascimento;
+        - Observação;
+        - Observação detalhada;
+        - Status do cadastro;
+        - Data de Ingresso do aluno na instituição;
+        - Data de Desligamento do aluno da instituição.
+
+- Deverá vir do back-end:
+    - Lista com os nomes dos alunos.
+
+    - (além do nome);
+    - Data nascimento;
+    - Observação;
+    - Observação detalhada;
+    - Status do cadastro;
+    - Data de Ingresso do aluno na instituição;
+    - Data de Desligamento do aluno da instituição.
 
 -----------------------------------------------------
 
