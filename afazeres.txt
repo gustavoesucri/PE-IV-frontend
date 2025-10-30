@@ -127,14 +127,6 @@ FRONT-END
 
 BACK-END
 
------------------------------------------------------
-
-rota http://localhost:3000/students (Esta rota não está acessível diretamente via menu lateral. Acredito que deva ser adicionada ou deve ser modificado o UI para não mostrar o Cadastro no primeiro clique, mas sim o botão de listar e o e cadastrar, para o usuário escolher qual.)
-
-FRONT-END
-
-BACK-END
-
 - Deve ser enviado ao back-end:
     - Nome;
     - Data de Nascimento;
@@ -145,7 +137,7 @@ BACK-END
     - Deverá ter um espaço no BD para receber a Data de saída do aluno da instituição (será não preenchido de início - ainda a decidir se null ou outro valor).
 -----------------------------------------------------
 
-rota http://localhost:3000/students-list
+rota http://localhost:3000/students-list (Esta rota não está acessível diretamente via menu lateral. Acredito que deva ser adicionada ou deve ser modificado o UI para não mostrar o Cadastro no primeiro clique, mas sim o botão de listar e o e cadastrar, para o usuário escolher qual.)
 
 FRONT-END
 ✔️(Feito.)
