@@ -77,6 +77,13 @@ const EmploymentPlacementList = () => {
   // função de formatação usando date-fns
   const formatDate = (dateString) => format(new Date(dateString), 'dd/MM/yyyy');
 
+  const handleClear = () => {
+    setSearch("");
+    setDateType("ingresso");
+    setDateFrom("");
+    setDateTo("");
+  };
+
   return (
     <div className={styles.container}>
       <Menu />
@@ -116,6 +123,9 @@ const EmploymentPlacementList = () => {
 
         <button onClick={handleFilter} className={styles.filterButton}>
           Filtrar
+        </button>
+        <button onClick={handleClear} className={styles.clearButton}>
+          Limpar
         </button>
       </div>
 

@@ -99,7 +99,7 @@ rota http://localhost:3000/employment-placement-list (Esta rota não está acess
 FRONT-END
 
 -OK (feito usando a lib date-fns) Datas devem ser apresentadas em formato DD/MM/YYYY.
-- Criar um botão de "Limpar Filtros", que faz um reset.
+-OK Criar um botão de "Limpar Filtros", que faz um reset.
 - Limitar datas com validador.
 - (opcional - futuro) Fazer datas nos filtros serem sempre DD/MM/YYYY (meu PC não é em PT-BR e mostra MM/DD/YYYY).
 

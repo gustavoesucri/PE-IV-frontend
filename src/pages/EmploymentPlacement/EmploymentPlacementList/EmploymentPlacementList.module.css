@@ -1,7 +1,7 @@
 .container {
   background-color: var(--branco);
   padding: 2rem;
-  max-width: 1002px;
+  max-width: 1095px;
   margin: 2rem auto;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
@@ -186,4 +186,24 @@
 .backButtonWrapper { 
   pointer-events: auto; /* garante que BackButton seja clicável */
   z-index: 1002; /* acima de tudo */
+}
+
+.filterButton, .clearButton {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clearButton {
+  background-color: var(--verde);
+}
+
+.filterButton:hover, .clearButton:hover {
+  background-color: var(--roxo);
+  transition: 0.5s;
 }
