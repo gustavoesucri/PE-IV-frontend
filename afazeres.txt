@@ -94,7 +94,7 @@ BACK-END
 
 -----------------------------------------------------
 
-rota http://localhost:3000/employment-placement-list (Esta rota não está acessível diretamente via menu lateral. Deve ser adicionada.)
+rota http://localhost:3000/employment-placement-list
 
 FRONT-END
 
@@ -168,7 +168,7 @@ FRONT-END
     -OK UF;
     -OK CEP;
 -OK Todos os dados em detalhes devem ser passíveis de edição.
-- (opcional) Permitir Busca por CNPJ (parcial).
+-OK (opcional) Permitir Busca por CNPJ (parcial).
 - Criar um botão de "Limpar" filtros.
 
 BACK-END

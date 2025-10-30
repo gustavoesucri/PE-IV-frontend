@@ -78,6 +78,8 @@ const CompaniesList = () => {
     cep: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [cnpjFilter, setCnpjFilter] = useState("");
+
 
   useEffect(() => {
     const savedCompanies = JSON.parse(localStorage.getItem("companies") || "[]");
@@ -90,9 +92,21 @@ const CompaniesList = () => {
   }, [companies]);
 
   const handleFilter = () => {
-    let results = companies.filter((c) =>
-      c.nome.toLowerCase().includes(search.toLowerCase())
-    );
+    const normalize = (value) => value.replace(/[^\d]+/g, "");
+
+    let results = companies;
+
+    if (search) {
+      results = results.filter((c) =>
+        c.nome.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    if (cnpjFilter) {
+      results = results.filter((c) =>
+        normalize(c.cnpj).includes(normalize(cnpjFilter))
+      );
+    }
 
     if (stateFilter) {
       results = results.filter((c) => c.estado === stateFilter);
@@ -182,6 +196,15 @@ const CompaniesList = () => {
           onChange={(e) => setSearch(e.target.value)}
           className={styles.input}
         />
+
+        <input
+          type="text"
+          placeholder="Buscar por CNPJ..."
+          value={cnpjFilter}
+          onChange={(e) => setCnpjFilter(e.target.value)}
+          className={styles.input}
+        />
+
         <select
           value={stateFilter}
           onChange={(e) => setStateFilter(e.target.value)}
@@ -194,6 +217,7 @@ const CompaniesList = () => {
             </option>
           ))}
         </select>
+
         <button onClick={handleFilter} className={styles.filterButton}>
           Filtrar
         </button>
