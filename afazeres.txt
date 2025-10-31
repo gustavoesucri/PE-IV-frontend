@@ -190,9 +190,9 @@ rota http://localhost:3000/students
 
 FRONT-END
 
-- Colocar Data de Ingresso do aluno na instituição.
+-OK Colocar Data de Ingresso do aluno na instituição.
 
-- Provavelmente, será necessário colocar o CPF do aluno.
+-OK Provavelmente, será necessário colocar o CPF do aluno.
 
 BACK-END
 

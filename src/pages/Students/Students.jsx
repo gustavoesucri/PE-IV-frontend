@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import InputMask from "react-input-mask";
 import styles from "./Students.module.css";
 import { useNavigate } from "react-router-dom";
 import Menu from "../../components/Menu/Menu";
@@ -7,7 +8,9 @@ const Students = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nome: "",
+    cpf: "",
     dataNascimento: "",
+    dataIngresso: "",
     observacao: "",
     observacoesDetalhadas: "",
   });
@@ -19,11 +22,12 @@ const Students = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // lógica futura para salvar no back-end
     alert("Aluno cadastrado com sucesso!");
     setFormData({
       nome: "",
+      cpf: "",
       dataNascimento: "",
+      dataIngresso: "",
       observacao: "",
       observacoesDetalhadas: "",
     });
@@ -35,7 +39,7 @@ const Students = () => {
 
   return (
     <div className={styles.container}>
-        <Menu />
+      <Menu />
       <div className={styles.card}>
         <h2 className={styles.title}>Cadastro de Alunos</h2>
 
@@ -55,6 +59,21 @@ const Students = () => {
             required
           />
 
+          {/* CPF */}
+          <label className={styles.label} htmlFor="cpf">
+            CPF:
+          </label>
+          <InputMask
+            mask="999.999.999-99"
+            className={styles.input}
+            id="cpf"
+            name="cpf"
+            placeholder="Digite o CPF"
+            value={formData.cpf}
+            onChange={handleChange}
+            required
+          />
+
           {/* Data de Nascimento */}
           <label className={styles.label} htmlFor="dataNascimento">
             Data de Nascimento:
@@ -65,6 +84,20 @@ const Students = () => {
             name="dataNascimento"
             type="date"
             value={formData.dataNascimento}
+            onChange={handleChange}
+            required
+          />
+
+          {/* Data de Ingresso */}
+          <label className={styles.label} htmlFor="dataIngresso">
+            Data de Ingresso no Instituto:
+          </label>
+          <input
+            className={styles.input}
+            id="dataIngresso"
+            name="dataIngresso"
+            type="date"
+            value={formData.dataIngresso}
             onChange={handleChange}
             required
           />
