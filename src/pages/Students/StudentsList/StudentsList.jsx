@@ -4,9 +4,12 @@ import Menu from "../../../components/Menu/Menu";
 
 const studentsData = [
   {
-    id: 1, // Added ID for unique key
+    id: 1,
     nome: "Ana Maria Silva Souza",
     dataNascimento: "2003-05-12",
+    dataIngresso: "2021-02-15",
+    dataDesligamento: "",
+    status: "Ativo",
     observacao: "Boa aluna.",
     observacoesDetalhadas: "Muito dedicada, sempre entrega as atividades antes do prazo.",
   },
@@ -14,6 +17,9 @@ const studentsData = [
     id: 2,
     nome: "Bruno Henrique Costa Lima",
     dataNascimento: "2001-08-22",
+    dataIngresso: "2020-01-10",
+    dataDesligamento: "2024-03-10",
+    status: "Inativo",
     observacao: "Participa bastante.",
     observacoesDetalhadas: "Mostra interesse em debates, precisa melhorar entrega de tarefas.",
   },
@@ -21,6 +27,9 @@ const studentsData = [
     id: 3,
     nome: "Carlos Eduardo Ferreira Santos",
     dataNascimento: "2004-02-10",
+    dataIngresso: "2022-08-01",
+    dataDesligamento: "",
+    status: "Ativo",
     observacao: "Frequência baixa.",
     observacoesDetalhadas: "Frequência abaixo de 70%, já foi notificado.",
   },
@@ -28,6 +37,9 @@ const studentsData = [
     id: 4,
     nome: "Diana Beatriz Oliveira Rocha",
     dataNascimento: "2002-11-30",
+    dataIngresso: "2021-09-20",
+    dataDesligamento: "",
+    status: "Ativo",
     observacao: "Exemplar.",
     observacoesDetalhadas: "Ajuda colegas com dificuldades, excelente rendimento.",
   },
@@ -41,9 +53,15 @@ const StudentsList = () => {
   const [filteredStudents, setFilteredStudents] = useState(studentsData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
+  const [dateFilterType, setDateFilterType] = useState("dataIngresso");
+  const [statusFilter, setStatusFilter] = useState("Status");
+
   const [formData, setFormData] = useState({
     nome: "",
     dataNascimento: "",
+    dataIngresso: "",
+    dataDesligamento: "",
+    status: "Ativo",
     observacao: "",
     observacoesDetalhadas: "",
   });
@@ -53,9 +71,17 @@ const StudentsList = () => {
       s.nome.toLowerCase().includes(search.toLowerCase())
     );
 
+    // 🔹 Filtro de Status
+    if (statusFilter !== "Status") {
+      results = results.filter((s) => s.status === statusFilter);
+    }
+
+    // 🔹 Filtro de Data (Ingresso ou Desligamento)
     if (dateFrom || dateTo) {
       results = results.filter((s) => {
-        const dateValue = new Date(s.dataNascimento);
+        const dateValue = s[dateFilterType] ? new Date(s[dateFilterType]) : null;
+        if (!dateValue) return false;
+
         const from = dateFrom ? new Date(dateFrom) : null;
         const to = dateTo ? new Date(dateTo) : null;
 
@@ -80,6 +106,9 @@ const StudentsList = () => {
     setFormData({
       nome: "",
       dataNascimento: "",
+      dataIngresso: "",
+      dataDesligamento: "",
+      status: "Ativo",
       observacao: "",
       observacoesDetalhadas: "",
     });
@@ -101,9 +130,20 @@ const StudentsList = () => {
   };
 
   const formatDate = (dateStr) => {
+    if (!dateStr) return "";
     const [year, month, day] = dateStr.split("-");
     return `${day}/${month}/${year}`;
   };
+
+  const handleClear = () => {
+  setSearch("");
+  setDateFilterType("dataIngresso"); // reseta para Ingresso
+  setDateFrom("");
+  setDateTo("");
+  setStatusFilter("Status");
+  // setFilteredStudents(students);
+};
+
 
   return (
     <div className={styles.container}>
@@ -118,6 +158,17 @@ const StudentsList = () => {
           onChange={(e) => setSearch(e.target.value)}
           className={styles.input}
         />
+
+        {/* 🔹 Seletor tipo de data */}
+        <select
+          value={dateFilterType}
+          onChange={(e) => setDateFilterType(e.target.value)}
+          className={styles.input}
+        >
+          <option value="dataIngresso">Data de Ingresso</option>
+          <option value="dataDesligamento">Data de Desligamento</option>
+        </select>
+
         <input
           type="date"
           value={dateFrom}
@@ -131,8 +182,23 @@ const StudentsList = () => {
           onChange={(e) => setDateTo(e.target.value)}
           className={styles.input}
         />
+
+        {/* 🔹 Seletor de status */}
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className={styles.input}
+        >
+          <option value="Status">Status</option>
+          <option value="Ativo">Ativo</option>
+          <option value="Inativo">Inativo</option>
+        </select>
+
         <button onClick={handleFilter} className={styles.filterButton}>
           Filtrar
+        </button>
+        <button onClick={handleClear} className={styles.clearButton}>
+          Limpar
         </button>
       </div>
 
@@ -141,8 +207,10 @@ const StudentsList = () => {
           <thead>
             <tr>
               <th>Nome</th>
-              <th>Data de Nascimento</th>
-              <th>Observação</th>
+              {/* <th>Data de Nascimento</th> */}
+              <th>Data de Ingresso</th>
+              {dateFilterType === "dataDesligamento" && <th>Data de Desligamento</th>}
+              <th>Status</th>
               <th>Ações</th>
             </tr>
           </thead>
@@ -151,8 +219,12 @@ const StudentsList = () => {
               filteredStudents.map((student) => (
                 <tr key={student.id}>
                   <td>{student.nome}</td>
-                  <td>{formatDate(student.dataNascimento)}</td>
-                  <td>{student.observacao}</td>
+                  {/* <td>{formatDate(student.dataNascimento)}</td> */}
+                  <td>{formatDate(student.dataIngresso)}</td>
+                  {dateFilterType === "dataDesligamento" && (
+                    <td>{formatDate(student.dataDesligamento)}</td>
+                  )}
+                  <td>{student.status}</td>
                   <td>
                     <button
                       className={styles.actionButton}
@@ -165,7 +237,7 @@ const StudentsList = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="4" className={styles.noData}>
+                <td colSpan="5" className={styles.noData}>
                   Nenhum registro encontrado
                 </td>
               </tr>
@@ -183,40 +255,71 @@ const StudentsList = () => {
                 ✕
               </button>
             </div>
+
             <div className={styles.modalContent}>
+              <label htmlFor="nome">Nome:</label>
               <input
+                id="nome"
                 type="text"
                 name="nome"
                 value={formData.nome}
                 onChange={handleChange}
-                placeholder="Nome"
                 className={styles.input}
               />
+
+              <label htmlFor="dataNascimento">Data de Nascimento:</label>
               <input
+                id="dataNascimento"
                 type="date"
                 name="dataNascimento"
                 value={formData.dataNascimento}
                 onChange={handleChange}
                 className={styles.input}
               />
+
+              <label htmlFor="dataIngresso">Data de Ingresso:</label>
               <input
-                type="text"
-                name="observacao"
-                value={formData.observacao}
+                id="dataIngresso"
+                type="date"
+                name="dataIngresso"
+                value={formData.dataIngresso}
                 onChange={handleChange}
-                placeholder="Observação (curta)"
-                maxLength={100}
                 className={styles.input}
               />
+
+              <label htmlFor="status">Status:</label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className={styles.input}
+              >
+                <option value="Ativo">Ativo</option>
+                <option value="Inativo">Inativo</option>
+              </select>
+
+              <label htmlFor="dataDesligamento">Data de Desligamento:</label>
+              <input
+                id="dataDesligamento"
+                type="date"
+                name="dataDesligamento"
+                value={formData.dataDesligamento}
+                onChange={handleChange}
+                className={styles.input}
+              />
+
+              <label htmlFor="observacoesDetalhadas">Observações detalhadas:</label>
               <textarea
+                id="observacoesDetalhadas"
                 name="observacoesDetalhadas"
                 value={formData.observacoesDetalhadas}
                 onChange={handleChange}
-                placeholder="Observações detalhadas"
                 rows={5}
                 className={styles.textarea}
               />
             </div>
+
             <div className={styles.modalFooter}>
               <button onClick={handleSave} className={styles.filterButton}>
                 Salvar

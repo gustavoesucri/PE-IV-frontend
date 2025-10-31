@@ -211,18 +211,19 @@ rota http://localhost:3000/students-list
 
 FRONT-END
 -OK Deve ser criado um filtro de busca por nome.
-- Ao clicar em detalhes, deve mostrar também a Data de Ingresso do aluno na instituição.
-- Ao clicar em detalhes, deve mostrar também status de Ativo ou Inativo.
-- Ao clicar em detalhes, deve mostrar Data de Desligamento do aluno da instituição (que poderá permancer em branco).
-- Criar botão "Limpar" filtros.
-- Campo Data de Nascimento é desnecessário na lista (pode ficar dentro do Editar junto com as outra informações.). Portanto, remover (substituir por Data de Ingresso).
-- O campo Observação também não me parece necessário na listagem. O que se quer na lista é principalmente o Nome, além de Data de Ingresso (e, talvez, Data de Desligamento também).
-- Colocar na lista a Data de Ingresso.
-- (opcional) Colocar na lista Data de Desligamento.
-- (opcional) Se colocar a Data de Desligamento também, colocar um seletor para indicar se no Filtro se quer a Data de Ingresso ou a Data de Desligamento.
+-OK Ao clicar em detalhes/Editar, deve mostrar também a Data de Ingresso do aluno na instituição.
+-OK Ao clicar em detalhes/Editar, deve mostrar também status de Ativo ou Inativo.
+-OK Ao clicar em detalhes/Editar, deve mostrar Data de Desligamento do aluno da instituição (que poderá permanecer em branco).
+-OK Ao clicar em detalhes/Editar, deve mostrar o CPF. (está como editável, talvez precise de hierarquia para editar)
+-OK Criar botão "Limpar" filtros.
+-OK Campo Data de Nascimento é desnecessário na lista (pode ficar dentro do Editar junto com as outra informações.). Portanto, remover (substituir por Data de Ingresso).
+-OK O campo Observação também não me parece necessário na listagem. O que se quer na lista é principalmente o Nome, além de Data de Ingresso (e, talvez, Data de Desligamento também).
+-OK Colocar na lista a Data de Ingresso.
+-OK (opcional) Colocar na lista Data de Desligamento (aparece somente se selecionada Data de Desligamento na filtragem)
+-OK (opcional) Se colocar a Data de Desligamento também, colocar um seletor para indicar se no Filtro se quer a Data de Ingresso ou a Data de Desligamento.
 - Colocar uma validação com modal de alerta dizendo que a data inicial da filtragem não pode ser maior que a final. (Já feito em /employment-placement-list)
-- Colocar Status do aluno (Ativo/Inativo) na lista.
-- Colocar Status do aluno (Ativo/Inativo) na filtragem, para isso usar um seletor assim: 'Status: [Todos, Ativo, Inativo]'.
+-OK Colocar Status do aluno (Ativo/Inativo) na lista.
+-OK Colocar Status do aluno (Ativo/Inativo) na filtragem, para isso usar um seletor assim: '[Status, Ativo, Inativo]' (modificada a forma de apresentação do seletor).
 
 Obs: é possível que seja necessário poderes especiais para realizar, editar ou desfazer alterações no cadastro.
 
