@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./StudentsList.module.css";
 import Menu from "../../../components/Menu/Menu";
+import { X } from "lucide-react";
 
 const studentsData = [
   {
@@ -55,6 +56,10 @@ const StudentsList = () => {
   const [editingStudent, setEditingStudent] = useState(null);
   const [dateFilterType, setDateFilterType] = useState("dataIngresso");
   const [statusFilter, setStatusFilter] = useState("Status");
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState(""); // 'error', 'success', etc
+
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -67,16 +72,16 @@ const StudentsList = () => {
   });
 
   const handleFilter = () => {
+    if (!validateDates()) return;
+
     let results = students.filter((s) =>
       s.nome.toLowerCase().includes(search.toLowerCase())
     );
 
-    // 🔹 Filtro de Status
     if (statusFilter !== "Status") {
       results = results.filter((s) => s.status === statusFilter);
     }
 
-    // 🔹 Filtro de Data (Ingresso ou Desligamento)
     if (dateFrom || dateTo) {
       results = results.filter((s) => {
         const dateValue = s[dateFilterType] ? new Date(s[dateFilterType]) : null;
@@ -93,6 +98,7 @@ const StudentsList = () => {
 
     setFilteredStudents(results);
   };
+
 
   const handleEditClick = (student) => {
     setEditingStudent(student);
@@ -133,6 +139,16 @@ const StudentsList = () => {
     if (!dateStr) return "";
     const [year, month, day] = dateStr.split("-");
     return `${day}/${month}/${year}`;
+  };
+
+  const validateDates = () => {
+    if (dateFrom && dateTo && new Date(dateFrom) > new Date(dateTo)) {
+      setModalType("error");
+      setModalMessage("A data inicial não pode ser maior que a data final.");
+      setShowModal(true);
+      return false;
+    }
+    return true;
   };
 
   const handleClear = () => {
@@ -328,6 +344,27 @@ const StudentsList = () => {
                 Fechar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <button className={styles.closeBtn} onClick={() => setShowModal(false)}>
+              <X size={20} />
+            </button>
+
+            <p
+              className={
+                modalType === "success"
+                  ? styles.modalMessageSuccess
+                  : modalType === "error"
+                    ? styles.modalMessageError
+                    : ""
+              }
+            >
+              {modalMessage}
+            </p>
           </div>
         </div>
       )}
