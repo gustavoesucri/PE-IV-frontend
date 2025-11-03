@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./UsersList.module.css";
-import Menu from "../../../components/Menu/Menu";
+import Menu from "../../../../components/Menu/Menu";
 
 const mockUsers = [
   {

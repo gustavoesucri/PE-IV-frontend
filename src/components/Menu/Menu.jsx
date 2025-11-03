@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiMenu, FiSettings, FiLogOut, FiBriefcase, FiUsers,
-  FiCheckCircle, FiBarChart2, FiFileText, FiUserCheck, FiGrid, FiShield, FiArrowLeft, FiCheck
+  FiCheckCircle, FiBarChart2, FiFileText, FiUserCheck, FiGrid, FiShield,
+  FiArrowLeft, FiCheck
 } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -43,6 +44,55 @@ const Menu = () => {
     toggleSidebar, toggleNotifications, closeSidebar
   } = useMenu();
   const navigate = useNavigate();
+
+  // Estado para o usuário logado
+  const [currentUser, setCurrentUser] = useState(null);
+  const [notifications, setNotifications] = useState(() => {
+    const saved = localStorage.getItem("notifications");
+    return saved ? JSON.parse(saved) : NOTIFICATIONS_DATA;
+  });
+  const [expandedNotification, setExpandedNotification] = useState(null);
+
+  // Carregar usuário do localStorage quando o componente monta
+  useEffect(() => {
+    const loadUser = () => {
+      try {
+        const savedUser = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
+        
+        if (savedUser && token) {
+          const user = JSON.parse(savedUser);
+          setCurrentUser(user);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar usuário:", error);
+      }
+    };
+
+    loadUser();
+  }, []);
+
+  // Persistir notificações
+  useEffect(() => {
+    localStorage.setItem("notifications", JSON.stringify(notifications));
+  }, [notifications]);
+
+  // Função de logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const markAsRead = (id) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
 
   const iconMap = {
     administration: FiGrid,
@@ -131,29 +181,6 @@ const Menu = () => {
     }
   });
 
-  // NOTIFICAÇÕES COM ESTADO
-  const [notifications, setNotifications] = useState(() => {
-    const saved = localStorage.getItem("notifications");
-    return saved ? JSON.parse(saved) : NOTIFICATIONS_DATA;
-  });
-
-  const [expandedNotification, setExpandedNotification] = useState(null);
-
-  // Persistir notificações
-  useEffect(() => {
-    localStorage.setItem("notifications", JSON.stringify(notifications));
-  }, [notifications]);
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  };
-
-  const markAsRead = (id) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-  };
-
   const onDragEnd = (result) => {
     if (!result.destination) return;
     const reorderedItems = Array.from(sidebarItems);
@@ -175,7 +202,7 @@ const Menu = () => {
           <FiMenu size={26} />
         </button>
 
-        {/* ÍCONE COM BADGE */}
+        {/* ÍCONE COM BADGE MODERNO */}
         <div className={styles.notificationWrapper}>
           <button
             onClick={toggleNotifications}
@@ -188,7 +215,7 @@ const Menu = () => {
             )}
           </button>
 
-          {/* DROPDOWN DE NOTIFICAÇÕES */}
+          {/* DROPDOWN DE NOTIFICAÇÕES MODERNO */}
           {notificationsOpen && !sidebarOpen && (
             <div className={styles.notificationsDropdown}>
               {expandedNotification ? (
@@ -267,6 +294,7 @@ const Menu = () => {
                           {...provided.dragHandleProps}
                           className={`${styles.menuGroup} ${snapshot.isDragging ? styles.dragging : ""}`}
                         >
+                          {/* Item Principal */}
                           <div
                             className={styles.mainItem}
                             onClick={(e) => {
@@ -282,13 +310,14 @@ const Menu = () => {
                             <span>{item.label}</span>
                           </div>
 
+                          {/* Submenu (1º nível) */}
                           {item.submenu?.length > 0 && (
                             <div className={styles.submenu}>
                               {item.submenu.map((sub1, i) => (
                                 <div key={i}>
+                                  {/* Item de 2º nível */}
                                   <div
                                     className={styles.subItem}
-                                    style={{ paddingLeft: "3.3rem" }}
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       if (sub1.path) {
@@ -300,6 +329,7 @@ const Menu = () => {
                                     {sub1.label}
                                   </div>
 
+                                  {/* Submenu de 2º nível (3º total) */}
                                   {sub1.submenu?.length > 0 && (
                                     <div className={styles.subSubmenu}>
                                       {sub1.submenu.map((sub2, j) => (
@@ -326,13 +356,22 @@ const Menu = () => {
                     </Draggable>
                   ))}
                   {provided.placeholder}
+                  
+                  {/* SEÇÃO DO USUÁRIO E LOGOUT NO FINAL */}
+                  <div className={styles.userSection}>
+                    {currentUser && (
+                      <div className={styles.userInfo}>
+                        <span className={styles.userLabel}>Usuário: {currentUser.name}</span>
+                      </div>
+                    )}
+                    <div className={styles.logoutButton} onClick={handleLogout}>
+                      <FiLogOut size={20} /> <span>Sair</span>
+                    </div>
+                  </div>
                 </div>
               )}
             </Droppable>
           )}
-          <div className={styles.logoutButton} onClick={() => navigate("/")}>
-            <FiLogOut size={20} /> <span>Sair</span>
-          </div>
         </aside>
       </DragDropContext>
     </>

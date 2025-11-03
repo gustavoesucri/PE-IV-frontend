@@ -1,6 +1,36 @@
 {
-  "/relatorios*": "role:diretor",
-  "/atendimentos*": "role:psicologo",
-  "/turmas*": "role:professor",
-  "/users*": "role:diretor"
+  "/api/*": "/$1",
+
+  "/users*": "600 role:diretor",
+  "/users/:id": "640 role:diretor",
+
+  "/userSettings*": "600",
+  "/userSettings/:id": "640",
+
+  "/students*": "600",
+  "/students/:id": "640",
+
+  "/companies*": "600",
+  "/companies/:id": "640",
+
+  "/assessments*": "600",
+  "/assessments/:id": "640",
+
+  "/followUps*": "600",
+  "/followUps/:id": "640",
+
+  "/placements*": "600",
+  "/placements/:id": "640",
+
+  "/controls*": "600 role:diretor",
+  "/controls/:id": "640 role:diretor",
+
+  "/notes*": "600",
+  "/notes/:id": "640",
+
+  "/widgetPositions": "600",
+  "/globalSettings": "600",
+  "/rolePermissions": "600 role:diretor",
+  "/userSpecificPermissions": "600 role:diretor",
+  "/globalNotifications": "600 role:diretor"
 }
