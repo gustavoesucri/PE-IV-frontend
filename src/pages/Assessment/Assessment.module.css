@@ -296,3 +296,25 @@ input[type="radio"]:focus {
   outline-offset: -1px;
 }
 
+.professorField {
+  margin: 1.5rem 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.professorField label {
+  font-weight: 600;
+  color: var(--azul);
+  font-size: 1.1rem;
+}
+
+.readonlyField {
+  padding: 0.6rem;
+  border: 1px solid var(--cinza);
+  border-radius: 6px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-size: 1rem;
+  pointer-events: none;
+}

@@ -15,6 +15,7 @@ import EmploymentPlacementList from './pages/EmploymentPlacement/EmploymentPlace
 import StudentsList from './pages/Students/StudentsList/StudentsList';
 import UsersList from './pages/Users/UsersList/UsersList';
 import CompaniesList from './pages/Companies/CompaniesList/CompaniesList';
+import AssessmentList from './pages/Assessment/AssessmentList/Assessment-list';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/users-list" element={<UsersList />} />
           <Route path="/assessment" element={<Assessment />} />
+          <Route path="/assessment-list" element={<AssessmentList />} />
           <Route path="/control" element={<Control />} />
           <Route path="/students-list" element={<StudentsList />} />
           <Route path="/settings" element={<Settings />} />

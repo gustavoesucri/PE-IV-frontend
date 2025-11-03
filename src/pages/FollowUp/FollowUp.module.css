@@ -13,6 +13,13 @@
   font-size: 1.5rem;
 }
 
+.subtitle {
+  font-size: 1.3rem;
+  color: var(--azul);
+  margin-bottom: 1rem;
+}
+
+/* === FORMULÁRIO === */
 .formGroup {
   margin-bottom: 1rem;
   display: flex;
@@ -57,7 +64,15 @@
   color: var(--preto);
 }
 
-.button {
+/* === BOTÕES (UNIFICADOS) === */
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.button,
+.viewButton {
   background-color: var(--azul);
   color: white;
   border: none;
@@ -65,14 +80,70 @@
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 1.5rem;
   transition: background-color 0.2s ease;
 }
 
-.button:hover {
-  background-color:  var(--roxo);
+.button:hover,
+.buttonSecondary:hover,
+.buttonBack:hover,
+.viewButton:hover {
+  background-color: var(--roxo);
 }
 
+.buttonSecondary,
+.buttonBack {
+  background-color: var(--cinza);
+}
+
+.buttonSecondary:hover,
+.buttonBack:hover {
+  background-color: var(--cinza-escuro);
+}
+
+.viewButton {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+/* === LISTA E VISUALIZAÇÃO === */
+.registroLista,
+.registroVisualizacao {
+  margin-top: 1rem;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.registroItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  background: var(--cinza-claro);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.empty {
+  color: var(--cinza-escuro);
+  font-style: italic;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+/* === TEXTAREA READONLY === */
+.readonlyTextarea {
+  background-color: var(--cinza-claro);
+  color: var(--preto);
+  cursor: default;
+  resize: none;
+}
+
+/* === ERRO E MODAL === */
 .error {
   color: var(--vermelho);
   margin-top: 0.5rem;
@@ -106,7 +177,8 @@
   font-weight: bold;
 }
 
-.modalInput {
+.modalInput,
+.modalTextarea {
   width: 100%;
   padding: 10px;
   margin-bottom: 16px;
@@ -117,13 +189,6 @@
 }
 
 .modalTextarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  outline: none;
-  font-size: 1rem;
   resize: vertical;
 }
 

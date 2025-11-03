@@ -55,7 +55,12 @@ const Menu = () => {
       path: "/employment-placement",
       submenu: [{ label: "Lista de Encaminhados", path: "/employment-placement-list" }]
     },
-    { id: "assessment", label: "Avaliação", path: "/assessment" },
+    {
+      id: "assessment",
+      label: "Avaliação",
+      path: "/assessment",
+      submenu: [{ label: "Lista de Avaliações", path: "/assessment-list" }]
+    },
     { id: "control", label: "Controle Interno", path: "/control" },
     { id: "follow-up", label: "Acompanhamento", path: "/follow-up" },
   ];

@@ -14,6 +14,8 @@ const Assessment = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
   const [hasConfirmedDate, setHasConfirmedDate] = useState(false);
+  // === MOCK DO PROFESSOR LOGADO (FUTURO: useAuth) ===
+  const professorName = "Prof. Ana Costa"; // ← Mude aqui para testar
 
 
   // 🔹 Preenche a data de avaliação com o dia atual
@@ -316,6 +318,13 @@ const Assessment = () => {
                 </div>
               );
             })}
+          </div>
+
+          <div className={styles.professorField}>
+            <label>Nome do Professor:</label>
+            <div className={styles.readonlyField}>
+              {professorName}
+            </div>
           </div>
 
           <div className={styles.submitWrapper}>
