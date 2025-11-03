@@ -2,17 +2,31 @@
   "users": [
     {
       "id": 1,
-      "email": "rodrigo@gmail.com",
-      "password": "admin",
+      "email": "rodrigo.editado2@gmail.com",
+      "password": "admin3",
       "username": "Diretor",
       "role": "diretor"
     },
     {
-      "id": 2,
+      "username": "Alfredo Motta",
+      "password": "1234",
+      "email": "alf@alf.com",
+      "role": "professor",
+      "id": 3
+    },
+    {
+      "username": "Rodolfo",
+      "password": "123",
       "email": "",
-      "password": "admin",
-      "username": "arthur",
-      "role": "professor"
+      "role": "psicologo",
+      "id": 4
+    },
+    {
+      "username": "a",
+      "password": "a",
+      "email": "",
+      "role": "cadastrador de empresas",
+      "id": 5
     }
   ],
   "userSettings": [
@@ -59,9 +73,9 @@
       "notes": [],
       "monitoredStudents": [],
       "favoriteCompanies": [],
-      "updatedAt": "2025-11-03T14:01:16.409Z",
+      "updatedAt": "2025-11-03T19:02:20.770Z",
       "settings": {
-        "notifySystem": true,
+        "notifySystem": false,
         "notifyEmail": false
       }
     }
@@ -130,6 +144,70 @@
         "resultado": "Aprovado"
       },
       "status": "Ativo"
+    },
+    {
+      "nome": "Estudante 1",
+      "cpf": "11111111111",
+      "dataNascimento": "1111-11-11",
+      "dataIngresso": "1111-11-11",
+      "observacaoBreve": "",
+      "observacaoDetalhada": "",
+      "acompanhamento": {
+        "av1": false,
+        "av2": false,
+        "entrevista1": false,
+        "entrevista2": false,
+        "resultado": "Pendente"
+      },
+      "id": 2
+    },
+    {
+      "nome": "2",
+      "cpf": "22222222222",
+      "dataNascimento": "2025-02-01",
+      "dataIngresso": "2025-11-03",
+      "observacaoBreve": "",
+      "observacaoDetalhada": "",
+      "acompanhamento": {
+        "av1": false,
+        "av2": false,
+        "entrevista1": false,
+        "entrevista2": false,
+        "resultado": "Pendente"
+      },
+      "id": 3
+    },
+    {
+      "nome": "3",
+      "cpf": "33333333333",
+      "dataNascimento": "2025-11-18",
+      "dataIngresso": "2025-11-22",
+      "observacaoBreve": "",
+      "observacaoDetalhada": "",
+      "acompanhamento": {
+        "av1": false,
+        "av2": false,
+        "entrevista1": false,
+        "entrevista2": false,
+        "resultado": "Pendente"
+      },
+      "id": 4
+    },
+    {
+      "nome": "4",
+      "cpf": "44444444444",
+      "dataNascimento": "2025-11-22",
+      "dataIngresso": "2025-11-12",
+      "observacaoBreve": "",
+      "observacaoDetalhada": "",
+      "acompanhamento": {
+        "av1": false,
+        "av2": false,
+        "entrevista1": false,
+        "entrevista2": false,
+        "resultado": "Pendente"
+      },
+      "id": 5
     }
   ],
   "companies": [
@@ -142,6 +220,26 @@
       "bairro": "Bairro Centro",
       "estado": "SP",
       "cep": "01234-567"
+    },
+    {
+      "nome": "C",
+      "cnpj": "71312485000105",
+      "rua": "C",
+      "numero": "",
+      "bairro": "",
+      "estado": "",
+      "cep": "",
+      "id": 2
+    },
+    {
+      "nome": "D",
+      "cnpj": "65568284000162",
+      "rua": "",
+      "numero": "",
+      "bairro": "",
+      "estado": "",
+      "cep": "",
+      "id": 3
     }
   ],
   "placements": [
@@ -168,6 +266,18 @@
       "createdAt": "2025-11-03T17:08:43.473Z",
       "createdBy": 2,
       "id": 2
+    },
+    {
+      "studentId": 1,
+      "empresaId": 3,
+      "dataAdmissao": "3333-03-31",
+      "funcao": "A",
+      "contatoRh": "A",
+      "dataDesligamento": "4444-11-11",
+      "status": "Ativo",
+      "createdAt": "2025-11-03T19:19:03.671Z",
+      "createdBy": 1,
+      "id": 3
     }
   ],
   "assessments": [
@@ -182,6 +292,66 @@
         "q1": "sim"
       },
       "registeredBy": 1
+    },
+    {
+      "studentId": 2,
+      "entryDate": "2025-11-02",
+      "assessmentDate": "2025-11-03",
+      "evaluationType": "segunda",
+      "professorName": "Diretor",
+      "responses": {
+        "q1": "nao",
+        "q2": "nao",
+        "q3": "nao",
+        "q4": "nao",
+        "q5": "nao",
+        "q6": "nao",
+        "q7": "nao",
+        "q8": "nao",
+        "q9": "nao",
+        "q10": "nao",
+        "q11": "nao",
+        "q12": "nao",
+        "q13": "nao",
+        "q14": "nao",
+        "q15": "nao",
+        "q16": "nao",
+        "q17": "nao",
+        "q18": "nao",
+        "q19": "nao",
+        "q20": "nao",
+        "q21": "nao",
+        "q22": "nao",
+        "q23": "nao",
+        "q24": "nao",
+        "q25": "nao",
+        "q26": "nao",
+        "q27": "nao",
+        "q28": "nao",
+        "q29": "nao",
+        "q30": "nao",
+        "q31": "nao",
+        "q32": "nao",
+        "q33": "nao",
+        "q34": "nao",
+        "q35": "nao",
+        "q36": "nao",
+        "q37": "nao",
+        "q38": "nao",
+        "q39": "nao",
+        "q40": "nao",
+        "q41": "nao",
+        "q42": "nao",
+        "q43": "nao",
+        "q44": "nao",
+        "q45": "nao",
+        "q46": "nao",
+        "openQ1": "111",
+        "openQ2": "",
+        "openQ3": ""
+      },
+      "registeredBy": 1,
+      "id": 2
     }
   ],
   "controls": [
@@ -199,6 +369,18 @@
       "createdAt": "2024-01-15T10:00:00Z",
       "updatedAt": "2024-08-01T14:30:00Z",
       "createdBy": 1
+    },
+    {
+      "studentId": 3,
+      "dataIngresso": "2025-11-03",
+      "dataEntrevista1": "2025-11-13",
+      "dataEntrevista2": "2025-11-20",
+      "dataResultado": "2025-10-22",
+      "resultado": "Aprovado",
+      "createdAt": "2025-11-03T20:17:49.034Z",
+      "createdBy": 1,
+      "id": 2,
+      "updatedAt": "2025-11-03T20:18:15.783Z"
     }
   ],
   "rolePermissions": [
@@ -209,16 +391,16 @@
         "view_students": true,
         "create_students": true,
         "view_companies": true,
-        "create_companies": false,
+        "create_companies": true,
         "view_placements": true,
         "create_placements": true,
         "create_evaluations": true,
         "view_evaluations": true,
-        "view_control": false,
+        "view_control": true,
         "create_observations": true,
         "view_observations": true,
-        "manage_users": false,
-        "manage_permissions": false
+        "manage_users": true,
+        "manage_permissions": true
       }
     },
     {
@@ -258,21 +440,34 @@
         "manage_users": true,
         "manage_permissions": true
       }
-    }
-  ],
-  "userSpecificPermissions": [
+    },
     {
-      "userId": 2,
+      "role": "cadastrador de empresas",
       "permissions": {
         "view_students": false,
         "create_students": false,
-        "view_companies": false,
+        "view_companies": true,
+        "create_companies": true,
         "view_placements": false,
         "create_placements": false,
         "create_evaluations": false,
         "view_evaluations": false,
+        "view_control": false,
         "create_observations": false,
         "view_observations": false
+      },
+      "id": 4
+    }
+  ],
+  "userSpecificPermissions": [
+    {
+      "userId": 3,
+      "permissions": {
+        "create_companies": true,
+        "view_placements": true,
+        "create_placements": true,
+        "view_evaluations": true,
+        "view_control": true
       },
       "id": 1
     }
