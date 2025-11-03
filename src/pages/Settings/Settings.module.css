@@ -10,6 +10,7 @@
   font-weight: bold;
   margin-bottom: 2rem;
   color: var(--azul);
+  text-align: center;
 }
 
 .infoBox {
@@ -18,11 +19,19 @@
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   margin-bottom: 2rem;
-
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
   text-align: left;
+}
+
+.infoBox p {
+  margin: 0.8rem 0;
+  font-size: 1rem;
+}
+
+.infoBox strong {
+  color: var(--azul);
 }
 
 .editBtn {
@@ -46,15 +55,15 @@
   margin-top: 1rem;
   color: var(--azul);
   font-weight: bold;
+  text-align: center;
 }
 
 .switchContainer {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-
   max-width: 500px;
-  margin: 0 auto;   /* centraliza igual à infoBox */
+  margin: 0 auto;
 }
 
 .switchLabel {
@@ -62,7 +71,7 @@
   justify-content: space-between;
   align-items: center;
   font-weight: 500;
-  gap: 0.5cm;
+  gap: 1rem;
 }
 
 .switch {
@@ -90,10 +99,6 @@
   transition: transform 0.3s ease;
 }
 
-.on {
-  background: var(--vermelho);
-}
-
 .on .slider {
   transform: translateX(24px);
 }
@@ -112,6 +117,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal {
@@ -127,6 +133,7 @@
 .modal h2 {
   margin-bottom: 1rem;
   color: var(--azul);
+  text-align: center;
 }
 
 .modal input {
@@ -136,6 +143,7 @@
   border-radius: 8px;
   border: 1px solid var(--cinza);
   outline: none;
+  font-size: 1rem;
 }
 
 .modal input:focus {
@@ -152,6 +160,7 @@
   font-weight: bold;
   cursor: pointer;
   transition: background 0.3s ease;
+  font-size: 1rem;
 }
 
 .saveBtn:disabled {
@@ -160,7 +169,7 @@
 }
 
 .saveBtn:hover:not(:disabled) {
-  background: #1e3a8a;
+  background: var(--roxo);
 }
 
 .closeBtn {
@@ -177,16 +186,51 @@
   color: green;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .notMatch {
   color: var(--vermelho);
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .buttonsRow {
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
+  justify-content: center;
+}
+
+.loading, .error {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  color: var(--azul);
+}
+
+.error {
+  color: var(--vermelho);
+}
+
+.switchStatus {
+  margin-left: 10px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.errorMessage {
+  color: #e74c3c;
+  margin-top: 10px;
+  text-align: center;
 }

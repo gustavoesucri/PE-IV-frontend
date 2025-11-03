@@ -1,11 +1,11 @@
 {
   "/api/*": "/$1",
 
-  "/users*": "600 role:diretor",
-  "/users/:id": "640 role:diretor",
+  "/users*": "600",
+  "/users/:id": "600",
 
   "/userSettings*": "600",
-  "/userSettings/:id": "640",
+  "/userSettings/:id": "600",
 
   "/students*": "600",
   "/students/:id": "640",

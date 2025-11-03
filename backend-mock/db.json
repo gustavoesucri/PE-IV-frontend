@@ -2,13 +2,12 @@
   "users": [
     {
       "id": 1,
-      "email": "",
+      "email": "rodrigo123@gmail.com",
       "password": "admin",
       "name": "Diretor",
       "role": "diretor"
     }
   ],
-
   "students": [
     {
       "id": 1,
@@ -27,7 +26,6 @@
       }
     }
   ],
-
   "companies": [
     {
       "id": 1,
@@ -40,7 +38,6 @@
       "cep": "01234-567"
     }
   ],
-
   "assessments": [
     {
       "id": 1,
@@ -49,38 +46,86 @@
       "assessmentDate": "2024-07-15",
       "evaluationType": "primeira",
       "professorName": "Prof. Ana Costa",
-      "responses": { "q1": "sim" },
+      "responses": {
+        "q1": "sim"
+      },
       "registeredBy": 1
     }
   ],
-
   "userSettings": [
     {
       "id": 1,
       "userId": 1,
       "widgetPositions": {
-        "studentsWidget": { "x": 20, "y": 60, "width": 600, "height": 300 },
-        "companiesWidget": { "x": 640, "y": 60, "width": 600, "height": 300 },
-        "counterWidget": { "x": 20, "y": 385, "width": 300, "height": 100 },
-        "statsWidget": { "x": 640, "y": 380, "width": 400, "height": 250 }
+        "studentsWidget": {
+          "x": 20,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "companiesWidget": {
+          "x": 640,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "counterWidget": {
+          "x": 20,
+          "y": 385,
+          "width": 300,
+          "height": 100
+        },
+        "statsWidget": {
+          "x": 640,
+          "y": 380,
+          "width": 400,
+          "height": 250
+        }
       },
       "notes": [],
       "monitoredStudents": [],
       "favoriteCompanies": [],
-      "updatedAt": null
+      "updatedAt": "2025-11-03T11:09:04.594Z",
+      "settings": {
+        "notifySystem": true,
+        "notifyEmail": false
+      }
     }
   ],
-
   "defaultUserSettings": {
     "widgetPositions": {
-      "studentsWidget": { "x": 20, "y": 60, "width": 600, "height": 300 },
-      "companiesWidget": { "x": 640, "y": 60, "width": 600, "height": 300 },
-      "counterWidget": { "x": 20, "y": 385, "width": 300, "height": 100 },
-      "statsWidget": { "x": 640, "y": 380, "width": 400, "height": 250 }
+      "studentsWidget": {
+        "x": 20,
+        "y": 60,
+        "width": 600,
+        "height": 300
+      },
+      "companiesWidget": {
+        "x": 640,
+        "y": 60,
+        "width": 600,
+        "height": 300
+      },
+      "counterWidget": {
+        "x": 20,
+        "y": 385,
+        "width": 300,
+        "height": 100
+      },
+      "statsWidget": {
+        "x": 640,
+        "y": 380,
+        "width": 400,
+        "height": 250
+      }
     },
     "notes": [],
     "monitoredStudents": [],
     "favoriteCompanies": [],
-    "updatedAt": null
+    "updatedAt": null,
+    "settings": {
+      "notifySystem": true,
+      "notifyEmail": false
+    }
   }
 }
