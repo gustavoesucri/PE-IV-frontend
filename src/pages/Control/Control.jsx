@@ -115,7 +115,7 @@ const Control = () => {
     };
 
     loadUserPermissionsAndData();
-  }, [createStudentData]);
+  }, []);
 
   const loadAssessments = async () => {
     try {
