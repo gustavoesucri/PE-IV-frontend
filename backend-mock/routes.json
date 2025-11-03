@@ -22,8 +22,8 @@
   "/placements*": "600",
   "/placements/:id": "640",
 
-  "/controls*": "600 role:diretor",
-  "/controls/:id": "640 role:diretor",
+  "/controls*": "/controls$1",
+  "/controls/:id": "/controls/:id",
 
   "/notes*": "600",
   "/notes/:id": "640",

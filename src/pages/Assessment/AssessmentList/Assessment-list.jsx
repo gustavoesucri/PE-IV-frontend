@@ -1,5 +1,4 @@
-// src/pages/Assessment/AssessmentList/Assessment-list.jsx
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import styles from "./Assessment-list.module.css";
 import parse from 'html-react-parser';
@@ -7,13 +6,7 @@ import Menu from "../../../components/Menu/Menu";
 import jsPDF from 'jspdf';
 import logoPdf from '../../../assets/logo-pdf.png';
 import infoPdf from '../../../assets/info-pdf.png';
-const students = [
-    "João Silva",
-    "Maria Oliveira",
-    "Pedro Souza",
-    "Ana Costa",
-    "Lucas Pereira",
-];
+import api from "../../../api";
 
 const questions = [
     "1 - Atende as regras.", "2 - Socializa com o grupo.", "3 - Isola-se do grupo", "4 - Possui tolerância a frustração.",
@@ -55,58 +48,111 @@ const options = [
     { value: "nao", label: "Não" },
 ];
 
-// === MOCK DE AVALIAÇÕES ===
-const assessmentsMock = [
-    {
-        student: "João Silva",
-        entryDate: "2024-01-01",
-        assessmentDate: "2024-02-01",
-        type: "primeira",
-        answers: questions.reduce((acc, _, i) => ({ ...acc, [`q${i + 1}`]: i % 4 === 0 ? "sim" : i % 4 === 1 ? "maioria" : i % 4 === 2 ? "raras" : "nao" }), {}),
-        openAnswers: {
-            openQ1: "Sim, demonstra engajamento e respeito às normas da instituição.",
-            openQ2: "Em situações de alta pressão ou quando não consegue completar uma tarefa.",
-            openQ3: "Não utiliza medicação. Sem observações adicionais."
-        },
-        professor: "Prof. Ana Costa"
-    },
-    {
-        student: "João Silva",
-        entryDate: "2024-01-01",
-        assessmentDate: "2024-05-01",
-        type: "segunda",
-        answers: questions.reduce((acc, _, i) => ({ ...acc, [`q${i + 1}`]: "maioria" }), {}),
-        openAnswers: {
-            openQ1: "Sim, evoluiu bastante desde a primeira avaliação.",
-            openQ2: "Raramente. Melhorou o controle emocional.",
-            openQ3: "Continuou sem medicação. Comportamento estável."
-        },
-        professor: "Prof. Ana Costa"
-    },
-    {
-        student: "Maria Oliveira",
-        entryDate: "2024-02-01",
-        assessmentDate: "2024-03-01",
-        type: "primeira",
-        answers: questions.reduce((acc, _, i) => ({ ...acc, [`q${i + 1}`]: "raras" }), {}),
-        openAnswers: {
-            openQ1: "Perfil em desenvolvimento. Precisa de mais apoio para socialização.",
-            openQ2: "Quando há conflitos com colegas ou mudanças de rotina.",
-            openQ3: "Uso de medicação controlada. Familia acompanha."
-        },
-        professor: "Prof. Carlos Lima"
-    },
-];
-
-// Simula usuário logado (futuro back-end)
-
 const AssessmentList = () => {
-    const [selectedStudent, setSelectedStudent] = useState("");
+    const [selectedStudentId, setSelectedStudentId] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [selectedAssessment, setSelectedAssessment] = useState(null);
+    const [students, setStudents] = useState([]);
+    const [assessments, setAssessments] = useState([]);
+    const [userPermissions, setUserPermissions] = useState({});
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+    const [modalType, setModalType] = useState("");
+
+    // Carregar dados e permissões
+    useEffect(() => {
+        const loadDataAndPermissions = async () => {
+            try {
+                const savedUser = localStorage.getItem("user");
+                if (savedUser) {
+                    const user = JSON.parse(savedUser);
+
+                    // Carregar permissões
+                    const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
+                    let rolePermissions = {};
+                    if (rolePermsResponse.data.length > 0) {
+                        rolePermissions = rolePermsResponse.data[0].permissions;
+                    }
+
+                    const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
+                    let userSpecificPermissions = {};
+                    if (userPermsResponse.data.length > 0) {
+                        userSpecificPermissions = userPermsResponse.data[0].permissions;
+                    }
+
+                    const finalPermissions = { ...rolePermissions };
+                    Object.keys(userSpecificPermissions).forEach(perm => {
+                        if (userSpecificPermissions[perm] !== null) {
+                            finalPermissions[perm] = userSpecificPermissions[perm];
+                        }
+                    });
+
+                    setUserPermissions(finalPermissions);
+
+                    // Carregar dados apenas se tiver permissão para visualizar
+                    if (finalPermissions.view_evaluations) {
+                        await loadStudents();
+                        await loadAssessments();
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+                showMessage("Erro ao carregar dados. Tente novamente.", "error");
+            }
+        };
+
+        loadDataAndPermissions();
+    }, []);
+
+    const loadStudents = async () => {
+        try {
+            const response = await api.get('/api/students');
+            setStudents(response.data);
+        } catch (error) {
+            console.error("Erro ao carregar estudantes:", error);
+            throw error;
+        }
+    };
+
+    const loadAssessments = async () => {
+        try {
+            const response = await api.get('/api/assessments');
+            setAssessments(response.data);
+        } catch (error) {
+            console.error("Erro ao carregar avaliações:", error);
+            throw error;
+        }
+    };
+
+    const showMessage = (message, type = "error") => {
+        setModalMessage(message);
+        setModalType(type);
+        setIsMessageModalOpen(true);
+    };
+
+    const closeMessageModal = () => {
+        setIsMessageModalOpen(false);
+        setModalMessage("");
+        setModalType("");
+    };
+
+    // Obter nome do estudante
+    const getStudentName = (studentId) => {
+        const student = students.find(s => s.id === studentId);
+        return student ? student.nome : "N/A";
+    };
 
     const handleView = (type) => {
-        const assessment = assessmentsMock.find(a => a.student === selectedStudent && a.type === type);
+        if (!userPermissions.view_evaluations) {
+            showMessage("Você não tem permissão para visualizar avaliações. Consulte o diretor.");
+            return;
+        }
+
+        const assessment = assessments.find(a => 
+            a.studentId === parseInt(selectedStudentId) && 
+            a.evaluationType === type
+        );
+        
         if (assessment) {
             setSelectedAssessment(assessment);
             setShowModal(true);
@@ -114,147 +160,163 @@ const AssessmentList = () => {
     };
 
     const hasAssessment = (type) => {
-        return assessmentsMock.some(a => a.student === selectedStudent && a.type === type);
+        return assessments.some(a => 
+            a.studentId === parseInt(selectedStudentId) && 
+            a.evaluationType === type
+        );
     };
 
     // === EXPORTAÇÃO COM MÚLTIPLAS PÁGINAS ===
     const handleExportPDF = () => {
-  if (!selectedAssessment) return;
+        if (!selectedAssessment) return;
 
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  let y = 15;
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        let y = 15;
 
-  const addLine = (text, fontSize = 12, isBold = false) => {
-    if (y > pageHeight - 30) {
-      doc.addPage();
-      y = 20;
-    }
-    doc.setFontSize(fontSize);
-    if (isBold) doc.setFont(undefined, 'bold');
-    doc.text(text, 15, y);
-    if (isBold) doc.setFont(undefined, 'normal');
-    y += 7;
-  };
+        const addLine = (text, fontSize = 12, isBold = false) => {
+            if (y > pageHeight - 30) {
+                doc.addPage();
+                y = 20;
+            }
+            doc.setFontSize(fontSize);
+            if (isBold) doc.setFont(undefined, 'bold');
+            doc.text(text, 15, y);
+            if (isBold) doc.setFont(undefined, 'normal');
+            y += 7;
+        };
 
-  const addEmptyLine = () => {
-    y += 5;
-  };
+        const addEmptyLine = () => {
+            y += 5;
+        };
 
-  // === 1. LOGO NO TOPO ===
-  try {
-    const logoImg = new Image();
-    logoImg.src = logoPdf; 
-    doc.addImage(logoImg, 'PNG', pageWidth / 2 - 25, y, 50, 30); // centro, 50x30mm
-    y += 35;
-  } catch (e) {
-    console.warn("Logo não encontrada, continuando sem ela.");
-  }
+        // === 1. LOGO NO TOPO ===
+        try {
+            const logoImg = new Image();
+            logoImg.src = logoPdf; 
+            doc.addImage(logoImg, 'PNG', pageWidth / 2 - 25, y, 50, 30);
+            y += 35;
+        } catch (e) {
+            console.warn("Logo não encontrada, continuando sem ela.");
+        }
 
-  // === CABEÇALHO ===
-  addLine(`Avaliação do Usuário: ${selectedAssessment.student}`, 14, true);
-  addLine(`Data de Entrada: ${selectedAssessment.entryDate}`);
-  addLine(`Data da Avaliação: ${selectedAssessment.assessmentDate}`);
-  addLine(`Tipo: ${selectedAssessment.type === "primeira" ? "1ª Avaliação" : "2ª Avaliação"}`);
-  addEmptyLine();
+        // === CABEÇALHO ===
+        addLine(`Avaliação do Usuário: ${getStudentName(selectedAssessment.studentId)}`, 14, true);
+        addLine(`Data de Entrada: ${selectedAssessment.entryDate}`);
+        addLine(`Data da Avaliação: ${selectedAssessment.assessmentDate}`);
+        addLine(`Tipo: ${selectedAssessment.evaluationType === "primeira" ? "1ª Avaliação" : "2ª Avaliação"}`);
+        addEmptyLine();
 
-  // === PERGUNTAS FECHADAS ===
-  questions.forEach((q, index) => {
-    const answer = options.find(opt => opt.value === selectedAssessment.answers[`q${index + 1}`])?.label || "Não respondido";
-    let cleanQ = q.replace(/<[^>]+>/g, '').trim();
-    cleanQ = cleanQ.replace(/^\d+\s*-\s*/, '');
-    const line = `${index + 1} - ${cleanQ}: ${answer}`;
-    const splitLines = doc.splitTextToSize(line, 180);
-    splitLines.forEach(l => addLine(l));
-    addEmptyLine();
-  });
+        // === PERGUNTAS FECHADAS ===
+        questions.forEach((q, index) => {
+            const answer = options.find(opt => opt.value === selectedAssessment.responses[`q${index + 1}`])?.label || "Não respondido";
+            let cleanQ = q.replace(/<[^>]+>/g, '').trim();
+            cleanQ = cleanQ.replace(/^\d+\s*-\s*/, '');
+            const line = `${index + 1} - ${cleanQ}: ${answer}`;
+            const splitLines = doc.splitTextToSize(line, 180);
+            splitLines.forEach(l => addLine(l));
+            addEmptyLine();
+        });
 
-  // === PERGUNTAS ABERTAS ===
-  openQuestions.forEach((q, index) => {
-    const answer = selectedAssessment.openAnswers[`openQ${index + 1}`] || "Não respondido";
-    let cleanQ = q.replace(/<[^>]+>/g, '').trim();
-    cleanQ = cleanQ.replace(/^\d+\s*-\s*/, '').replace(/^\*\*/, '').replace(/^\*/, '');
-    addLine(`${cleanQ}`, 12, true);
-    const splitAnswer = doc.splitTextToSize(answer, 180);
-    splitAnswer.forEach(line => addLine(line, 11));
-    addEmptyLine();
-  });
+        // === PERGUNTAS ABERTAS ===
+        openQuestions.forEach((q, index) => {
+            const answer = selectedAssessment.responses[`openQ${index + 1}`] || "Não respondido";
+            let cleanQ = q.replace(/<[^>]+>/g, '').trim();
+            cleanQ = cleanQ.replace(/^\d+\s*-\s*/, '').replace(/^\*\*/, '').replace(/^\*/, '');
+            addLine(`${cleanQ}`, 12, true);
+            const splitAnswer = doc.splitTextToSize(answer, 180);
+            splitAnswer.forEach(line => addLine(line, 11));
+            addEmptyLine();
+        });
 
-  // === RODAPÉ COM PROFESSOR ===
-  addLine(`Nome do professor (a): ${selectedAssessment.professor}`, 12, true);
-  addLine("Assinatura: _______________________________");
-  addEmptyLine();
+        // === RODAPÉ COM PROFESSOR ===
+        addLine(`Nome do professor (a): ${selectedAssessment.professorName}`, 12, true);
+        addLine("Assinatura: _______________________________");
+        addEmptyLine();
 
-  // === 2. IMAGEM INFO NO FINAL ===
-  try {
-    const infoImg = new Image();
-    infoImg.src = infoPdf;
-    const imgHeight = 30;
-    const imgY = pageHeight - imgHeight - 10;
-    doc.addImage(infoImg, 'PNG', pageWidth / 2 - 40, imgY, 80, imgHeight); // centro, 80x30mm
-  } catch (e) {
-    console.warn("Imagem info não encontrada, continuando sem ela.");
-  }
+        // === 2. IMAGEM INFO NO FINAL ===
+        try {
+            const infoImg = new Image();
+            infoImg.src = infoPdf;
+            const imgHeight = 30;
+            const imgY = pageHeight - imgHeight - 10;
+            doc.addImage(infoImg, 'PNG', pageWidth / 2 - 40, imgY, 80, imgHeight);
+        } catch (e) {
+            console.warn("Imagem info não encontrada, continuando sem ela.");
+        }
 
-  // === SALVAR ===
-  doc.save(`avaliacao_${selectedAssessment.student.replace(/\s+/g, '_')}_${selectedAssessment.type}.pdf`);
-};
+        // === SALVAR ===
+        const studentName = getStudentName(selectedAssessment.studentId).replace(/\s+/g, '_');
+        doc.save(`avaliacao_${studentName}_${selectedAssessment.evaluationType}.pdf`);
+    };
 
     return (
         <div className={styles.container}>
             <Menu />
             <h1 className={styles.title}>Lista de Avaliações</h1>
 
-            <div className={styles.formGroup}>
-                <select
-                    value={selectedStudent}
-                    onChange={(e) => setSelectedStudent(e.target.value)}
-                    className={styles.input}
-                >
-                    <option value="">-- Selecione um aluno(a)...</option>
-                    {students.map((student, index) => (
-                        <option key={index} value={student}>{student}</option>
-                    ))}
-                </select>
-            </div>
+            <div className={styles.tableWrapper}>
+                {userPermissions.view_evaluations ? (
+                    <>
+                        <div className={styles.formGroup}>
+                            <select
+                                value={selectedStudentId}
+                                onChange={(e) => setSelectedStudentId(e.target.value)}
+                                className={styles.input}
+                            >
+                                <option value="">-- Selecione um aluno(a)...</option>
+                                {students.map((student) => (
+                                    <option key={student.id} value={student.id}>{student.nome}</option>
+                                ))}
+                            </select>
+                        </div>
 
-            {selectedStudent && (
-                <div className={styles.studentInfo}>
-                    <h2>Aluno: {selectedStudent}</h2>
-                    <div className={styles.assessmentItem}>
-                        <span>Avaliação 1: {hasAssessment("primeira") ? "Feito" : "Pendente"}</span>
-                        {hasAssessment("primeira") && (
-                            <button className={styles.viewButton} onClick={() => handleView("primeira")}>
-                                Visualizar
-                            </button>
+                        {selectedStudentId && (
+                            <div className={styles.studentInfo}>
+                                <h2>Aluno: {getStudentName(parseInt(selectedStudentId))}</h2>
+                                <div className={styles.assessmentItem}>
+                                    <span>Avaliação 1: {hasAssessment("primeira") ? "Feito" : "Pendente"}</span>
+                                    {hasAssessment("primeira") && (
+                                        <button className={styles.viewButton} onClick={() => handleView("primeira")}>
+                                            Visualizar
+                                        </button>
+                                    )}
+                                </div>
+                                <div className={styles.assessmentItem}>
+                                    <span>Avaliação 2: {hasAssessment("segunda") ? "Feito" : "Pendente"}</span>
+                                    {hasAssessment("segunda") && (
+                                        <button className={styles.viewButton} onClick={() => handleView("segunda")}>
+                                            Visualizar
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
                         )}
+                    </>
+                ) : (
+                    <div className={styles.noPermissionMessage}>
+                        Não foi possível carregar a visualização devido a falta de permissões, se for um problema, consulte o diretor.
                     </div>
-                    <div className={styles.assessmentItem}>
-                        <span>Avaliação 2: {hasAssessment("segunda") ? "Feito" : "Pendente"}</span>
-                        {hasAssessment("segunda") && (
-                            <button className={styles.viewButton} onClick={() => handleView("segunda")}>
-                                Visualizar
-                            </button>
-                        )}
-                    </div>
-                </div>
-            )}
+                )}
+            </div>
 
             {/* === MODAL DE VISUALIZAÇÃO === */}
             {showModal && selectedAssessment && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
-                        <button className={styles.closeBtn} onClick={() => setShowModal(false)}>
-                            <X size={20} />
-                        </button>
-                        <h2 className={styles.modalTitle}>Visualização da Avaliação</h2>
+                        <div className={styles.modalHeader}>
+                            <h2 className={styles.modalTitle}>Visualização da Avaliação</h2>
+                            <button className={styles.closeBtn} onClick={() => setShowModal(false)}>
+                                <X size={20} />
+                            </button>
+                        </div>
 
                         <div className={styles.readonlyForm}>
                             <div className={styles.topFields}>
                                 <div>
                                     <label>Nome:</label>
-                                    <div className={styles.readonlyField}>{selectedAssessment.student}</div>
+                                    <div className={styles.readonlyField}>{getStudentName(selectedAssessment.studentId)}</div>
                                 </div>
                                 <div>
                                     <label>Data de Entrada:</label>
@@ -263,7 +325,7 @@ const AssessmentList = () => {
                                 <div>
                                     <label>Avaliação:</label>
                                     <div className={styles.readonlyField}>
-                                        {selectedAssessment.type === "primeira" ? "1ª Avaliação" : "2ª Avaliação"}
+                                        {selectedAssessment.evaluationType === "primeira" ? "1ª Avaliação" : "2ª Avaliação"}
                                     </div>
                                 </div>
                                 <div>
@@ -285,7 +347,7 @@ const AssessmentList = () => {
                                     <tbody>
                                         {questions.map((question, index) => {
                                             const questionId = `q${index + 1}`;
-                                            const selectedValue = selectedAssessment.answers[questionId];
+                                            const selectedValue = selectedAssessment.responses[questionId];
                                             return (
                                                 <tr key={questionId}>
                                                     <td className={styles.questionCell}>{parse(question)}</td>
@@ -308,7 +370,7 @@ const AssessmentList = () => {
                                         <div key={questionId} className={styles.openQuestionField}>
                                             <label>{parse(question)}</label>
                                             <div className={styles.readonlyField}>
-                                                {selectedAssessment.openAnswers[questionId] || "Não respondido"}
+                                                {selectedAssessment.responses[questionId] || "Não respondido"}
                                             </div>
                                         </div>
                                     );
@@ -319,7 +381,7 @@ const AssessmentList = () => {
                             <div className={styles.footerSection}>
                                 <div className={styles.professorField}>
                                     <label>Nome do professor (a):</label>
-                                    <div className={styles.readonlyField}>{selectedAssessment.professor}</div>
+                                    <div className={styles.readonlyField}>{selectedAssessment.professorName}</div>
                                 </div>
                                 <div className={styles.signatureField}>
                                     <label>Assinatura:</label>
@@ -329,6 +391,32 @@ const AssessmentList = () => {
 
                             <button className={styles.exportButton} onClick={handleExportPDF}>
                                 Exportar como PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Mensagem */}
+            {isMessageModalOpen && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modal}>
+                        <div className={styles.modalHeader}>
+                            <h2 className={modalType === "success" ? styles.modalSuccessTitle : styles.modalErrorTitle}>
+                                {modalType === "success" ? "Sucesso" : "Aviso"}
+                            </h2>
+                            <button className={styles.modalClose} onClick={closeMessageModal}>
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className={styles.modalContent}>
+                            <p>{modalMessage}</p>
+                        </div>
+                        <div className={styles.modalFooter}>
+                            <button 
+                                className={`${styles.modalButton} ${modalType === "success" ? styles.modalSuccessButton : styles.modalErrorButton}`}
+                                onClick={closeMessageModal}>
+                                OK
                             </button>
                         </div>
                     </div>

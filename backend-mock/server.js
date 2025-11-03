@@ -29,8 +29,8 @@ const rules = auth.rewriter({
   "/followUps/:id": "640",
   "/placements*": "600",
   "/placements/:id": "640",
-  "/controls*": "600 role:diretor",
-  "/controls/:id": "640 role:diretor",
+  "/controls*": "600",
+  "/controls/:id": "640",
   "/notes*": "600",
   "/notes/:id": "640"
 });

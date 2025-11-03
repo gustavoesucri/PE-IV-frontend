@@ -241,7 +241,7 @@ th {
 }
 
 .confirmButton {
-  background-color: #4caf50;
+  background-color: var(--azul);
   color: white;
   border: none;
   padding: 0.5rem 1.2rem;
@@ -250,7 +250,7 @@ th {
 }
 
 .cancelButton {
-  background-color: #f44336;
+  background-color: var(--azul);
   color: white;
   border: none;
   padding: 0.5rem 1.2rem;
@@ -317,4 +317,181 @@ input[type="radio"]:focus {
   color: #333;
   font-size: 1rem;
   pointer-events: none;
+}
+
+/* Modal de Mensagem - Estilos adicionais */
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--cinza);
+}
+
+.modalHeader h2 {
+  color: var(--azul);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.modalSuccessTitle {
+  color: #28a745 !important;
+}
+
+.modalErrorTitle {
+  color: #dc3545 !important;
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--cinza);
+  transition: color 0.2s;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalClose:hover {
+  color: var(--roxo);
+}
+
+.modalContent {
+  margin: 1rem 0;
+}
+
+.modalContent p {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+  color: var(--preto);
+}
+
+.modalFooter {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* Botões do Modal de Mensagem */
+.modalButton {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.modalButton:hover {
+  background-color: var(--roxo);
+}
+
+.modalErrorButton {
+  background-color: var(--azul);
+}
+
+.modalErrorButton:hover {
+  background-color: var(--roxo);
+}
+
+.modalSuccessButton {
+  background-color: var(--azul);
+}
+
+.modalSuccessButton:hover {
+  background-color: var(--roxo);
+}
+
+/* Botões de confirmação específicos */
+.confirmButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.confirmButton:hover {
+  background-color: var(--roxo);
+}
+
+.cancelButton {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.cancelButton:hover {
+  background-color: var(--roxo);
+}
+
+.modalButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Mensagem de sem permissão */
+.noPermissionMessage {
+  text-align: center;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 1rem;
+  margin: 1rem 0;
+}
+
+/* Modal Overlay base */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal {
+  background: var(--branco);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

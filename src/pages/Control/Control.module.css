@@ -1,10 +1,19 @@
+:root {
+  --azul: #1976d2;
+  --azul-escuro: #1257a5;
+  --branco: #ffffff;
+  --cinza: #e0e0e0;
+  --cinza-claro: #f5f5f5;
+  --roxo: #7b1fa2;
+}
+
 .container {
   background-color: var(--branco);
   padding: 2rem;
-  max-width: 1050px;
+  max-width: 1197px;
   margin: 2rem auto;
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .title {
@@ -28,10 +37,15 @@
   text-align: left;
 }
 
-.rangeSeparator {
-  margin: 0 0.5rem;
-  font-weight: bold;
-  color: #555;
+.textarea {
+  padding: 0.5rem;
+  border: 1px solid var(--cinza);
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: var(--cinza-claro);
+  text-align: left;
+  width: 100%;
+  resize: vertical;
 }
 
 .tableWrapper {
@@ -83,7 +97,13 @@
   background-color: var(--roxo);
 }
 
-.filterButton, .clearButton {
+.rangeSeparator {
+  margin: 0 0.5rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.filterButton {
   background-color: var(--azul);
   color: white;
   border: none;
@@ -94,11 +114,180 @@
   transition: background-color 0.2s ease;
 }
 
-.clearButton {
-  background-color: var(--verde);
+.filterButton:hover {
+  background-color: var(--roxo);
 }
 
-.filterButton:hover, .clearButton:hover {
+.clearButton {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clearButton:hover {
   background-color: var(--roxo);
-  transition: 0.5s;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background: var(--branco);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modalHeader h2 {
+  color: var(--azul);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--cinza);
+  transition: color 0.2s;
+}
+
+.modalClose:hover {
+  color: var(--roxo);
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modalContent label {
+  font-weight: 600;
+  color: var(--azul);
+  margin-top: 0.5rem;
+}
+
+.readonlyField {
+  padding: 0.5rem;
+  background-color: var(--cinza-claro);
+  border: 1px solid var(--cinza);
+  border-radius: 4px;
+  color: #333;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+}
+
+.modalFooter {
+  margin-top: 1.5rem;
+  text-align: right;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.deleteButton {
+  background-color: #8B0000;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #dc3545;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.modalButton {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.modalButton:hover {
+  background-color: var(--roxo);
+}
+
+.modalErrorButton {
+  background-color: #dc3545;
+}
+
+.modalErrorButton:hover {
+  background-color: #c82333;
+}
+
+.modalSuccessButton {
+  background-color: #28a745;
+}
+
+.modalSuccessButton:hover {
+  background-color: #218838;
+}
+
+.modalSuccessTitle {
+  color: #28a745 !important;
+}
+
+.modalErrorTitle {
+  color: #dc3545 !important;
+}
+
+.noPermissionMessage {
+  text-align: center;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 1rem;
+  margin: 1rem 0;
 }

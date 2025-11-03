@@ -184,6 +184,23 @@
       "registeredBy": 1
     }
   ],
+  "controls": [
+    {
+      "id": 1,
+      "studentId": 1,
+      "dataIngresso": "2023-04-01",
+      "dataAvaliacao1": "2024-04-15",
+      "dataAvaliacao2": "2024-06-20",
+      "dataEntrevista1": "2024-07-05",
+      "dataEntrevista2": "2024-07-25",
+      "dataResultado": "2024-08-01",
+      "resultado": "Aprovado",
+      "observacoes": "Aluno com bom desempenho geral",
+      "createdAt": "2024-01-15T10:00:00Z",
+      "updatedAt": "2024-08-01T14:30:00Z",
+      "createdBy": 1
+    }
+  ],
   "rolePermissions": [
     {
       "id": 1,
