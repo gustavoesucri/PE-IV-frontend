@@ -10,14 +10,16 @@ const Settings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [passwordMatch, setPasswordMatch] = useState(null);
+  const [passwordError, setPasswordError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
   const [tempEmail, setTempEmail] = useState("");
-  const [loading, setLoading] = useState(true);
   const [currentPasswordFromServer, setCurrentPasswordFromServer] = useState("");
 
   // Formatar categoria (role) para exibição
@@ -30,7 +32,6 @@ const Settings = () => {
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        setLoading(true);
         const savedUser = localStorage.getItem("user");
         if (savedUser) {
           const user = JSON.parse(savedUser);
@@ -55,8 +56,6 @@ const Settings = () => {
       } catch (error) {
         console.error("Erro ao carregar configurações:", error);
         setSuccessMessage("Erro ao carregar configurações do servidor");
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -121,38 +120,66 @@ const Settings = () => {
   const handleOpenModal = () => {
     setIsModalOpen(true);
     setSuccessMessage("");
-    setOldPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    setPasswordData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
     setPasswordMatch(null);
+    setPasswordError("");
   };
 
   const handleCloseModal = () => setIsModalOpen(false);
 
-  const handleConfirmPassword = (value) => {
-    setConfirmPassword(value);
-    setPasswordMatch(newPassword === value && value !== "");
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Limpar erro quando o usuário digitar
+    if (passwordError) {
+      setPasswordError("");
+    }
+
+    // Verificar se as senhas coincidem
+    if (name === "confirmPassword") {
+      setPasswordMatch(value === passwordData.newPassword && value !== "");
+    } else if (name === "newPassword") {
+      setPasswordMatch(value === passwordData.confirmPassword && value !== "");
+    }
   };
 
   const handleSavePassword = async () => {
-    if (passwordMatch && oldPassword && newPassword) {
-      try {
-        // Verificar se a senha antiga está correta (usa a senha do servidor)
-        if (oldPassword !== currentPasswordFromServer) {
-          setSuccessMessage("Senha atual incorreta!");
-          return;
-        }
+    // Verificar se todos os campos estão preenchidos
+    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      setPasswordError("Preencha todos os campos de senha.");
+      return;
+    }
 
-        // Atualizar senha no back-end
-        await updateUserData({ password: newPassword });
-        setSuccessMessage("Senha alterada com sucesso!");
-        setTimeout(() => {
-          setIsModalOpen(false);
-        }, 1500);
-      } catch (error) {
-        console.error("Erro ao alterar senha:", error);
-        setSuccessMessage(error.message || "Erro ao alterar senha");
-      }
+    // Verificar se a senha atual está correta
+    if (passwordData.currentPassword !== currentPasswordFromServer) {
+      setPasswordError("Senha atual incorreta!");
+      return;
+    }
+
+    // Verificar se as senhas coincidem
+    if (!passwordMatch) {
+      setPasswordError("As senhas não coincidem!");
+      return;
+    }
+
+    try {
+      // Atualizar senha no back-end
+      await updateUserData({ password: passwordData.newPassword });
+      setSuccessMessage("Senha alterada com sucesso!");
+      setTimeout(() => {
+        setIsModalOpen(false);
+      }, 1500);
+    } catch (error) {
+      console.error("Erro ao alterar senha:", error);
+      setPasswordError(error.message || "Erro ao alterar senha");
     }
   };
 
@@ -227,20 +254,14 @@ const Settings = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className={styles.container}>
-        <Menu />
-        <div className={styles.loading}>Carregando...</div>
-      </div>
-    );
-  }
-
+  // Adicione uma verificação para evitar erros se currentUser ainda não carregou
   if (!currentUser) {
     return (
       <div className={styles.container}>
         <Menu />
-        <div className={styles.error}>Usuário não encontrado</div>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          Carregando configurações...
+        </div>
       </div>
     );
   }
@@ -253,7 +274,7 @@ const Settings = () => {
 
       <div className={styles.infoBox}>
         <p>
-          <strong>Usuário:</strong> {currentUser.name}
+          <strong>Usuário:</strong> {currentUser.username}
         </p>
         <p>
           <strong>Senha:</strong> {"*".repeat(8)}
@@ -317,39 +338,51 @@ const Settings = () => {
               <X size={20} />
             </button>
             <h2>Alterar Senha</h2>
+            
             <input
               type="password"
+              name="currentPassword"
               placeholder="Senha atual"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
+              value={passwordData.currentPassword}
+              onChange={handlePasswordChange}
               className={styles.input}
             />
+            
             <input
               type="password"
+              name="newPassword"
               placeholder="Nova senha"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              value={passwordData.newPassword}
+              onChange={handlePasswordChange}
               className={styles.input}
             />
+            
             <input
               type="password"
+              name="confirmPassword"
               placeholder="Confirmar nova senha"
-              value={confirmPassword}
-              onChange={(e) => handleConfirmPassword(e.target.value)}
+              value={passwordData.confirmPassword}
+              onChange={handlePasswordChange}
               className={styles.input}
             />
 
-            {passwordMatch === true && (
+            {/* Mensagens de erro e validação */}
+            {passwordError && (
+              <p className={styles.notMatch}>{passwordError}</p>
+            )}
+
+            {passwordMatch === true && passwordData.newPassword && !passwordError && (
               <p className={styles.match}>✔ Senhas coincidem</p>
             )}
-            {passwordMatch === false && (
+            
+            {passwordMatch === false && passwordData.newPassword && !passwordError && (
               <p className={styles.notMatch}>✘ Senhas não coincidem</p>
             )}
 
             <button
               className={styles.saveBtn}
               onClick={handleSavePassword}
-              disabled={!passwordMatch || !oldPassword || !newPassword}
+              disabled={!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword || !passwordMatch}
             >
               Salvar
             </button>
@@ -372,6 +405,13 @@ const Settings = () => {
               onChange={(e) => setTempEmail(e.target.value)}
               className={styles.input}
             />
+            
+            {emailMessage && (
+              <p className={emailMessage.includes("Erro") ? styles.notMatch : styles.match}>
+                {emailMessage}
+              </p>
+            )}
+            
             <button
               className={styles.saveBtn}
               onClick={handleSaveEmail}

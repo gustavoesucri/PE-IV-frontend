@@ -69,7 +69,7 @@
   padding: 0.8rem;
   border: none;
   background: transparent;
-  color: var(--cinza);
+  color: #989da8;
   font-weight: 500;
   border-radius: 8px;
   cursor: pointer;
@@ -201,7 +201,7 @@
 .footer {
   text-align: center;
   margin-top: 3rem;
-  color: var(--cinza);
+  color: #6b7280;
   font-size: 0.9rem;
 }
 

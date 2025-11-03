@@ -2,12 +2,117 @@
   "users": [
     {
       "id": 1,
-      "email": "rodrigo123@gmail.com",
+      "email": "rodrigo@gmail.com",
       "password": "admin",
-      "name": "Diretor",
+      "username": "Diretor",
       "role": "diretor"
+    },
+    {
+      "id": 2,
+      "email": "",
+      "password": "admin",
+      "username": "arthur",
+      "role": "professor"
     }
   ],
+  "userSettings": [
+    {
+      "id": 1,
+      "userId": 1,
+      "widgetPositions": {
+        "studentsWidget": {
+          "x": 20,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "companiesWidget": {
+          "x": 640,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "counterWidget": {
+          "x": 20,
+          "y": 385,
+          "width": 300,
+          "height": 100
+        },
+        "statsWidget": {
+          "x": 640,
+          "y": 380,
+          "width": 400,
+          "height": 250
+        }
+      },
+      "sidebarOrder": [
+        "administration",
+        "settings",
+        "students",
+        "director-panel",
+        "companies",
+        "employment-placement",
+        "assessment",
+        "control",
+        "follow-up"
+      ],
+      "notes": [],
+      "monitoredStudents": [],
+      "favoriteCompanies": [],
+      "updatedAt": "2025-11-03T14:01:16.409Z",
+      "settings": {
+        "notifySystem": true,
+        "notifyEmail": false
+      }
+    }
+  ],
+  "defaultUserSettings": {
+    "widgetPositions": {
+      "studentsWidget": {
+        "x": 20,
+        "y": 60,
+        "width": 600,
+        "height": 300
+      },
+      "companiesWidget": {
+        "x": 640,
+        "y": 60,
+        "width": 600,
+        "height": 300
+      },
+      "counterWidget": {
+        "x": 20,
+        "y": 385,
+        "width": 300,
+        "height": 100
+      },
+      "statsWidget": {
+        "x": 640,
+        "y": 380,
+        "width": 400,
+        "height": 250
+      }
+    },
+    "sidebarOrder": [
+      "administration",
+      "settings",
+      "students",
+      "director-panel",
+      "companies",
+      "employment-placement",
+      "assessment",
+      "control",
+      "follow-up"
+    ],
+    "notes": [],
+    "monitoredStudents": [],
+    "favoriteCompanies": [],
+    "updatedAt": null,
+    "settings": {
+      "notifySystem": true,
+      "notifyEmail": false
+    }
+  },
   "students": [
     {
       "id": 1,
@@ -52,80 +157,78 @@
       "registeredBy": 1
     }
   ],
-  "userSettings": [
+  "rolePermissions": [
     {
       "id": 1,
-      "userId": 1,
-      "widgetPositions": {
-        "studentsWidget": {
-          "x": 20,
-          "y": 60,
-          "width": 600,
-          "height": 300
-        },
-        "companiesWidget": {
-          "x": 640,
-          "y": 60,
-          "width": 600,
-          "height": 300
-        },
-        "counterWidget": {
-          "x": 20,
-          "y": 385,
-          "width": 300,
-          "height": 100
-        },
-        "statsWidget": {
-          "x": 640,
-          "y": 380,
-          "width": 400,
-          "height": 250
-        }
-      },
-      "notes": [],
-      "monitoredStudents": [],
-      "favoriteCompanies": [],
-      "updatedAt": "2025-11-03T11:09:04.594Z",
-      "settings": {
-        "notifySystem": true,
-        "notifyEmail": false
+      "role": "professor",
+      "permissions": {
+        "view_students": true,
+        "create_students": true,
+        "view_companies": true,
+        "create_companies": false,
+        "view_placements": true,
+        "create_placements": true,
+        "create_evaluations": true,
+        "view_evaluations": true,
+        "view_control": false,
+        "create_observations": true,
+        "view_observations": true,
+        "manage_users": false,
+        "manage_permissions": false
+      }
+    },
+    {
+      "id": 2,
+      "role": "psicologo",
+      "permissions": {
+        "view_students": true,
+        "create_students": false,
+        "view_companies": true,
+        "create_companies": false,
+        "view_placements": true,
+        "create_placements": false,
+        "create_evaluations": true,
+        "view_evaluations": true,
+        "view_control": false,
+        "create_observations": true,
+        "view_observations": true,
+        "manage_users": false,
+        "manage_permissions": false
+      }
+    },
+    {
+      "id": 3,
+      "role": "diretor",
+      "permissions": {
+        "view_students": true,
+        "create_students": true,
+        "view_companies": true,
+        "create_companies": true,
+        "view_placements": true,
+        "create_placements": true,
+        "create_evaluations": true,
+        "view_evaluations": true,
+        "view_control": true,
+        "create_observations": true,
+        "view_observations": true,
+        "manage_users": true,
+        "manage_permissions": true
       }
     }
   ],
-  "defaultUserSettings": {
-    "widgetPositions": {
-      "studentsWidget": {
-        "x": 20,
-        "y": 60,
-        "width": 600,
-        "height": 300
-      },
-      "companiesWidget": {
-        "x": 640,
-        "y": 60,
-        "width": 600,
-        "height": 300
-      },
-      "counterWidget": {
-        "x": 20,
-        "y": 385,
-        "width": 300,
-        "height": 100
-      },
-      "statsWidget": {
-        "x": 640,
-        "y": 380,
-        "width": 400,
-        "height": 250
-      }
-    },
-    "notes": [],
-    "monitoredStudents": [],
-    "favoriteCompanies": [],
-    "updatedAt": null,
-    "settings": {
-      "notifySystem": true,
-      "notifyEmail": false
+  "userSpecificPermissions": [],
+  "globalNotifications": {
+    "id": 1,
+    "notifications": {
+      "new_student": true,
+      "new_evaluation": true,
+      "new_observation": true,
+      "user_created": true
     }
-  }
+  },
+  "userCategories": [
+    "professor",
+    "psicologo",
+    "diretor"
+  ]
 }

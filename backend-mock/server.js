@@ -50,8 +50,8 @@ server.post('/login', (req, res) => {
   const db = router.db;
   const users = db.get('users').value();
 
-  // Busca usuário por name (username)
-  const user = users.find(u => u.name === username && u.password === password);
+  // Busca usuário por username (campo correto)
+  const user = users.find(u => u.username === username && u.password === password);
   
   if (!user) {
     console.log('Usuário não encontrado ou senha incorreta');
@@ -59,10 +59,10 @@ server.post('/login', (req, res) => {
   }
 
   // Cria um token simples (não JWT)
-  const token = Buffer.from(`${user.id}:${user.name}:${Date.now()}`).toString('base64');
+  const token = Buffer.from(`${user.id}:${user.username}:${Date.now()}`).toString('base64');
   const { password: _, ...safeUser } = user;
 
-  console.log('Login bem-sucedido para:', user.name);
+  console.log('Login bem-sucedido para:', user.username);
   
   res.json({
     accessToken: token,
@@ -91,7 +91,7 @@ server.use((req, res, next) => {
     
     // Verifica se o usuário existe
     const user = router.db.get('users').find({ id: parseInt(userId) }).value();
-    if (!user || user.name !== username) {
+    if (!user || user.username !== username) {
       return res.status(403).json({ message: 'Token inválido' });
     }
 
@@ -137,22 +137,33 @@ server.use((req, res, next) => {
 // === CRIA CONFIGURAÇÕES PADRÃO AO CRIAR NOVO USUÁRIO ===
 server.post('/api/users', (req, res, next) => {
   const db = router.db;
-  const newUser = req.body;
+  
+  // Adiciona ID automaticamente
+  const users = db.get('users').value();
+  const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+  
+  const newUser = {
+    ...req.body,
+    id: newId
+  };
 
-  next(); // Criação padrão
+  // Continua com a criação padrão
+  req.body = newUser;
+  next();
 
+  // Cria userSettings automaticamente
   setTimeout(() => {
-    const existing = db.get('userSettings').find({ userId: newUser.id }).value();
+    const existing = db.get('userSettings').find({ userId: newId }).value();
     if (existing) return;
 
     const newUserSettings = {
       ...db.get('defaultUserSettings').value(),
       id: Date.now(),
-      userId: newUser.id
+      userId: newId
     };
 
     db.get('userSettings').push(newUserSettings).write();
-    console.log(`Configurações padrão criadas para o usuário ID ${newUser.id}`);
+    console.log(`Configurações padrão criadas para o usuário ID ${newId} (${newUser.username})`);
   }, 300);
 });
 

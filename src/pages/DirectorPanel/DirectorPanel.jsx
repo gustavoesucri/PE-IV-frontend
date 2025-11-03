@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./DirectorPanel.module.css";
 import Menu from "../../components/Menu/Menu";
 import { Shield, Bell, Users, Settings, ChevronRight, UserCog } from "lucide-react";
+import api from "../../api";
 
 const NOTIFICATION_EVENTS = [
     { id: "new_student", label: "Novo aluno registrado" },
@@ -28,164 +29,153 @@ const PERMISSION_LABELS = {
     manage_permissions: "Gerenciar permissões",
 };
 
-const DEFAULT_ROLE_PERMISSIONS = {
-  // Professor
-  Professor: {
-    view_students: true,
-    create_students: true,
-    view_companies: true,
-    create_companies: false,
-    view_placements: true,
-    create_placements: true,
-    create_evaluations: true,
-    view_evaluations: true,
-    view_control: false,
-    create_observations: true,
-    view_observations: true,
-    manage_users: false,
-    manage_permissions: false,
-  },
-
-  // Psicólogo
-  Psicólogo: {
-    view_students: true,
-    create_students: false,
-    view_companies: true,
-    create_companies: false,
-    view_placements: true,
-    create_placements: false,
-    create_evaluations: true,
-    view_evaluations: true,
-    view_control: false,
-    create_observations: true,
-    view_observations: true,
-    manage_users: false,
-    manage_permissions: false,
-  },
-
-  // Diretor (fixo)
-  Diretor: {
-    view_students: true,
-    create_students: true,
-    view_companies: true,
-    create_companies: true,
-    view_placements: true,
-    create_placements: true,
-    create_evaluations: true,
-    view_evaluations: true,
-    view_control: true,
-    create_observations: true,
-    view_observations: true,
-    manage_users: true,
-    manage_permissions: true,
-  },
-};
-
 const DirectorPanel = () => {
     const navigate = useNavigate();
 
-    // Categorias
-    const [categories, setCategories] = useState(() => {
-        const saved = localStorage.getItem("userCategories");
-        return saved ? JSON.parse(saved) : ["Professor", "Psicólogo", "Diretor"];
-    });
-
-    // Usuários
-    const [users, setUsers] = useState(() => {
-        const saved = localStorage.getItem("users");
-        return saved ? JSON.parse(saved) : [];
-    });
-
-    // Permissões por cargo
-const [rolePermissions, setRolePermissions] = useState(() => {
-  const saved = localStorage.getItem("rolePermissions");
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    // Garante que Diretor sempre tenha tudo
-    return {
-      ...parsed,
-      Diretor: {
-        ...DEFAULT_ROLE_PERMISSIONS.Diretor,
-        ...(parsed.Diretor || {}),
-      },
-    };
-  }
-
-  // Se não existir, usa os defaults completos
-  return DEFAULT_ROLE_PERMISSIONS;
-});
-
-    // Permissões específicas por usuário
-    const [userSpecificPermissions, setUserSpecificPermissions] = useState(() => {
-        const saved = localStorage.getItem("userSpecificPermissions");
-        return saved ? JSON.parse(saved) : {};
-    });
-
-    // Notificações
-    const [globalNotifications, setGlobalNotifications] = useState(() => {
-        const saved = localStorage.getItem("globalNotifications");
-        return saved
-            ? JSON.parse(saved)
-            : NOTIFICATION_EVENTS.reduce((acc, ev) => ({ ...acc, [ev.id]: true }), {});
-    });
-
+    // Estados
+    const [categories, setCategories] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [rolePermissions, setRolePermissions] = useState({});
+    const [userSpecificPermissions, setUserSpecificPermissions] = useState({});
+    const [globalNotifications, setGlobalNotifications] = useState({});
     const [activeTab, setActiveTab] = useState("roles");
-    const [selectedRole, setSelectedRole] = useState(categories[0] || "Professor");
+    const [selectedRole, setSelectedRole] = useState("");
     const [selectedUserId, setSelectedUserId] = useState(null);
 
-    // Persistência
+    // Carregar dados do back-end
     useEffect(() => {
-        localStorage.setItem("rolePermissions", JSON.stringify(rolePermissions));
-    }, [rolePermissions]);
+        const loadData = async () => {
+            try {    
+                // Carregar categorias
+                const categoriesResponse = await api.get('/api/userCategories');
+                setCategories(categoriesResponse.data);
+                if (categoriesResponse.data.length > 0) {
+                    setSelectedRole(categoriesResponse.data[0]);
+                }
 
-    useEffect(() => {
-        localStorage.setItem("userSpecificPermissions", JSON.stringify(userSpecificPermissions));
-    }, [userSpecificPermissions]);
+                // Carregar usuários
+                const usersResponse = await api.get('/api/users');
+                setUsers(usersResponse.data);
 
-    useEffect(() => {
-        localStorage.setItem("globalNotifications", JSON.stringify(globalNotifications));
-    }, [globalNotifications]);
+                // Carregar permissões de cargo
+                const rolePermsResponse = await api.get('/api/rolePermissions');
+                const rolePermsMap = {};
+                rolePermsResponse.data.forEach(rp => {
+                    rolePermsMap[rp.role] = rp.permissions;
+                });
+                setRolePermissions(rolePermsMap);
 
-    // Atualiza categorias e usuários
-    useEffect(() => {
-        const handleStorageChange = () => {
-            const savedCats = localStorage.getItem("userCategories");
-            const savedUsers = localStorage.getItem("users");
-            if (savedCats) {
-                const newCats = JSON.parse(savedCats);
-                setCategories(newCats);
-                if (!newCats.includes(selectedRole)) setSelectedRole(newCats[0]);
+                // Carregar permissões específicas de usuário
+                const userPermsResponse = await api.get('/api/userSpecificPermissions');
+                const userPermsMap = {};
+                userPermsResponse.data.forEach(up => {
+                    userPermsMap[up.userId] = up.permissions;
+                });
+                setUserSpecificPermissions(userPermsMap);
+
+                // Carregar notificações globais
+                const notifResponse = await api.get('/api/globalNotifications');
+                if (notifResponse.data.length > 0) {
+                    setGlobalNotifications(notifResponse.data[0].notifications);
+                }
+
+            } catch (error) {
+                console.error("Erro ao carregar dados do painel:", error);
             }
-            if (savedUsers) setUsers(JSON.parse(savedUsers));
         };
-        window.addEventListener("storage", handleStorageChange);
-        return () => window.removeEventListener("storage", handleStorageChange);
-    }, [selectedRole]);
 
-    const togglePermission = (role, perm) => {
-        if (role === "Diretor" && (perm === "manage_users" || perm === "manage_permissions")) return;
+        loadData();
+    }, []);
 
-        setRolePermissions((prev) => ({
-            ...prev,
-            [role]: {
-                ...(prev[role] || DEFAULT_ROLE_PERMISSIONS),
-                [perm]: !prev[role]?.[perm],
-            },
-        }));
+    // Funções para atualizar back-end
+    const updateRolePermissions = async (role, permissions) => {
+        try {
+            const existing = await api.get(`/api/rolePermissions?role=${role}`);
+            
+            if (existing.data.length > 0) {
+                // Atualizar existente
+                await api.patch(`/api/rolePermissions/${existing.data[0].id}`, { permissions });
+            } else {
+                // Criar novo
+                await api.post('/api/rolePermissions', { role, permissions });
+            }
+        } catch (error) {
+            console.error("Erro ao atualizar permissões de cargo:", error);
+        }
     };
 
-    const toggleUserPermission = (userId, perm) => {
-        setUserSpecificPermissions((prev) => ({
-            ...prev,
-            [userId]: {
-                ...(prev[userId] || {}),
-                [perm]: !(prev[userId]?.[perm] ?? false),
-            },
-        }));
+    const updateUserSpecificPermissions = async (userId, permissions) => {
+        try {
+            const existing = await api.get(`/api/userSpecificPermissions?userId=${userId}`);
+            
+            if (existing.data.length > 0) {
+                // Atualizar existente
+                await api.patch(`/api/userSpecificPermissions/${existing.data[0].id}`, { permissions });
+            } else {
+                // Criar novo
+                await api.post('/api/userSpecificPermissions', { userId, permissions });
+            }
+        } catch (error) {
+            console.error("Erro ao atualizar permissões de usuário:", error);
+        }
     };
 
-    const toggleGlobalNotification = (id) => {
-        setGlobalNotifications((prev) => ({ ...prev, [id]: !prev[id] }));
+    const updateGlobalNotifications = async (notifications) => {
+        try {
+            await api.patch('/api/globalNotifications/1', { notifications });
+        } catch (error) {
+            console.error("Erro ao atualizar notificações:", error);
+        }
+    };
+
+    // Handlers
+    const togglePermission = async (role, perm) => {
+        // Impede qualquer alteração nas permissões do diretor
+        if (role === "diretor") return;
+
+        const newPermissions = {
+            ...(rolePermissions[role] || {}),
+            [perm]: !rolePermissions[role]?.[perm]
+        };
+
+        setRolePermissions(prev => ({
+            ...prev,
+            [role]: newPermissions
+        }));
+
+        await updateRolePermissions(role, newPermissions);
+    };
+
+    const toggleUserPermission = async (userId, perm) => {
+        const user = users.find(u => u.id === userId);
+        
+        // Impede qualquer alteração de permissões para usuários diretor
+        if (user && user.role === "diretor") {
+            return;
+        }
+
+        const currentUserPerms = userSpecificPermissions[userId] || {};
+        const newPermissions = {
+            ...currentUserPerms,
+            [perm]: !currentUserPerms[perm]
+        };
+
+        setUserSpecificPermissions(prev => ({
+            ...prev,
+            [userId]: newPermissions
+        }));
+
+        await updateUserSpecificPermissions(userId, newPermissions);
+    };
+
+    const toggleGlobalNotification = async (id) => {
+        const newNotifications = {
+            ...globalNotifications,
+            [id]: !globalNotifications[id]
+        };
+
+        setGlobalNotifications(newNotifications);
+        await updateGlobalNotifications(newNotifications);
     };
 
     const selectedUser = users.find(u => u.id === selectedUserId);
@@ -231,7 +221,6 @@ const [rolePermissions, setRolePermissions] = useState(() => {
             </div>
 
             <div className={styles.content}>
-
                 {/* ==================== CARGOS ==================== */}
                 {activeTab === "roles" && (
                     <div className={styles.section}>
@@ -251,34 +240,52 @@ const [rolePermissions, setRolePermissions] = useState(() => {
 
                         <div className={styles.permissionsGrid}>
                             {rolePermissions[selectedRole] ? (
-                                Object.entries(PERMISSION_LABELS)
-                                    .filter(([key]) => {
-                                        if (key === "manage_users" || key === "manage_permissions") {
-                                            return selectedRole === "Diretor";
-                                        }
-                                        return true;
-                                    })
-                                    .map(([key, label]) => {
-                                        const value = rolePermissions[selectedRole][key] ?? false;
-                                        const isLocked = selectedRole === "Diretor" && (key === "manage_users" || key === "manage_permissions");
+                                Object.entries(PERMISSION_LABELS).map(([key, label]) => {
+                                    const value = rolePermissions[selectedRole][key] ?? false;
+                                    const isLocked = selectedRole === "diretor";
 
-                                        return (
-                                            <label key={key} className={styles.switchLabel} style={{ opacity: isLocked ? 0.7 : 1 }}>
-                                                <span>{label}</span>
-                                                <div
-                                                    className={`${styles.switch} ${value ? styles.on : styles.off} ${isLocked ? styles.locked : ""}`}
-                                                    onClick={() => !isLocked && togglePermission(selectedRole, key)}
-                                                    style={{ cursor: isLocked ? "not-allowed" : "pointer" }}
-                                                >
-                                                    <div className={styles.slider} />
-                                                </div>
-                                            </label>
-                                        );
-                                    })
+                                    return (
+                                        <label key={key} className={styles.switchLabel} style={{ opacity: isLocked ? 0.7 : 1 }}>
+                                            <span>{label}</span>
+                                            <div
+                                                className={`${styles.switch} ${value ? styles.on : styles.off} ${isLocked ? styles.locked : ""}`}
+                                                onClick={() => !isLocked && togglePermission(selectedRole, key)}
+                                                style={{ cursor: isLocked ? "not-allowed" : "pointer" }}
+                                            >
+                                                <div className={styles.slider} />
+                                            </div>
+                                            {isLocked && (
+                                                <span style={{ 
+                                                    fontSize: '0.7rem', 
+                                                    color: '#666', 
+                                                    marginLeft: '0.5rem',
+                                                    fontStyle: 'italic'
+                                                }}>
+                                                    (máximo)
+                                                </span>
+                                            )}
+                                        </label>
+                                    );
+                                })
                             ) : (
-                                <p className={styles.info}>Nenhuma permissão definida.</p>
+                                <p className={styles.info}>Nenhuma permissão definida para este cargo.</p>
                             )}
                         </div>
+
+                        {selectedRole === "diretor" && (
+                            <div style={{
+                                marginTop: '1rem',
+                                padding: '0.75rem',
+                                backgroundColor: '#e8f5e8',
+                                border: '1px solid #4CAF50',
+                                borderRadius: '6px',
+                                fontSize: '0.9rem',
+                                color: '#2e7d32'
+                            }}>
+                                <strong>💡 Informação:</strong> O cargo Diretor possui todas as permissões máximas por padrão. 
+                                Para criar cargos com permissões restritas, crie uma nova categoria.
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -288,8 +295,7 @@ const [rolePermissions, setRolePermissions] = useState(() => {
                         <h2 className={styles.sectionTitle}>Permissões por Usuário</h2>
 
                         <p className={styles.info} style={{ marginBottom: "1.5rem", fontSize: "0.9rem", color: "#555" }}>
-                            <strong>Atenção:</strong> As permissões aqui <strong>sobrepõem</strong> as do cargo. Use apenas em casos especiais.
-                        </p>
+                            <strong>Atenção:</strong> As permissões aqui <strong>sobrepõem</strong> as do cargo.</p>
 
                         <div className={styles.userSelector}>
                             {users.length === 0 ? (
@@ -301,7 +307,7 @@ const [rolePermissions, setRolePermissions] = useState(() => {
                                         className={`${styles.userBtn} ${selectedUserId === user.id ? styles.selected : ""}`}
                                         onClick={() => setSelectedUserId(user.id)}
                                     >
-                                        <strong>{user.username}</strong> <small>({user.category})</small>
+                                        <strong>{user.username}</strong> <small>({user.role})</small>
                                     </button>
                                 ))
                             )}
@@ -312,60 +318,82 @@ const [rolePermissions, setRolePermissions] = useState(() => {
                                 <h3 style={{ margin: "1.5rem 0 1rem", color: "var(--azul)" }}>
                                     {selectedUser.username}
                                 </h3>
-                                <p><strong>Categoria:</strong> {selectedUser.category}</p>
+                                <p><strong>Cargo:</strong> {selectedUser.role}</p>
 
                                 <h4 style={{ margin: "1.5rem 0 0.8rem", fontSize: "1rem" }}>
                                     Permissões de Usuário:
                                 </h4>
 
                                 <div className={styles.permissionsGrid}>
-                                    {Object.entries(PERMISSION_LABELS)
-                                        .filter(([key]) => {
-                                            if (key === "manage_users" || key === "manage_permissions") {
-                                                return selectedUser.category === "Diretor";
-                                            }
-                                            return true;
-                                        })
-                                        .map(([key, label]) => {
-                                            const rolePerm = rolePermissions[selectedUser.category]?.[key] ?? false;
-                                            const userPerm = userSpecificPermissions[selectedUser.id]?.[key] ?? null;
-                                            const finalValue = userPerm !== null ? userPerm : rolePerm;
-                                            const isOverridden = userPerm !== null && userPerm !== rolePerm;
+                                    {Object.entries(PERMISSION_LABELS).map(([key, label]) => {
+                                        const rolePerm = rolePermissions[selectedUser.role]?.[key] ?? false;
+                                        const userPerm = userSpecificPermissions[selectedUser.id]?.[key] ?? null;
+                                        const finalValue = userPerm !== null ? userPerm : rolePerm;
+                                        const isOverridden = userPerm !== null && userPerm !== rolePerm;
+                                        
+                                        // Para diretor, todas as permissões são travadas
+                                        const isLocked = selectedUser.role === "diretor";
 
-                                            return (
-                                                <label
-                                                    key={key}
-                                                    className={styles.switchLabel}
+                                        return (
+                                            <label
+                                                key={key}
+                                                className={styles.switchLabel}
+                                                style={{
+                                                    opacity: isLocked ? 0.7 : 1,
+                                                    position: "relative"
+                                                }}
+                                            >
+                                                <span>
+                                                    {label}
+                                                    {isOverridden && !isLocked && (
+                                                        <span style={{ color: "var(--roxo)", fontSize: "0.75rem", marginLeft: "0.5rem" }}>★</span>
+                                                    )}
+                                                </span>
+                                                <div
+                                                    className={`${styles.switch} ${finalValue ? styles.on : styles.off} ${isLocked ? styles.locked : ""}`}
+                                                    onClick={() => {
+                                                        if (isLocked) return;
+                                                        toggleUserPermission(selectedUser.id, key);
+                                                    }}
                                                     style={{
-                                                        opacity: selectedUser.category === "Diretor" && (key === "manage_users" || key === "manage_permissions") ? 0.7 : 1,
-                                                        position: "relative"
+                                                        cursor: isLocked ? "not-allowed" : "pointer"
                                                     }}
                                                 >
-                                                    <span>
-                                                        {label}
-                                                        {isOverridden && <span style={{ color: "var(--roxo)", fontSize: "0.75rem", marginLeft: "0.5rem" }}>★</span>}
+                                                    <div className={styles.slider} />
+                                                </div>
+                                                {isLocked && (
+                                                    <span style={{ 
+                                                        fontSize: '0.7rem', 
+                                                        color: '#666', 
+                                                        marginLeft: '0.5rem',
+                                                        fontStyle: 'italic'
+                                                    }}>
+                                                        (máximo)
                                                     </span>
-                                                    <div
-                                                        className={`${styles.switch} ${finalValue ? styles.on : styles.off} ${selectedUser.category === "Diretor" && (key === "manage_users" || key === "manage_permissions") ? styles.locked : ""
-                                                            }`}
-                                                        onClick={() => {
-                                                            if (selectedUser.category === "Diretor" && (key === "manage_users" || key === "manage_permissions")) return;
-                                                            toggleUserPermission(selectedUser.id, key);
-                                                        }}
-                                                        style={{
-                                                            cursor: selectedUser.category === "Diretor" && (key === "manage_users" || key === "manage_permissions") ? "not-allowed" : "pointer"
-                                                        }}
-                                                    >
-                                                        <div className={styles.slider} />
-                                                    </div>
-                                                </label>
-                                            );
-                                        })}
+                                                )}
+                                            </label>
+                                        );
+                                    })}
                                 </div>
 
                                 <p style={{ fontSize: "0.8rem", color: "#666", marginTop: "1rem" }}>
                                     ★ = Permissão sobrescrita (diferente do cargo)
                                 </p>
+
+                                {selectedUser.role === "diretor" && (
+                                    <div style={{
+                                        marginTop: '1rem',
+                                        padding: '0.75rem',
+                                        backgroundColor: '#e8f5e8',
+                                        border: '1px solid #4CAF50',
+                                        borderRadius: '6px',
+                                        fontSize: '0.9rem',
+                                        color: '#2e7d32'
+                                    }}>
+                                        <strong>💡 Informação:</strong> Usuários com cargo Diretor possuem todas as permissões máximas 
+                                        e não podem ter suas permissões personalizadas alteradas.
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -395,7 +423,7 @@ const [rolePermissions, setRolePermissions] = useState(() => {
             </div>
 
             <div className={styles.footer}>
-                <p><strong>Todas as alterações são salvas automaticamente.</strong></p>
+                <p><strong>Todas as alterações são salvas automaticamente no servidor.</strong></p>
             </div>
         </div>
     );

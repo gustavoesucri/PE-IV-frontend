@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Users.module.css";
 import Menu from "../../../components/Menu/Menu";
+import api from "../../../api";
 
 const PERMISSION_LABELS = {
   view_students: "Ver estudantes",
@@ -37,32 +38,31 @@ const Users = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
-    category: "",
+    email: "",
+    role: "",
   });
 
-  const [categories, setCategories] = useState(() => {
-    const saved = localStorage.getItem("userCategories");
-    return saved ? JSON.parse(saved) : ["Professor", "Psicólogo", "Diretor"];
-  });
-
+  const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [newPermissions, setNewPermissions] = useState(DEFAULT_PERMISSIONS);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [rolePermissions, setRolePermissions] = useState(() => {
-    const saved = localStorage.getItem("rolePermissions");
-    return saved ? JSON.parse(saved) : {};
-  });
-
+  // Carregar categorias do back-end
   useEffect(() => {
-    localStorage.setItem("userCategories", JSON.stringify(categories));
-  }, [categories]);
+    const loadCategories = async () => {
+      try {
+        const response = await api.get('/api/userCategories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Erro ao carregar categorias:", error);
+      }
+    };
 
-  useEffect(() => {
-    localStorage.setItem("rolePermissions", JSON.stringify(rolePermissions));
-  }, [rolePermissions]);
+    loadCategories();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,7 +76,7 @@ const Users = () => {
       setNewCategory("");
       setIsModalOpen(true);
     } else {
-      setFormData((prev) => ({ ...prev, category: value }));
+      setFormData((prev) => ({ ...prev, role: value }));
     }
   };
 
@@ -88,45 +88,86 @@ const Users = () => {
     setNewPermissions((prev) => ({ ...prev, [perm]: !prev[perm] }));
   };
 
-  const handleAddCategory = () => {
-    const trimmed = newCategory.trim();
+  // Adicionar nova categoria no back-end
+  const handleAddCategory = async () => {
+    const trimmed = newCategory.trim().toLowerCase();
     if (!trimmed) return;
+    
     if (categories.includes(trimmed)) {
       setErrorMessage("Categoria já existe.");
       return;
     }
 
-    // Adiciona categoria
-    setCategories((prev) => [...prev, trimmed]);
+    try {
+      setLoading(true);
+      
+      // Adicionar categoria
+      const newCategories = [...categories, trimmed];
+      setCategories(newCategories);
+      
+      // Criar permissões padrão para a nova categoria
+      await api.post('/api/rolePermissions', {
+        role: trimmed,
+        permissions: newPermissions
+      });
 
-    // Salva permissões (sem manage_users/permission)
-    setRolePermissions((prev) => ({
-      ...prev,
-      [trimmed]: newPermissions,
-    }));
-
-    setFormData((prev) => ({ ...prev, category: trimmed }));
-    setSuccessMessage(`Categoria "${trimmed}" criada!`);
-    setNewCategory("");
-    setIsModalOpen(false);
+      setFormData((prev) => ({ ...prev, role: trimmed }));
+      setSuccessMessage(`Categoria "${trimmed}" criada com sucesso!`);
+      setNewCategory("");
+      setIsModalOpen(false);
+      
+    } catch (error) {
+      console.error("Erro ao criar categoria:", error);
+      setErrorMessage("Erro ao criar categoria.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = (e) => {
+  // Criar novo usuário no back-end
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.username || !formData.password || !formData.category) {
-      setErrorMessage("Preencha todos os campos.");
+    
+    if (!formData.username || !formData.password || !formData.role) {
+      setErrorMessage("Preencha todos os campos obrigatórios.");
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    localStorage.setItem(
-      "users",
-      JSON.stringify([...users, { ...formData, id: users.length + 1 }])
-    );
+    try {
+      setLoading(true);
+      setErrorMessage("");
 
-    setSuccessMessage("Usuário cadastrado com sucesso!");
-    setErrorMessage("");
-    setFormData({ username: "", password: "", category: "" });
+      // Verificar se username já existe
+      const usersResponse = await api.get(`/api/users?username=${formData.username}`);
+      if (usersResponse.data.length > 0) {
+        setErrorMessage("Nome de usuário já existe.");
+        return;
+      }
+
+      // Criar novo usuário
+      const newUser = {
+        username: formData.username,
+        password: formData.password,
+        email: formData.email || "",
+        role: formData.role
+      };
+
+      await api.post('/api/users', newUser);
+
+      setSuccessMessage("Usuário cadastrado com sucesso!");
+      setFormData({ 
+        username: "", 
+        password: "", 
+        email: "", 
+        role: "" 
+      });
+      
+    } catch (error) {
+      console.error("Erro ao cadastrar usuário:", error);
+      setErrorMessage("Erro ao cadastrar usuário.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleNavigate = () => {
@@ -149,10 +190,23 @@ const Users = () => {
             id="username"
             name="username"
             type="text"
-            placeholder="Digite o nome de usuário"
+            placeholder="Digite o nome de usuário para login"
             value={formData.username}
             onChange={handleChange}
             required
+          />
+
+          <label className={styles.label} htmlFor="email">
+            Email (opcional):
+          </label>
+          <input
+            className={styles.input}
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Digite o email"
+            value={formData.email}
+            onChange={handleChange}
           />
 
           <label className={styles.label} htmlFor="password">
@@ -169,26 +223,30 @@ const Users = () => {
             required
           />
 
-          <label className={styles.label} htmlFor="category">
-            Categoria:
+          <label className={styles.label} htmlFor="role">
+            Cargo:
           </label>
           <select
             className={styles.input}
-            id="category"
-            name="category"
-            value={formData.category}
+            id="role"
+            name="role"
+            value={formData.role}
             onChange={handleCategoryChange}
             required
           >
-            <option value="" disabled>Selecione uma categoria</option>
+            <option value="" disabled>Selecione um cargo</option>
             {categories.map((cat, i) => (
-              <option key={i} value={cat}>{cat}</option>
+              <option key={i} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
             ))}
-            <option value="new">+ Nova Categoria</option>
+            <option value="new">+ Novo Cargo</option>
           </select>
 
-          <button className={styles.button} type="submit">
-            Cadastrar
+          <button 
+            className={styles.button} 
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Cadastrando..." : "Cadastrar"}
           </button>
         </form>
 
@@ -200,31 +258,36 @@ const Users = () => {
         </button>
       </div>
 
-      {/* MODAL COM PERMISSÕES CORRETAS */}
+      {/* MODAL PARA NOVO CARGO */}
       {isModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal} style={{ maxWidth: "520px" }}>
             <div className={styles.modalHeader}>
-              <h2>Nova Categoria</h2>
-              <button className={styles.modalClose} onClick={() => setIsModalOpen(false)}>
+              <h2>Novo Cargo</h2>
+              <button 
+                className={styles.modalClose} 
+                onClick={() => setIsModalOpen(false)}
+                disabled={loading}
+              >
                 X
               </button>
             </div>
 
             <div className={styles.modalContent}>
-              <label className={styles.label}>Nome da Categoria:</label>
+              <label className={styles.label}>Nome do Cargo:</label>
               <input
                 type="text"
                 value={newCategory}
                 onChange={handleNewCategoryChange}
-                placeholder="Ex: Coordenador"
+                placeholder="Ex: coordenador"
                 className={styles.input}
                 style={{ marginBottom: "1.5rem" }}
                 autoFocus
+                disabled={loading}
               />
 
               <h3 style={{ margin: "1.2rem 0 0.8rem", fontSize: "1rem", color: "var(--azul)" }}>
-                Permissões
+                Permissões Padrão
               </h3>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
@@ -241,10 +304,12 @@ const Users = () => {
                   >
                     {label}
                     <div
-                      className={styles.switch}
-                      onClick={() => togglePermission(key)}
+                      className={`${styles.switch} ${loading ? styles.disabled : ''}`}
+                      onClick={() => !loading && togglePermission(key)}
                       style={{
                         background: newPermissions[key] ? "var(--roxo)" : "var(--cinza)",
+                        cursor: loading ? "not-allowed" : "pointer",
+                        opacity: loading ? 0.6 : 1
                       }}
                     >
                       <div
@@ -263,15 +328,16 @@ const Users = () => {
               <button
                 onClick={handleAddCategory}
                 className={styles.button}
-                disabled={!newCategory.trim()}
+                disabled={!newCategory.trim() || loading}
                 style={{ background: "var(--roxo)" }}
               >
-                Criar Categoria
+                {loading ? "Criando..." : "Criar Cargo"}
               </button>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className={styles.button}
                 style={{ background: "var(--cinza)", color: "var(--preto)" }}
+                disabled={loading}
               >
                 Cancelar
               </button>
