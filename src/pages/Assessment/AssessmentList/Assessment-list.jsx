@@ -5,7 +5,8 @@ import styles from "./Assessment-list.module.css";
 import parse from 'html-react-parser';
 import Menu from "../../../components/Menu/Menu";
 import jsPDF from 'jspdf';
-
+import logoPdf from '../../../assets/logo-pdf.png';
+import infoPdf from '../../../assets/info-pdf.png';
 const students = [
     "João Silva",
     "Maria Oliveira",
@@ -144,7 +145,7 @@ const AssessmentList = () => {
   // === 1. LOGO NO TOPO ===
   try {
     const logoImg = new Image();
-    logoImg.src = '../logo-pdf.png'; // Caminho relativo ao src
+    logoImg.src = logoPdf; 
     doc.addImage(logoImg, 'PNG', pageWidth / 2 - 25, y, 50, 30); // centro, 50x30mm
     y += 35;
   } catch (e) {
@@ -188,7 +189,7 @@ const AssessmentList = () => {
   // === 2. IMAGEM INFO NO FINAL ===
   try {
     const infoImg = new Image();
-    infoImg.src = '../info-pdf.png';
+    infoImg.src = infoPdf;
     const imgHeight = 30;
     const imgY = pageHeight - imgHeight - 10;
     doc.addImage(infoImg, 'PNG', pageWidth / 2 - 40, imgY, 80, imgHeight); // centro, 80x30mm

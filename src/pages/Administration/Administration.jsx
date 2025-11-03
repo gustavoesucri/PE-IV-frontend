@@ -46,10 +46,10 @@ const Administration = () => {
   // Estado para posições e tamanhos dos widgets
   const [widgetPositions, setWidgetPositions] = useState(() => {
     const defaultPositions = {
-      studentsWidget: { x: 20, y: 60, width: 600, height: 300 },
-      companiesWidget: { x: 640, y: 60, width: 600, height: 300 },
-      counterWidget: { x: 20, y: 385, width: 300, height: 100 },
-      statsWidget: { x: 640, y: 380, width: 400, height: 250 },
+      studentsWidget: { x: 60, y: 60, width: 600, height: 300 },
+      companiesWidget: { x: 690, y: 60, width: 600, height: 300 },
+      counterWidget: { x: 60, y: 385, width: 300, height: 100 },
+      statsWidget: { x: 690, y: 380, width: 400, height: 260 },
     };
 
     try {
@@ -59,7 +59,7 @@ const Administration = () => {
       notes.forEach((note, index) => {
         if (!merged[`noteWidget_${note.id}`]) {
           merged[`noteWidget_${note.id}`] = {
-            x: 325 + index * 50,
+            x: 380 + index * 50,
             y: 380,
             width: 300,
             height: 150,

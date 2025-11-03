@@ -1,13 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiMenu, FiSettings, FiLogOut, FiBriefcase, FiUsers,
-  FiCheckCircle, FiBarChart2, FiFileText, FiUserCheck, FiGrid, FiShield
+  FiCheckCircle, FiBarChart2, FiFileText, FiUserCheck, FiGrid, FiShield, FiArrowLeft, FiCheck
 } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import useMenu from "./useMenu";
 import styles from "./Menu.module.css";
+
+// NOTIFICAÇÕES COM DETALHES
+const NOTIFICATIONS_DATA = [
+  {
+    id: 1,
+    summary: "Novo aluno cadastrado: Maria Silva",
+    title: "Novo Aluno Cadastrado",
+    description: "Maria Silva foi cadastrada no sistema como estudante do 2º ano do Ensino Médio.",
+    timestamp: "Há 2 minutos",
+    read: false
+  },
+  {
+    id: 2,
+    summary: "Reunião de professores às 15h",
+    title: "Reunião Agendada",
+    description: "Reunião geral com todos os professores para alinhamento do semestre. Local: Sala 12.",
+    timestamp: "Há 1 hora",
+    read: false
+  },
+  {
+    id: 3,
+    summary: "Aluno João está doente",
+    title: "Aviso de Saúde",
+    description: "João informou que está com gripe e não comparecerá às aulas hoje e amanhã.",
+    timestamp: "Há 3 horas",
+    read: true
+  }
+];
 
 const Menu = () => {
   const {
@@ -37,20 +65,20 @@ const Menu = () => {
       path: "/students",
       submenu: [{ label: "Lista de Estudantes", path: "/students-list" }]
     },
-{
-  id: "director-panel",
-  label: "Painel do Diretor",
-  path: "/director-panel",
-  submenu: [
     {
-      label: "Usuários",
-      path: "/users", // ← CORRIGIDO
+      id: "director-panel",
+      label: "Painel do Diretor",
+      path: "/director-panel",
       submenu: [
-        { label: "Lista de Usuários", path: "/users-list" }
+        {
+          label: "Usuários",
+          path: "/users",
+          submenu: [
+            { label: "Lista de Usuários", path: "/users-list" }
+          ]
+        }
       ]
-    }
-  ]
-},
+    },
     {
       id: "companies",
       label: "Empresas",
@@ -103,11 +131,28 @@ const Menu = () => {
     }
   });
 
-  const notifications = [
-    "Novo aluno cadastrado: Maria",
-    "Reunião de professores às 15h",
-    "Aluno João está doente"
-  ];
+  // NOTIFICAÇÕES COM ESTADO
+  const [notifications, setNotifications] = useState(() => {
+    const saved = localStorage.getItem("notifications");
+    return saved ? JSON.parse(saved) : NOTIFICATIONS_DATA;
+  });
+
+  const [expandedNotification, setExpandedNotification] = useState(null);
+
+  // Persistir notificações
+  useEffect(() => {
+    localStorage.setItem("notifications", JSON.stringify(notifications));
+  }, [notifications]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const markAsRead = (id) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -129,22 +174,76 @@ const Menu = () => {
         <button onClick={toggleSidebar} className={styles.iconButton} aria-label="Menu">
           <FiMenu size={26} />
         </button>
-        <button
-          onClick={toggleNotifications}
-          className={`${styles.iconButton} ${styles.iconBlue}`}
-          aria-label="Notificações"
-        >
-          <IoNotificationsOutline size={28} />
-        </button>
 
-        {notificationsOpen && !sidebarOpen && (
-          <div className={styles.notificationsDropdown}>
-            <h4>Notificações</h4>
-            <ul>
-              {notifications.map((n, i) => <li key={i}>{n}</li>)}
-            </ul>
-          </div>
-        )}
+        {/* ÍCONE COM BADGE */}
+        <div className={styles.notificationWrapper}>
+          <button
+            onClick={toggleNotifications}
+            className={`${styles.iconButton} ${styles.iconBlue}`}
+            aria-label="Notificações"
+          >
+            <IoNotificationsOutline size={28} />
+            {unreadCount > 0 && (
+              <span className={styles.badge}>{unreadCount > 9 ? "9+" : unreadCount}</span>
+            )}
+          </button>
+
+          {/* DROPDOWN DE NOTIFICAÇÕES */}
+          {notificationsOpen && !sidebarOpen && (
+            <div className={styles.notificationsDropdown}>
+              {expandedNotification ? (
+                <>
+                  <div className={styles.notificationHeader}>
+                    <button
+                      onClick={() => setExpandedNotification(null)}
+                      className={styles.backButton}
+                    >
+                      <FiArrowLeft size={18} />
+                    </button>
+                    <h4>Detalhes da Notificação</h4>
+                  </div>
+                  <div className={styles.expandedNotification}>
+                    <h5>{expandedNotification.title}</h5>
+                    <p className={styles.timestamp}>{expandedNotification.timestamp}</p>
+                    <p className={styles.description}>{expandedNotification.description}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className={styles.notificationHeader}>
+                    <h4>Notificações</h4>
+                    {unreadCount > 0 && (
+                      <button onClick={markAllAsRead} className={styles.markAllRead}>
+                        <FiCheck size={16} /> Marcar todas como lidas
+                      </button>
+                    )}
+                  </div>
+                  <ul className={styles.notificationList}>
+                    {notifications.length === 0 ? (
+                      <li className={styles.empty}>Nenhuma notificação</li>
+                    ) : (
+                      notifications.map((n) => (
+                        <li
+                          key={n.id}
+                          className={`${styles.notificationItem} ${!n.read ? styles.unread : ""}`}
+                          onClick={() => {
+                            markAsRead(n.id);
+                            setExpandedNotification(n);
+                          }}
+                        >
+                          <div className={styles.summary}>
+                            {!n.read && <span className={styles.unreadDot} />}
+                            {n.summary}
+                          </div>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                </>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {sidebarOpen && <div className={styles.overlay} onClick={closeSidebar} />}
@@ -168,7 +267,6 @@ const Menu = () => {
                           {...provided.dragHandleProps}
                           className={`${styles.menuGroup} ${snapshot.isDragging ? styles.dragging : ""}`}
                         >
-                          {/* Item Principal */}
                           <div
                             className={styles.mainItem}
                             onClick={(e) => {
@@ -184,27 +282,24 @@ const Menu = () => {
                             <span>{item.label}</span>
                           </div>
 
-                          {/* Submenu (1º nível) */}
                           {item.submenu?.length > 0 && (
                             <div className={styles.submenu}>
                               {item.submenu.map((sub1, i) => (
                                 <div key={i}>
-                                  {/* Item de 2º nível (Usuários) */}
-<div
-  className={styles.subItem}
-  style={{ paddingLeft: "3.3rem" }}
-  onClick={(e) => {
-    e.stopPropagation();
-    if (sub1.path) {
-      navigate(sub1.path);
-      closeSidebar();
-    }
-  }}
->
-  {sub1.label}
-</div>
+                                  <div
+                                    className={styles.subItem}
+                                    style={{ paddingLeft: "3.3rem" }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (sub1.path) {
+                                        navigate(sub1.path);
+                                        closeSidebar();
+                                      }
+                                    }}
+                                  >
+                                    {sub1.label}
+                                  </div>
 
-                                  {/* Submenu de 2º nível (3º total) */}
                                   {sub1.submenu?.length > 0 && (
                                     <div className={styles.subSubmenu}>
                                       {sub1.submenu.map((sub2, j) => (
