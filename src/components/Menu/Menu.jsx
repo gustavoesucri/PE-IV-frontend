@@ -120,11 +120,11 @@ const Menu = () => {
       try {
         const savedUser = localStorage.getItem("user");
         const token = localStorage.getItem("token");
-        
+
         if (savedUser && token) {
           const user = JSON.parse(savedUser);
           setCurrentUser(user);
-          
+
           // Carregar configurações do usuário do back-end
           try {
             const response = await api.get(`/api/userSettings?userId=${user.id}`);
@@ -146,12 +146,12 @@ const Menu = () => {
   // Filtrar itens baseados no role do usuário - usando useCallback
   const getFilteredSidebarItems = useCallback(() => {
     if (!currentUser) return baseSidebarItems;
-    
+
     // Se não for diretor, remove o Painel do Diretor
     if (currentUser.role !== "diretor") {
       return baseSidebarItems.filter(item => item.id !== "director-panel");
     }
-    
+
     return baseSidebarItems;
   }, [currentUser, baseSidebarItems]);
 
@@ -168,11 +168,11 @@ const Menu = () => {
   // Atualizar sidebarItems quando currentUser ou userSettings mudar
   useEffect(() => {
     const filteredItems = getFilteredSidebarItems();
-    
+
     // Se temos userSettings, usar a ordem salva do back-end
     if (userSettings && userSettings.sidebarOrder) {
       const savedOrder = userSettings.sidebarOrder;
-      
+
       // Mapear itens salvos para a estrutura completa
       const orderedItems = savedOrder
         .map(itemId => {
@@ -187,7 +187,7 @@ const Menu = () => {
           return null;
         })
         .filter(Boolean);
-      
+
       // Adicionar quaisquer itens novos que não estavam na ordem salva
       const missingItems = filteredItems
         .filter(item => !orderedItems.some(ordered => ordered.id === item.id))
@@ -196,7 +196,7 @@ const Menu = () => {
           icon: iconMap[item.id] || FiGrid,
           submenu: item.submenu || []
         }));
-      
+
       setSidebarItems([...orderedItems, ...missingItems]);
     } else {
       // Se não tem ordem salva, usar ordem padrão
@@ -257,7 +257,7 @@ const Menu = () => {
     const [movedItem] = reorderedItems.splice(result.source.index, 1);
     reorderedItems.splice(result.destination.index, 0, movedItem);
     setSidebarItems(reorderedItems);
-    
+
     // Salvar no back-end
     saveSidebarOrder(reorderedItems);
   };
@@ -423,12 +423,12 @@ const Menu = () => {
                     </Draggable>
                   ))}
                   {provided.placeholder}
-                  
+
                   {/* SEÇÃO DO USUÁRIO E LOGOUT NO FINAL */}
                   <div className={styles.userSection}>
                     {currentUser && (
                       <div className={styles.userInfo}>
-                        <span className={styles.userLabel}>Usuário: {currentUser.name}</span>
+                        <span className={styles.userLabel}>Usuário: {currentUser.username}</span>
                         {/* REMOVIDO: Não mostrar mais a categoria */}
                       </div>
                     )}

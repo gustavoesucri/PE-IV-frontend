@@ -121,7 +121,7 @@
       "dataNascimento": "1998-05-15",
       "dataIngresso": "2023-04-01",
       "observacaoBreve": "Faltando muito no trabalho",
-      "observacaoDetalhada": "Faltou às últimas 3 reuniões e precisa melhorar a pontualidade.",
+      "observacaoDetalhada": "Faltou às últimas 3 reuniões e precisa melhorar a pontualidade.\n",
       "acompanhamento": {
         "av1": true,
         "av2": true,
@@ -216,7 +216,16 @@
       }
     }
   ],
-  "userSpecificPermissions": [],
+  "userSpecificPermissions": [
+    {
+      "userId": 2,
+      "permissions": {
+        "view_students": false,
+        "create_students": false
+      },
+      "id": 1
+    }
+  ],
   "globalNotifications": {
     "id": 1,
     "notifications": {
