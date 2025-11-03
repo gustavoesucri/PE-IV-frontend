@@ -111,7 +111,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .modal {
@@ -137,4 +137,69 @@
 
 .modalButton:hover {
   background-color: var(--roxo);
+}
+
+/* Estilos para mensagens de sucesso/erro */
+.success {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.noPermission {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.noPermission p {
+  margin: 0.5rem 0;
+}
+
+/* Estilos para modais adicionais */
+.modalButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  justify-content: center;
+}
+
+.modalButton {
+  margin-top: 0;
+}
+
+/* Estado disabled para botões durante loading */
+.button:disabled,
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input:disabled,
+.select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Adicione estas regras ao seu CSS existente */
+
+/* Estilo específico para o modal de permissão */
+.modal h3 {
+  color: var(--azul);
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.modal p {
+  color: var(--preto);
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Se quiser destacar o modal de erro, pode adicionar: */
+.modal[style*="color: var(--vermelho)"] {
+  border-left: 4px solid var(--vermelho);
 }

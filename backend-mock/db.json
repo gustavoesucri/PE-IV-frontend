@@ -128,7 +128,8 @@
         "entrevista1": true,
         "entrevista2": true,
         "resultado": "Aprovado"
-      }
+      },
+      "status": "Ativo"
     }
   ],
   "companies": [
@@ -141,6 +142,32 @@
       "bairro": "Bairro Centro",
       "estado": "SP",
       "cep": "01234-567"
+    }
+  ],
+  "placements": [
+    {
+      "id": 1,
+      "studentId": 1,
+      "empresaId": 1,
+      "dataAdmissao": "2024-03-10",
+      "funcao": "Desenvolvedor Frontend",
+      "contatoRh": "Ana Pereira",
+      "dataDesligamento": "2024-12-31",
+      "status": "Ativo",
+      "createdAt": "2024-01-15T10:00:00Z",
+      "createdBy": 1
+    },
+    {
+      "studentId": 1,
+      "empresaId": 1,
+      "dataAdmissao": "2025-11-05",
+      "funcao": "asdsa",
+      "contatoRh": "asdasd",
+      "dataDesligamento": "2025-11-26",
+      "status": "Ativo",
+      "createdAt": "2025-11-03T17:08:43.473Z",
+      "createdBy": 2,
+      "id": 2
     }
   ],
   "assessments": [
@@ -221,7 +248,14 @@
       "userId": 2,
       "permissions": {
         "view_students": false,
-        "create_students": false
+        "create_students": false,
+        "view_companies": false,
+        "view_placements": false,
+        "create_placements": false,
+        "create_evaluations": false,
+        "view_evaluations": false,
+        "create_observations": false,
+        "view_observations": false
       },
       "id": 1
     }

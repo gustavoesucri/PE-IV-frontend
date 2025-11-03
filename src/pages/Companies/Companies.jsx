@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import InputMask from "react-input-mask";
 import styles from "./Companies.module.css";
 import Menu from "../../components/Menu/Menu";
+import api from "../../api";
+import { X } from "lucide-react";
 
 const brazilianStates = [
   "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS",
@@ -47,8 +49,63 @@ const Companies = () => {
     estado: "",
     cep: "",
   });
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [userPermissions, setUserPermissions] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState("");
+
+  // Carregar permissões
+  useEffect(() => {
+    const loadUserPermissions = async () => {
+      try {
+        const savedUser = localStorage.getItem("user");
+        if (savedUser) {
+          const user = JSON.parse(savedUser);
+
+          // Carregar permissões do cargo
+          const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
+          let rolePermissions = {};
+          if (rolePermsResponse.data.length > 0) {
+            rolePermissions = rolePermsResponse.data[0].permissions;
+          }
+
+          // Carregar permissões específicas do usuário
+          const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
+          let userSpecificPermissions = {};
+          if (userPermsResponse.data.length > 0) {
+            userSpecificPermissions = userPermsResponse.data[0].permissions;
+          }
+
+          // Combinar permissões (usuário sobrepõe cargo)
+          const finalPermissions = { ...rolePermissions };
+          Object.keys(userSpecificPermissions).forEach(perm => {
+            if (userSpecificPermissions[perm] !== null) {
+              finalPermissions[perm] = userSpecificPermissions[perm];
+            }
+          });
+
+          setUserPermissions(finalPermissions);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar permissões:", error);
+        showMessage("Erro ao carregar permissões do usuário.", "error");
+      }
+    };
+
+    loadUserPermissions();
+  }, []);
+
+  const showMessage = (message, type = "error") => {
+    setModalMessage(message);
+    setModalType(type);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalMessage("");
+    setModalType("");
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,32 +118,68 @@ const Companies = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.nome || !formData.cnpj) {
-      setErrorMessage("Por favor, preencha os campos obrigatórios (Nome e CNPJ).");
-      return;
-    }
-    if (!validateCNPJ(formData.cnpj)) {
-      setErrorMessage("CNPJ inválido.");
-      return;
-    }
-    if (formData.cep && formData.cep.replace(/[^\d]+/g, "").length !== 8) {
-      setErrorMessage("CEP deve ter exatamente 8 dígitos.");
-      return;
-    }
-    const companies = JSON.parse(localStorage.getItem("companies") || "[]");
-    const cleanedCNPJ = formData.cnpj.replace(/[^\d]+/g, "");
-    const cleanedCEP = formData.cep.replace(/[^\d]+/g, "");
-    localStorage.setItem(
-      "companies",
-      JSON.stringify([
-        ...companies,
-        { ...formData, cnpj: cleanedCNPJ, cep: cleanedCEP, id: companies.length + 1 },
-      ])
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  // Verificar permissão para criar empresas
+  if (!userPermissions.create_companies) {
+    showMessage("Você não tem permissão para cadastrar empresas. Se algo estiver errado consulte o Diretor.");
+    return;
+  }
+
+  if (!formData.nome || !formData.cnpj) {
+    showMessage("Por favor, preencha os campos obrigatórios (Nome e CNPJ).");
+    return;
+  }
+  
+  if (!validateCNPJ(formData.cnpj)) {
+    showMessage("CNPJ inválido.");
+    return;
+  }
+  
+  if (formData.cep && formData.cep.replace(/[^\d]+/g, "").length !== 8) {
+    showMessage("CEP deve ter exatamente 8 dígitos.");
+    return;
+  }
+
+  try {
+    // Preparar dados para envio
+    const companyData = {
+      nome: formData.nome.trim(),
+      cnpj: formData.cnpj.replace(/[^\d]+/g, ""),
+      rua: formData.rua.trim(),
+      numero: formData.numero,
+      bairro: formData.bairro.trim(),
+      estado: formData.estado,
+      cep: formData.cep.replace(/[^\d]+/g, ""),
+    };
+
+    // Verificar se CNPJ ou nome já existem
+    const companiesResponse = await api.get('/api/companies');
+    const cnpjExists = companiesResponse.data.some(
+      company => company.cnpj === companyData.cnpj
     );
-    setSuccessMessage("Empresa cadastrada com sucesso!");
-    setErrorMessage("");
+
+    const nomeExists = companiesResponse.data.some(
+      company => company.nome.toLowerCase() === companyData.nome.toLowerCase()
+    );
+
+    if (cnpjExists) {
+      showMessage("CNPJ já cadastrado. Não é possível cadastrar uma empresa com o mesmo CNPJ.");
+      return;
+    }
+
+    if (nomeExists) {
+      showMessage("Nome da empresa já cadastrado. Não é possível cadastrar uma empresa com o mesmo nome.");
+      return;
+    }
+
+    // Enviar para o back-end
+    await api.post('/api/companies', companyData);
+
+    showMessage("Empresa cadastrada com sucesso!", "success");
+    
+    // Limpar formulário
     setFormData({
       nome: "",
       cnpj: "",
@@ -96,7 +189,18 @@ const Companies = () => {
       estado: "",
       cep: "",
     });
-  };
+
+  } catch (error) {
+    console.error("Erro ao cadastrar empresa:", error);
+    if (error.response && error.response.status === 403) {
+      showMessage("Acesso negado. Você não tem permissão para esta ação.");
+    } else if (error.response && error.response.status === 400) {
+      showMessage("Erro nos dados enviados. Verifique as informações.");
+    } else {
+      showMessage("Erro ao cadastrar empresa. Tente novamente.");
+    }
+  }
+};
 
   const handleNavigate = () => {
     navigate("/companies-list");
@@ -230,15 +334,37 @@ const Companies = () => {
           </button>
         </form>
 
-        {successMessage && (
-          <p className={styles.successMessage}>{successMessage}</p>
-        )}
-        {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
-
         <button className={styles.secondaryButton} onClick={handleNavigate}>
           Listar empresas cadastradas
         </button>
       </div>
+
+      {/* Modal de Mensagem */}
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2 className={modalType === "success" ? styles.modalSuccessTitle : styles.modalErrorTitle}>
+                {modalType === "success" ? "Sucesso" : "Aviso"}
+              </h2>
+              <button className={styles.modalClose} onClick={closeModal}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <p>{modalMessage}</p>
+            </div>
+            <div className={styles.modalFooter}>
+              <button 
+                className={`${styles.modalButton} ${modalType === "success" ? styles.modalSuccessButton : styles.modalErrorButton}`}
+                onClick={closeModal}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

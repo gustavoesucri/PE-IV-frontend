@@ -2,29 +2,8 @@ import React, { useState, useEffect } from "react";
 import InputMask from "react-input-mask";
 import styles from "./CompaniesList.module.css";
 import Menu from "../../../components/Menu/Menu";
-
-const mockCompanies = [
-  {
-    id: 1,
-    nome: "Empresa ABC Ltda",
-    cnpj: "12345678000195",
-    rua: "Rua Principal",
-    numero: "123",
-    bairro: "Centro",
-    estado: "SP",
-    cep: "12345678",
-  },
-  {
-    id: 2,
-    nome: "XYZ Soluções",
-    cnpj: "98765432000176",
-    rua: "Avenida Brasil",
-    numero: "456",
-    bairro: "Jardim",
-    estado: "RJ",
-    cep: "87654321",
-  },
-];
+import { X } from "lucide-react";
+import api from "../../../api";
 
 const brazilianStates = [
   "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS",
@@ -59,15 +38,20 @@ const validateCNPJ = (cnpj) => {
 };
 
 const CompaniesList = () => {
-  const [companies, setCompanies] = useState(() => {
-    const saved = localStorage.getItem("companies");
-    return saved ? JSON.parse(saved) : mockCompanies;
-  });
+  const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
   const [stateFilter, setStateFilter] = useState("");
-  const [filteredCompanies, setFilteredCompanies] = useState(companies);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filteredCompanies, setFilteredCompanies] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState(null);
+  const [deletingCompany, setDeletingCompany] = useState(null);
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState("");
+  const [userPermissions, setUserPermissions] = useState({});
+  const [cnpjFilter, setCnpjFilter] = useState("");
+
   const [formData, setFormData] = useState({
     nome: "",
     cnpj: "",
@@ -77,19 +61,75 @@ const CompaniesList = () => {
     estado: "",
     cep: "",
   });
-  const [errorMessage, setErrorMessage] = useState("");
-  const [cnpjFilter, setCnpjFilter] = useState("");
 
-
+  // Carregar permissões e empresas
   useEffect(() => {
-    const savedCompanies = JSON.parse(localStorage.getItem("companies") || "[]");
-    setCompanies(savedCompanies.length > 0 ? savedCompanies : mockCompanies);
-    setFilteredCompanies(savedCompanies.length > 0 ? savedCompanies : mockCompanies);
+    const loadCompanies = async () => {
+      try {
+        const response = await api.get('/api/companies');
+        setCompanies(response.data);
+        setFilteredCompanies(response.data);
+      } catch (error) {
+        console.error("Erro ao carregar empresas:", error);
+        showMessage("Erro ao carregar lista de empresas.", "error");
+      }
+    };
+
+    const loadUserPermissionsAndCompanies = async () => {
+      try {
+        const savedUser = localStorage.getItem("user");
+        if (savedUser) {
+          const user = JSON.parse(savedUser);
+
+          // Carregar permissões do cargo
+          const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
+          let rolePermissions = {};
+          if (rolePermsResponse.data.length > 0) {
+            rolePermissions = rolePermsResponse.data[0].permissions;
+          }
+
+          // Carregar permissões específicas do usuário
+          const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
+          let userSpecificPermissions = {};
+          if (userPermsResponse.data.length > 0) {
+            userSpecificPermissions = userPermsResponse.data[0].permissions;
+          }
+
+          // Combinar permissões (usuário sobrepõe cargo)
+          const finalPermissions = { ...rolePermissions };
+          Object.keys(userSpecificPermissions).forEach(perm => {
+            if (userSpecificPermissions[perm] !== null) {
+              finalPermissions[perm] = userSpecificPermissions[perm];
+            }
+          });
+
+          setUserPermissions(finalPermissions);
+
+          // Carregar empresas apenas se tiver permissão para visualizar
+          if (finalPermissions.view_companies) {
+            await loadCompanies();
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao carregar permissões:", error);
+        showMessage("Erro ao carregar permissões do usuário.", "error");
+      }
+    };
+
+    loadUserPermissionsAndCompanies();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("companies", JSON.stringify(companies));
-  }, [companies]);
+  const showMessage = (message, type = "error") => {
+    setModalMessage(message);
+    setModalType(type);
+    setIsMessageModalOpen(true);
+  };
+
+  const closeMessageModal = () => {
+    setIsMessageModalOpen(false);
+    setModalMessage("");
+    setModalType("");
+  };
 
   const handleFilter = () => {
     const normalize = (value) => value.replace(/[^\d]+/g, "");
@@ -116,13 +156,30 @@ const CompaniesList = () => {
   };
 
   const handleEditClick = (company) => {
+    // Verificar permissão para editar empresas
+    if (!userPermissions.create_companies) {
+      showMessage("Você não tem permissão para editar empresas. Se algo estiver errado consulte o Diretor.");
+      return;
+    }
+
     setEditingCompany(company);
     setFormData({ ...company });
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleDeleteClick = (company) => {
+    // Verificar permissão para deletar empresas
+    if (!userPermissions.create_companies) {
+      showMessage("Você não tem permissão para deletar empresas. Se algo estiver errado consulte o Diretor.");
+      return;
+    }
+
+    setDeletingCompany(company);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
     setEditingCompany(null);
     setFormData({
       nome: "",
@@ -133,7 +190,11 @@ const CompaniesList = () => {
       estado: "",
       cep: "",
     });
-    setErrorMessage("");
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setDeletingCompany(null);
   };
 
   const handleChange = (e) => {
@@ -147,36 +208,76 @@ const CompaniesList = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.nome || !formData.cnpj) {
-      setErrorMessage("Por favor, preencha os campos obrigatórios (Nome e CNPJ).");
+      showMessage("Por favor, preencha os campos obrigatórios (Nome e CNPJ).");
       return;
     }
     if (!validateCNPJ(formData.cnpj)) {
-      setErrorMessage("CNPJ inválido.");
+      showMessage("CNPJ inválido.");
       return;
     }
     if (formData.cep && formData.cep.replace(/[^\d]+/g, "").length !== 8) {
-      setErrorMessage("CEP deve ter exatamente 8 dígitos.");
+      showMessage("CEP deve ter exatamente 8 dígitos.");
       return;
     }
-    const cleanedCNPJ = formData.cnpj.replace(/[^\d]+/g, "");
-    const cleanedCEP = formData.cep.replace(/[^\d]+/g, "");
-    setCompanies((prev) =>
-      prev.map((c) =>
-        c.id === editingCompany.id
-          ? { ...formData, cnpj: cleanedCNPJ, cep: cleanedCEP, id: c.id }
-          : c
-      )
-    );
-    setFilteredCompanies((prev) =>
-      prev.map((c) =>
-        c.id === editingCompany.id
-          ? { ...formData, cnpj: cleanedCNPJ, cep: cleanedCEP, id: c.id }
-          : c
-      )
-    );
-    handleCloseModal();
+
+    try {
+      // Preparar dados para envio
+      const companyData = {
+        nome: formData.nome.trim(),
+        cnpj: formData.cnpj.replace(/[^\d]+/g, ""),
+        rua: formData.rua.trim(),
+        numero: formData.numero,
+        bairro: formData.bairro.trim(),
+        estado: formData.estado,
+        cep: formData.cep.replace(/[^\d]+/g, ""),
+      };
+
+      // Atualizar no back-end
+      await api.patch(`/api/companies/${editingCompany.id}`, companyData);
+      
+      // Atualizar lista local
+      const updatedCompanies = companies.map(c => 
+        c.id === editingCompany.id ? { ...c, ...companyData } : c
+      );
+      setCompanies(updatedCompanies);
+      setFilteredCompanies(updatedCompanies);
+
+      showMessage("Empresa atualizada com sucesso!", "success");
+      handleCloseEditModal();
+    } catch (error) {
+      console.error("Erro ao atualizar empresa:", error);
+      if (error.response && error.response.status === 403) {
+        showMessage("Acesso negado. Você não tem permissão para esta ação.");
+      } else {
+        showMessage("Erro ao atualizar empresa. Tente novamente.");
+      }
+    }
+  };
+
+  // Deletar empresa no back-end
+  const handleDelete = async () => {
+    try {
+      // Deletar empresa
+      await api.delete(`/api/companies/${deletingCompany.id}`);
+
+      // Atualizar lista local
+      const updatedCompanies = companies.filter(c => c.id !== deletingCompany.id);
+      setCompanies(updatedCompanies);
+      setFilteredCompanies(updatedCompanies);
+
+      handleCloseDeleteModal();
+      showMessage("Empresa deletada com sucesso!", "success");
+
+    } catch (error) {
+      console.error("Erro ao deletar empresa:", error);
+      if (error.response && error.response.status === 403) {
+        showMessage("Acesso negado. Você não tem permissão para esta ação.");
+      } else {
+        showMessage("Erro ao deletar empresa. Tente novamente.");
+      }
+    }
   };
 
   const formatCNPJ = (cnpj) => {
@@ -187,7 +288,7 @@ const CompaniesList = () => {
     setSearch("");
     setCnpjFilter("");
     setStateFilter("");
-    // setFilteredCompanies(companies);
+    setFilteredCompanies(companies);
   };
 
   return (
@@ -208,7 +309,7 @@ const CompaniesList = () => {
           type="text"
           placeholder="Buscar por CNPJ..."
           value={cnpjFilter}
-          onChange={(e) => setCnpjFilter(e.target.value.replace(/\D/g, ""))} // Aceita somente números
+          onChange={(e) => setCnpjFilter(e.target.value.replace(/\D/g, ""))}
           className={styles.input}
         />
 
@@ -234,50 +335,65 @@ const CompaniesList = () => {
       </div>
 
       <div className={styles.tableWrapper}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>CNPJ</th>
-              <th>Estado</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCompanies.length > 0 ? (
-              filteredCompanies.map((company) => (
-                <tr key={company.id}>
-                  <td>{company.nome}</td>
-                  <td>{formatCNPJ(company.cnpj)}</td>
-                  <td>{company.estado}</td>
-                  <td>
-                    <button
-                      className={styles.actionButton}
-                      onClick={() => handleEditClick(company)}
-                    >
-                      Editar
-                    </button>
+        {userPermissions.view_companies ? (
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>CNPJ</th>
+                <th>Estado</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCompanies.length > 0 ? (
+                filteredCompanies.map((company) => (
+                  <tr key={company.id}>
+                    <td>{company.nome}</td>
+                    <td>{formatCNPJ(company.cnpj)}</td>
+                    <td>{company.estado}</td>
+                    <td>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => handleEditClick(company)}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => handleDeleteClick(company)}
+                        >
+                          Deletar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className={styles.noData}>
+                    Nenhum registro encontrado
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className={styles.noData}>
-                  Nenhum registro encontrado
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        ) : (
+          <div className={styles.noPermissionMessage}>
+            Não foi possível carregar a visualização devido a falta de permissões, se for um problema, consulte o diretor.
+          </div>
+        )}
       </div>
 
-      {isModalOpen && editingCompany && (
+      {/* Modal de Edição */}
+      {isEditModalOpen && editingCompany && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
               <h2>Editar Empresa</h2>
-              <button className={styles.modalClose} onClick={handleCloseModal}>
-                ✕
+              <button className={styles.modalClose} onClick={handleCloseEditModal}>
+                <X size={20} />
               </button>
             </div>
             <div className={styles.modalContent}>
@@ -388,17 +504,76 @@ const CompaniesList = () => {
                   />
                 )}
               </InputMask>
-
-              {errorMessage && (
-                <p className={styles.errorMessage}>{errorMessage}</p>
-              )}
             </div>
             <div className={styles.modalFooter}>
               <button onClick={handleSave} className={styles.filterButton}>
                 Salvar
               </button>
-              <button onClick={handleCloseModal} className={styles.filterButton}>
+              <button onClick={handleCloseEditModal} className={styles.clearButton}>
                 Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmação de Deleção */}
+      {isDeleteModalOpen && deletingCompany && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2 style={{ color: '#dc3545' }}>Confirmar Deleção</h2>
+              <button className={styles.modalClose} onClick={handleCloseDeleteModal}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <p style={{ margin: '1rem 0', fontSize: '1rem', lineHeight: '1.5' }}>
+                Tem certeza que deseja deletar a empresa <strong>"{deletingCompany.nome}"</strong>?
+              </p>
+              <p style={{ color: '#666', fontSize: '0.9rem' }}>
+                Esta ação não pode ser desfeita.
+              </p>
+            </div>
+            <div className={styles.modalFooter}>
+              <button
+                onClick={handleDelete}
+                className={styles.deleteButton}
+              >
+                Sim, Deletar
+              </button>
+              <button
+                onClick={handleCloseDeleteModal}
+                className={styles.filterButton}
+                style={{ backgroundColor: 'var(--cinza)', color: 'var(--preto)' }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Mensagem */}
+      {isMessageModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2 className={modalType === "success" ? styles.modalSuccessTitle : styles.modalErrorTitle}>
+                {modalType === "success" ? "Sucesso" : "Aviso"}
+              </h2>
+              <button className={styles.modalClose} onClick={closeMessageModal}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <p>{modalMessage}</p>
+            </div>
+            <div className={styles.modalFooter}>
+              <button 
+                className={`${styles.modalButton} ${modalType === "success" ? styles.modalSuccessButton : styles.modalErrorButton}`}
+                onClick={closeMessageModal}>
+                OK
               </button>
             </div>
           </div>

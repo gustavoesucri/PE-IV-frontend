@@ -29,21 +29,26 @@ const StudentsList = () => {
     status: "Ativo",
     observacaoBreve: "",
     observacaoDetalhada: "",
+    cpf: ""
   });
 
   // Carregar permissões e estudantes
   useEffect(() => {
     // Mover loadStudents para dentro do useEffect
-    const loadStudents = async () => {
-      try {
-        const response = await api.get('/api/students');
-        setStudents(response.data);
-        setFilteredStudents(response.data);
-      } catch (error) {
-        console.error("Erro ao carregar estudantes:", error);
-        showMessage("Erro ao carregar lista de estudantes.", "error");
-      }
-    };
+const loadStudents = async () => {
+  try {
+    const response = await api.get('/api/students');
+    const studentsWithStatus = response.data.map(student => ({
+      ...student,
+      status: student.status || 'Ativo' // Garante que sempre tenha um status
+    }));
+    setStudents(studentsWithStatus);
+    setFilteredStudents(studentsWithStatus);
+  } catch (error) {
+    console.error("Erro ao carregar estudantes:", error);
+    showMessage("Erro ao carregar lista de estudantes.", "error");
+  }
+};
 
     const loadUserPermissionsAndStudents = async () => {
       try {
@@ -137,10 +142,11 @@ const StudentsList = () => {
     }
 
     setEditingStudent(student);
-    setFormData({ 
+    setFormData({
       ...student,
       observacaoBreve: student.observacaoBreve || "",
-      observacaoDetalhada: student.observacaoDetalhada || ""
+      observacaoDetalhada: student.observacaoDetalhada || "",
+      cpf: student.cpf || "" // Inclua o CPF
     });
     setIsEditModalOpen(true);
   };
@@ -180,29 +186,35 @@ const StudentsList = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = async () => {
-    try {
-      // Atualizar no back-end
-      await api.patch(`/api/students/${editingStudent.id}`, formData);
-      
-      // Atualizar lista local
-      const updatedStudents = students.map(s => 
-        s.id === editingStudent.id ? { ...s, ...formData } : s
-      );
-      setStudents(updatedStudents);
-      setFilteredStudents(updatedStudents);
+const handleSave = async () => {
+  try {
+    // Garantir que o status tenha um valor padrão
+    const dataToSave = {
+      ...formData,
+      status: formData.status || 'Ativo'
+    };
+    
+    // Atualizar no back-end
+    await api.patch(`/api/students/${editingStudent.id}`, dataToSave);
+    
+    // Atualizar lista local
+    const updatedStudents = students.map(s => 
+      s.id === editingStudent.id ? { ...s, ...dataToSave } : s
+    );
+    setStudents(updatedStudents);
+    setFilteredStudents(updatedStudents);
 
-      showMessage("Aluno atualizado com sucesso!", "success");
-      handleCloseEditModal();
-    } catch (error) {
-      console.error("Erro ao atualizar aluno:", error);
-      if (error.response && error.response.status === 403) {
-        showMessage("Acesso negado. Você não tem permissão para esta ação.");
-      } else {
-        showMessage("Erro ao atualizar aluno. Tente novamente.");
-      }
+    showMessage("Aluno atualizado com sucesso!", "success");
+    handleCloseEditModal();
+  } catch (error) {
+    console.error("Erro ao atualizar aluno:", error);
+    if (error.response && error.response.status === 403) {
+      showMessage("Acesso negado. Você não tem permissão para esta ação.");
+    } else {
+      showMessage("Erro ao atualizar aluno. Tente novamente.");
     }
-  };
+  }
+};
 
   // Deletar estudante no back-end
   const handleDelete = async () => {
@@ -250,21 +262,6 @@ const StudentsList = () => {
     setStatusFilter("Status");
     setFilteredStudents(students);
   };
-
-  // Verificar se usuário tem permissão para visualizar estudantes
-  if (!userPermissions.view_students) {
-    return (
-      <div className={styles.container}>
-        <Menu />
-        <div className={styles.card}>
-          <h2 className={styles.title}>Lista de Alunos</h2>
-          <div className={styles.errorMessage}>
-            Você não tem permissão para visualizar estudantes. Se algo estiver errado consulte o Diretor.
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.container}>
@@ -322,53 +319,59 @@ const StudentsList = () => {
       </div>
 
       <div className={styles.tableWrapper}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Data de Ingresso</th>
-              {dateFilterType === "dataDesligamento" && <th>Data de Desligamento</th>}
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredStudents.length > 0 ? (
-              filteredStudents.map((student) => (
-                <tr key={student.id}>
-                  <td>{student.nome}</td>
-                  <td>{formatDate(student.dataIngresso)}</td>
-                  {dateFilterType === "dataDesligamento" && (
-                    <td>{formatDate(student.dataDesligamento)}</td>
-                  )}
-                  <td>{student.status}</td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button
-                        className={styles.actionButton}
-                        onClick={() => handleEditClick(student)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className={styles.deleteButton}
-                        onClick={() => handleDeleteClick(student)}
-                      >
-                        Deletar
-                      </button>
-                    </div>
+        {userPermissions.view_students ? (
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Data de Ingresso</th>
+                {dateFilterType === "dataDesligamento" && <th>Data de Desligamento</th>}
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredStudents.length > 0 ? (
+                filteredStudents.map((student) => (
+                  <tr key={student.id}>
+                    <td>{student.nome}</td>
+                    <td>{formatDate(student.dataIngresso)}</td>
+                    {dateFilterType === "dataDesligamento" && (
+                      <td>{formatDate(student.dataDesligamento)}</td>
+                    )}
+                    <td>{student.status}</td>
+                    <td>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => handleEditClick(student)}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => handleDeleteClick(student)}
+                        >
+                          Deletar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className={styles.noData}>
+                    Nenhum registro encontrado
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5" className={styles.noData}>
-                  Nenhum registro encontrado
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        ) : (
+          <div className={styles.noPermissionMessage}>
+            Não foi possível carregar a visualização devido a falta de permissões, se for um problema, consulte o diretor.
+          </div>
+        )}
       </div>
 
       {/* Modal de Edição */}
@@ -391,6 +394,20 @@ const StudentsList = () => {
                 value={formData.nome}
                 onChange={handleChange}
                 className={styles.input}
+              />
+
+              {/* Campo CPF - apenas leitura */}
+              <label htmlFor="cpf">CPF:</label>
+              <input
+                id="cpf"
+                type="text"
+                name="cpf"
+                value={formData.cpf || ''}
+                className={styles.input}
+                disabled
+                readOnly
+                placeholder="CPF do aluno"
+                style={{ backgroundColor: '#f5f5f5', color: '#666' }}
               />
 
               <label htmlFor="dataNascimento">Data de Nascimento:</label>
@@ -527,7 +544,7 @@ const StudentsList = () => {
               <p>{modalMessage}</p>
             </div>
             <div className={styles.modalFooter}>
-              <button 
+              <button
                 className={`${styles.modalButton} ${modalType === "success" ? styles.modalSuccessButton : styles.modalErrorButton}`}
                 onClick={closeMessageModal}
               >

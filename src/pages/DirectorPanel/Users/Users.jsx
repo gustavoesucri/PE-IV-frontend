@@ -49,24 +49,35 @@ const Users = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [existingUsers, setExistingUsers] = useState([]); // Estado para armazenar usuários existentes
 
-  // Carregar categorias do back-end
+  // Carregar categorias e usuários existentes do back-end
   useEffect(() => {
-    const loadCategories = async () => {
+    const loadData = async () => {
       try {
-        const response = await api.get('/api/userCategories');
-        setCategories(response.data);
+        // Carregar categorias
+        const categoriesResponse = await api.get('/api/userCategories');
+        setCategories(categoriesResponse.data);
+
+        // Carregar usuários existentes para validação
+        const usersResponse = await api.get('/api/users');
+        setExistingUsers(usersResponse.data);
       } catch (error) {
-        console.error("Erro ao carregar categorias:", error);
+        console.error("Erro ao carregar dados:", error);
       }
     };
 
-    loadCategories();
+    loadData();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Limpar mensagens de erro quando o usuário começar a digitar
+    if (errorMessage) {
+      setErrorMessage("");
+    }
   };
 
   const handleCategoryChange = (e) => {
@@ -86,6 +97,36 @@ const Users = () => {
 
   const togglePermission = (perm) => {
     setNewPermissions((prev) => ({ ...prev, [perm]: !prev[perm] }));
+  };
+
+  // Função para validar username e email
+  const validateUserData = (username, email) => {
+    const usernameExists = existingUsers.some(user => 
+      user.username.toLowerCase() === username.toLowerCase()
+    );
+    
+    if (usernameExists) {
+      return "Nome de usuário já existe. Por favor, escolha outro.";
+    }
+
+    // Validar email apenas se foi preenchido
+    if (email && email.trim() !== "") {
+      const emailExists = existingUsers.some(user => 
+        user.email && user.email.toLowerCase() === email.toLowerCase()
+      );
+      
+      if (emailExists) {
+        return "Email já está em uso. Por favor, use outro email.";
+      }
+
+      // Validação básica de formato de email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return "Por favor, insira um email válido.";
+      }
+    }
+
+    return null;
   };
 
   // Adicionar nova categoria no back-end
@@ -133,16 +174,16 @@ const Users = () => {
       return;
     }
 
+    // Validar username e email
+    const validationError = validateUserData(formData.username, formData.email);
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
+
     try {
       setLoading(true);
       setErrorMessage("");
-
-      // Verificar se username já existe
-      const usersResponse = await api.get(`/api/users?username=${formData.username}`);
-      if (usersResponse.data.length > 0) {
-        setErrorMessage("Nome de usuário já existe.");
-        return;
-      }
 
       // Criar novo usuário
       const newUser = {
@@ -154,6 +195,10 @@ const Users = () => {
 
       await api.post('/api/users', newUser);
 
+      // Atualizar lista de usuários existentes
+      const updatedUsersResponse = await api.get('/api/users');
+      setExistingUsers(updatedUsersResponse.data);
+
       setSuccessMessage("Usuário cadastrado com sucesso!");
       setFormData({ 
         username: "", 
@@ -164,7 +209,11 @@ const Users = () => {
       
     } catch (error) {
       console.error("Erro ao cadastrar usuário:", error);
-      setErrorMessage("Erro ao cadastrar usuário.");
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Usuário ou email já existe no sistema.");
+      } else {
+        setErrorMessage("Erro ao cadastrar usuário.");
+      }
     } finally {
       setLoading(false);
     }
@@ -329,14 +378,12 @@ const Users = () => {
                 onClick={handleAddCategory}
                 className={styles.button}
                 disabled={!newCategory.trim() || loading}
-                style={{ background: "var(--roxo)" }}
               >
                 {loading ? "Criando..." : "Criar Cargo"}
               </button>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className={styles.button}
-                style={{ background: "var(--cinza)", color: "var(--preto)" }}
                 disabled={loading}
               >
                 Cancelar

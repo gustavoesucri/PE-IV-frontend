@@ -128,7 +128,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .modal {
@@ -217,4 +217,124 @@
 .filterButton:hover, .clearButton:hover {
   background-color: var(--roxo);
   transition: 0.5s;
+}
+
+/* Botão Delete - CompaniesList */
+.deleteButton {
+  background-color: #8B0000; /* Vermelho escuro */
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #dc3545; /* Vermelho mais claro e suave */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.deleteButton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
+}
+
+.deleteButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Efeito de brilho no hover */
+.deleteButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.deleteButton:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+/* Container dos botões de ação */
+.table td > div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Botão de ação padrão (Editar) */
+.actionButton {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: var(--roxo);
+}
+
+/* Mensagem de sem permissão */
+.noPermissionMessage {
+  text-align: center;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 1rem;
+  margin: 1rem 0;
+}
+
+/* Botões do Modal de Mensagem */
+.modalButton {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.modalButton:hover {
+  background-color: var(--roxo);
+}
+
+.modalErrorButton {
+  background-color: #dc3545;
+}
+
+.modalErrorButton:hover {
+  background-color: #c82333;
+}
+
+.modalSuccessButton {
+  background-color: var(--azul);
+}
+
+.modalSuccessButton:hover {
+  background-color:  var(--roxo);
 }

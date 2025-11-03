@@ -79,63 +79,78 @@ const Students = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Verificar permissão para criar estudantes
-    if (!userPermissions.create_students) {
-      showModal("Você não tem as permissões para criar estudante. Se algo estiver errado consulte o Diretor.");
+  e.preventDefault();
+  
+  // Verificar permissão para criar estudantes
+  if (!userPermissions.create_students) {
+    showModal("Você não tem as permissões para criar estudante. Se algo estiver errado consulte o Diretor.");
+    return;
+  }
+
+  try {
+    // Preparar dados para envio
+    const studentData = {
+      nome: formData.nome.trim(),
+      cpf: formData.cpf.replace(/\D/g, ''), // Remover formatação do CPF
+      dataNascimento: formData.dataNascimento,
+      dataIngresso: formData.dataIngresso,
+      observacaoBreve: formData.observacao.trim(),
+      observacaoDetalhada: formData.observacoesDetalhadas.trim(),
+      acompanhamento: {
+        av1: false,
+        av2: false,
+        entrevista1: false,
+        entrevista2: false,
+        resultado: "Pendente"
+      }
+    };
+
+    // Verificar se CPF ou nome já existem
+    const studentsResponse = await api.get('/api/students');
+    const cpfExists = studentsResponse.data.some(
+      student => student.cpf === studentData.cpf
+    );
+
+    const nomeExists = studentsResponse.data.some(
+      student => student.nome.toLowerCase() === studentData.nome.toLowerCase()
+    );
+
+    if (cpfExists) {
+      showModal("CPF já cadastrado. Não é possível cadastrar um estudante com o mesmo CPF.");
       return;
     }
 
-    try {
-      // Preparar dados para envio
-      const studentData = {
-        nome: formData.nome.trim(),
-        cpf: formData.cpf.replace(/\D/g, ''), // Remover formatação do CPF
-        dataNascimento: formData.dataNascimento,
-        dataIngresso: formData.dataIngresso,
-        observacaoBreve: formData.observacao.trim(),
-        observacaoDetalhada: formData.observacoesDetalhadas.trim(),
-        acompanhamento: {
-          av1: false,
-          av2: false,
-          entrevista1: false,
-          entrevista2: false,
-          resultado: "Pendente"
-        }
-      };
-
-      // Enviar para o back-end
-      await api.post('/api/students', studentData);
-
-      showModal("Aluno cadastrado com sucesso!", "success");
-      
-      // Limpar formulário
-      setFormData({
-        nome: "",
-        cpf: "",
-        dataNascimento: "",
-        dataIngresso: "",
-        observacao: "",
-        observacoesDetalhadas: "",
-      });
-
-    } catch (error) {
-      console.error("Erro ao cadastrar aluno:", error);
-      if (error.response && error.response.status === 403) {
-        showModal("Acesso negado. Você não tem permissão para esta ação.");
-      } else {
-        showModal("Erro ao cadastrar aluno. Tente novamente.");
-      }
+    if (nomeExists) {
+      showModal("Nome do estudante já cadastrado. Não é possível cadastrar um estudante com o mesmo nome.");
+      return;
     }
-  };
+
+    // Enviar para o back-end
+    await api.post('/api/students', studentData);
+
+    showModal("Aluno cadastrado com sucesso!", "success");
+    
+    // Limpar formulário
+    setFormData({
+      nome: "",
+      cpf: "",
+      dataNascimento: "",
+      dataIngresso: "",
+      observacao: "",
+      observacoesDetalhadas: "",
+    });
+
+  } catch (error) {
+    console.error("Erro ao cadastrar aluno:", error);
+    if (error.response && error.response.status === 403) {
+      showModal("Acesso negado. Você não tem permissão para esta ação.");
+    } else {
+      showModal("Erro ao cadastrar aluno. Tente novamente.");
+    }
+  }
+};
 
   const handleNavigate = () => {
-    // Verificar permissão para ver lista de estudantes
-    if (!userPermissions.view_students) {
-      showModal("Você não tem permissão para visualizar a lista de estudantes. Se algo estiver errado consulte o Diretor.");
-      return;
-    }
     navigate("/students-list");
   };
 

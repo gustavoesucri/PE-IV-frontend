@@ -342,3 +342,14 @@
 .modalSuccessButton:hover {
   background-color: #218838;
 }
+
+.noPermissionMessage {
+  text-align: center;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 1rem;
+  margin: 1rem 0;
+}
