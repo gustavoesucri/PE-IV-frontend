@@ -101,7 +101,7 @@ const UsersList = () => {
   return (
     <div className={styles.container}>
       <Menu />
-      <h1 className={styles.title}>Lista de Administradores</h1>
+      <h1 className={styles.title}>Lista de Usuários</h1>
 
       <div className={styles.filters}>
         <input
@@ -168,7 +168,7 @@ const UsersList = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
             <div className={styles.modalHeader}>
-              <h2>Editar Administrador</h2>
+              <h2>Editar Usuário</h2>
               <button className={styles.modalClose} onClick={handleCloseModal}>
                 ✕
               </button>

@@ -195,3 +195,33 @@
     transform: translateY(0);
   }
 }
+
+/* SWITCH PERSONALIZADO */
+.switch {
+  width: 50px;
+  height: 26px;
+  border-radius: 20px;
+  background: var(--cinza);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s ease;
+}
+
+.switch.on {
+  background: var(--roxo);
+}
+
+.slider {
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease;
+}
+
+.switch:active .slider {
+  width: 26px;
+}

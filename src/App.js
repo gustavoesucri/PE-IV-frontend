@@ -6,7 +6,7 @@ import Students from './pages/Students/Students';
 import Companies from './pages/Companies/Companies';
 import Assessment from './pages/Assessment/Assessment';
 import './App.css';
-import Users from './pages/Users/Users';
+import Users from './pages/DirectorPanel/Users/Users';
 import Settings from './pages/Settings/Settings';
 import Control from './pages/Control/Control';
 import FollowUp from './pages/FollowUp/FollowUp';
@@ -16,6 +16,7 @@ import StudentsList from './pages/Students/StudentsList/StudentsList';
 import UsersList from './pages/Users/UsersList/UsersList';
 import CompaniesList from './pages/Companies/CompaniesList/CompaniesList';
 import AssessmentList from './pages/Assessment/AssessmentList/Assessment-list';
+import DirectorPanel from './pages/DirectorPanel/DirectorPanel';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/students" element={<Students />} />
           <Route path="/companies" element={<Companies />} />
           <Route path="/companies-list" element={<CompaniesList />} />
+          <Route path="/director-panel" element={<DirectorPanel />} />
           <Route path="/users" element={<Users />} />
           <Route path="/users-list" element={<UsersList />} />
           <Route path="/assessment" element={<Assessment />} />

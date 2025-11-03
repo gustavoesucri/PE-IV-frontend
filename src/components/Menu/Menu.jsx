@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiMenu, FiSettings, FiLogOut, FiBriefcase, FiUsers,
-  FiUser, FiCheckCircle, FiBarChart2, FiFileText, FiUserCheck, FiGrid
+  FiCheckCircle, FiBarChart2, FiFileText, FiUserCheck, FiGrid, FiShield
 } from "react-icons/fi";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -20,7 +20,7 @@ const Menu = () => {
     administration: FiGrid,
     settings: FiSettings,
     students: FiUsers,
-    users: FiUser,
+    "director-panel": FiShield,
     companies: FiBriefcase,
     assessment: FiCheckCircle,
     control: FiBarChart2,
@@ -37,12 +37,20 @@ const Menu = () => {
       path: "/students",
       submenu: [{ label: "Lista de Estudantes", path: "/students-list" }]
     },
+{
+  id: "director-panel",
+  label: "Painel do Diretor",
+  path: "/director-panel",
+  submenu: [
     {
-      id: "users",
       label: "Usuários",
-      path: "/users",
-      submenu: [{ label: "Lista de Usuários", path: "/users-list" }]
-    },
+      path: "/users", // ← CORRIGIDO
+      submenu: [
+        { label: "Lista de Usuários", path: "/users-list" }
+      ]
+    }
+  ]
+},
     {
       id: "companies",
       label: "Empresas",
@@ -160,33 +168,60 @@ const Menu = () => {
                           {...provided.dragHandleProps}
                           className={`${styles.menuGroup} ${snapshot.isDragging ? styles.dragging : ""}`}
                         >
-                          {/* Item Principal - SEMPRE clicável */}
+                          {/* Item Principal */}
                           <div
                             className={styles.mainItem}
                             onClick={(e) => {
                               e.stopPropagation();
-                              navigate(item.path);
-                              closeSidebar();
+                              if (item.path) {
+                                navigate(item.path);
+                                closeSidebar();
+                              }
                             }}
+                            style={{ cursor: item.path ? "pointer" : "default" }}
                           >
                             {item.icon ? <item.icon size={20} /> : <FiGrid size={20} />}
                             <span>{item.label}</span>
                           </div>
 
-                          {/* Submenu */}
+                          {/* Submenu (1º nível) */}
                           {item.submenu?.length > 0 && (
                             <div className={styles.submenu}>
-                              {item.submenu.map((sub, i) => (
-                                <div
-                                  key={i}
-                                  className={styles.subItem}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(sub.path);
-                                    closeSidebar();
-                                  }}
-                                >
-                                  {sub.label}
+                              {item.submenu.map((sub1, i) => (
+                                <div key={i}>
+                                  {/* Item de 2º nível (Usuários) */}
+<div
+  className={styles.subItem}
+  style={{ paddingLeft: "3.3rem" }}
+  onClick={(e) => {
+    e.stopPropagation();
+    if (sub1.path) {
+      navigate(sub1.path);
+      closeSidebar();
+    }
+  }}
+>
+  {sub1.label}
+</div>
+
+                                  {/* Submenu de 2º nível (3º total) */}
+                                  {sub1.submenu?.length > 0 && (
+                                    <div className={styles.subSubmenu}>
+                                      {sub1.submenu.map((sub2, j) => (
+                                        <div
+                                          key={j}
+                                          className={styles.subSubItem}
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigate(sub2.path);
+                                            closeSidebar();
+                                          }}
+                                        >
+                                          {sub2.label}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                             </div>

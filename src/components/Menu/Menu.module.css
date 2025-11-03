@@ -183,3 +183,29 @@
   box-shadow: none !important;
   border-radius: 0 !important;
 }
+
+/* ============================================================= */
+/* SUB-SUBMENU (3º NÍVEL) - RECUO VISUAL */
+/* ============================================================= */
+
+.subSubmenu {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+}
+
+/* Mostra sub-submenu ao hover no grupo */
+.menuGroup:hover .subSubmenu {
+  max-height: 100px;
+}
+
+.subSubItem {
+  font-size: 0.85rem;
+  color: var(--preto);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.subSubItem:hover {
+  transform: translateX(5px);
+}
