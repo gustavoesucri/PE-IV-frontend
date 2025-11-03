@@ -3,6 +3,18 @@ PASSAR ISSO PARA O CHECKLIST MD. (REVISANDO)
 Documento para estruturar e organizar próximos passos
 -----------------------------------------------------
 Lembrete para futuro: toda lógica deverá constar no back-end obrigatoriamente.
+
+
+-----------------------------------------------------
+
+rota http://localhost:3000/ (login)
+
+FRONT-END
+
+-OK Trocar a "hint"(caso tenha esquecido sua senha...) para a cor branco.
+
+BACK-END
+
 -----------------------------------------------------
 
 Página http://localhost:3000/assessment
@@ -27,6 +39,8 @@ FRONT-END
 
 -(opcional - futuro) Enviar para uma tela de revisão de dados.
 
+- Obs: Não me parece que o cargo de Diretor possa ter acesso a essa tela de cadastro de avaliação, são competências distintas. Então, aparecer lá embaixo em Nome do Professor "Diretor"(o nome) é um indicativo de que ele tem um acesso que me parece que não deveria.
+
 BACK-END
 
 - Resgatar nome do backend (BD).
@@ -42,12 +56,35 @@ BACK-END
     
 
 -----------------------------------------------------
+-----------------------------------------------------
+
+Página http://localhost:3000/assessment-list
+
+FRONT-END
+
+- Ao clicar em Visualizar, a opção de fechar a janela deve estar presente o tempo todo, seja em uma barra da janela, seja "descendo" junto como posição fixa na tela. Importa é que ela esteja sempre acessível e não atrapalhe a visualzação.
+- Ao clicar em Exportar PDF e o PDF ser gerado, sugiro que a tela de visualização feche imediatamente, ao invés de ficar aberta.
+- As partes com a resposta pronta "Não respondido" podem ter outro texto -- de modo que não soe que o avaliador não quis responder, mas sim de que não era algo requisitado que ele respondesse (não faria sentido naquele contexto) -- ou até mesmo deixar vazio (isso é mais back-end, porque é um dado importado).
+
+- Obs: Verificar com os requisitantes do projeto se a segunda avaliação pode vir antes da primeira ou se ela sempre deverá ser posterior àquela. Se for obrigatório, modificar o projeto de acordo.
+
+BACK-END
+
+- As partes com a resposta pronta "Não respondido" podem ter outro texto -- de modo que não soe que o avaliador não quis responder, mas sim de que não era algo requisitado que ele respondesse (não faria sentido naquele contexto) -- ou até mesmo deixar vazio.
+    
+
+-----------------------------------------------------
 http://localhost:3000/control
+
+- IMPORTANTE: A maneira que /control está construída está utilizando processamento excessivo (testei com somente 5 alunos). Certamente dará problema nos computadores dos usuários. É necessário reescrever. Eu ainda não sei a causa do problema, porém imagino que seja o fato de terem muitos calendários acessíveis a partir de uma mesma página. Se cada um tiver um botão de editar que leve a uma nova rota (algo como /control/{nome-do-aluno} -- tomando cuidado com homônimos -- ou control/{id}), isso provavelmente reduzirá o processamento. Pode ser também o sistema de filtragem, que parece ter sido quebrado ou não refeito de acordo com as novas modificações.
 
 FRONT-END
 
 -OK Em "Avaliação", colocar "Avaliação 1".
 -OK Criar um botão de "Limpar Filtros", que faz um reset.
+
+- O sistema de filtragem não está mais funcionando. Consertar.
+- É necessário uma validação para datas muito fora como 11/11/1111 ou 11/11/2222. Existem outros que estão filtrando entre 1960 e hoje, usar eles. (Quem sabe, depois componentizar isso)
 
 BACK-END
 
@@ -67,6 +104,15 @@ http://localhost:3000/follow-up
 FRONT-END
 
 -OK O "placeholder" "Selecione..." deve ser algo como "Selecione um aluno(a)...".
+- (excluir esta observação depois - é provisório e está fora do lugar, pois é backend. Está aqui para chamar mais atenção.) A lista deve apresentar os nomes vindos do backend.
+
+- Data de admissão tem de ser selecionável (pois o aluno pode entrar em outra empresa ou sair e retornar).
+- Empresa tem de ser selecionável (pois o aluno pode entrar em outra empresa).
+
+- (em dúvida deve vir junto ou não) Responsável RH vem junto com os dados da empresa.
+- Se Responsável RH vem junto com os dados da empresa, deve ser possível editar por aqui mesmo, com um pequeno ícone de editar ao lado direito.
+
+- Deve ser permitida uma retificação dos dados do acompanhamento (editar dentro de Visualizar) (nem que seja necessário via autorização de terceiros. Exemplo, o psicólogo edita e isso vai para o Diretor aprovar ou rejeitar).
 
 BACK-END
 
@@ -90,7 +136,12 @@ NOTA: Verificar acerca da necessidade ter uma rota como employment-placement-lis
 
 FRONT-END
 
+- O Nome do Estudante não está vindo do backend.
+- "Nome do Estudante" até pode ser uma seleção, porém necessita obrigatoriamente de uma search bar.
+
 BACK-END
+
+- trazer a lista de estudantes para apresentar em "Nome do Estudante"
 
 -----------------------------------------------------
 
@@ -102,6 +153,10 @@ FRONT-END
 -OK Criar um botão de "Limpar Filtros", que faz um reset.
 -OK Limitar datas com validador (na verdade, só validei com data menor e maior.)
 - (opcional - futuro) Fazer datas nos filtros serem sempre DD/MM/YYYY (meu PC não é em PT-BR e mostra MM/DD/YYYY).
+
+- De preferência, o botão "Deletar" deve se chamar "Excluir", apesar do Michaelis já reconhecer deletar.
+- O botão de exclusão deve ficar dentro de "Visualizar", pois deve ser dificultado esse caminho e só polui a tela um botão extra (apesar do botão ter ficado com um estilo legal)
+- Adicionar um pequeno margin ou gap entre o "Sim, Deletar" e "Cancelar" na janela que abre ao clicar em Deletar.
 
 BACK-END
 
@@ -293,6 +348,14 @@ FRONT-END
             - A repetição da senha nova;
             - Um botão de Trocar Senha confirmando a alteração (isso deverá disparar eventos como e-mail, etc)
 
+- No buscador "Todas as categorias" devem constar as novas categorias criadas.
+- O buscador está diferente do padrão de todo o resto dos filtros de busca usados na aplicação, que necessitam de clicar em clicar (a ideia por trás é não sobrecarregar o backend desnecessariamente com consultas). Nesse caso, como seriam menos nomes haveria menos problemas, contudo, sai do padrão da aplicação, gerando um pequeno "conflito" desnecessário ao usuário. Quanto mais padronizado o UX/UI da aplicação, melhor.
+
+- De preferência, o botão "Deletar" deve se chamar "Excluir", apesar do Michaelis já reconhecer deletar.
+- O botão de exclusão deve ficar dentro de "Visualizar", pois deve ser dificultado esse caminho e só polui a tela um botão extra (apesar do botão ter ficado com um estilo legal)
+
+- Se nada for alterado em Editar, não enviar os dados ao back-end ao clicar em Salvar.
+
 BACK-END
 
 - Deverá vir do back-end:
@@ -317,7 +380,17 @@ Obs: Aqui há a necessidade de verificar quais Dashboards serão feitos/utilizad
 
 FRONT-END
 
-- Aqui há a necessidade de verificar quais Dashboards serão feitos/utilizados.
+- Lista de Alunos em "Alunos em Acompanhamento" precisa de rolagem quando o tamanho da lista em pixels extrapolar o tamanho disponível para apresentar os elementos.
+- Lista de Empresas em "Empresas" precisa de rolagem quando o tamanho da lista em pixels extrapolar o tamanho disponível para apresentar os elementos.
+- As notas (principalmente da segunda em diante) precisam de um botão de excluir.
+- Ao criar a primeira nova nota, ela fica exatamente em cima da anterior, isso dificulta ao usuário a compreensão de que a nota anterior ainda existe e atrapalha no reposicionamento dela. Eu percebi que as próximas aparecem ligeiramente à direita da posição anterior. Nesse sentido, me parece que uma solução inicial seja gerar a primeira não na posição 0, mas "0 + x", sendo x o intervalo já utilizado.
+- (opcional) Ao clicar com o botão direito em uma janela, ter opções como "jogar ao fundo", "trazer à frente", e, talvez, "descer um nível", "subir um nível".
+- Em "Alunos em Acompanhamento", ao clicar em "+" aparece uma lista que não está sincronizada com o backend. Se a lista for muito grande, a maneira em que ela se apresenta causará problemas. Parece-me melhor lançar uma nova janela à frente, ao clicar, onde nela aparece a lista e uma search bar acima da lista, mostrando nome e CPF (este servindo de diferenciador de homônimos).
+- Em "Empresas", ao clicar em "+" aparece uma lista que não está sincronizada com o backend. Se a lista for muito grande, a maneira em que ela se apresenta causará problemas. Parece-me melhor lançar uma nova janela à frente, ao clicar, onde nela aparece a lista e uma search bar acima da lista, mostrando nome e CNPJ (este servindo de diferenciador de homônimos).
+- Até o momento, a janela que mostra estatísticas de alunos, não está sincronizada como a que mostra as empresas ou os alunos em acompanhamento.
+
+
+-Obs: A janela "X empresas cadastradas" necessita de ampliar de tamanho?
 
 BACK-END
 
@@ -329,7 +402,8 @@ rota http://localhost:3000/settings
 
 FRONT-END
 
-- Listar e-mail atualmente cadastrado do usuário;
+-OK Listar e-mail atualmente cadastrado do usuário;
+- (pode ser para depois) Ao editar o e-mail e depois editar a senha, o aviso de e-mail atualizado com sucesso permanece na tela ainda, ainda da senha atualizada com sucesso. Porém, como o novo e-mail já aparece ali, não há a necessidade sequer dessa duplicidade da mensagem, que já aparece no modal.
 
 
 BACK-END
@@ -345,6 +419,23 @@ BACK-END
         - Senha antiga;
         - Nova senha;
         - Nova senha repetida.
+
+-----------------------------------------------------
+
+rota http://localhost:3000/director-panel
+
+- Obs: Em inglês, talvez o nome mais adequado para o contexto seja "principal" ao invés de "director".
+
+FRONT-END
+
+- Em "Permissões por Cargo", colocar os nomes Capitalizados (maiúscula na primeira) e acentuar "psicologo".
+
+- Garantir que os toggle buttons só ativem/desativem se for modificado no backend (BD). Ou seja, clique, aguarda a resposta do backend e modifica se modificado lá. Do contrário, lançar um aviso dizendo que houve falha na comunicação com o servidor.
+
+
+BACK-END
+
+-
 
 -----------------------------------------------------
 GERAL:
