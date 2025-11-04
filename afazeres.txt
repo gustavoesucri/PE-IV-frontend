@@ -76,15 +76,19 @@ BACK-END
 -----------------------------------------------------
 http://localhost:3000/control
 
-- IMPORTANTE: A maneira que /control está construída está utilizando processamento excessivo (testei com somente 5 alunos). Certamente dará problema nos computadores dos usuários. É necessário reescrever. Eu ainda não sei a causa do problema, porém imagino que seja o fato de terem muitos calendários acessíveis a partir de uma mesma página. Se cada um tiver um botão de editar que leve a uma nova rota (algo como /control/{nome-do-aluno} -- tomando cuidado com homônimos -- ou control/{id}), isso provavelmente reduzirá o processamento. Pode ser também o sistema de filtragem, que parece ter sido quebrado ou não refeito de acordo com as novas modificações.
+-OK (estava com GETs infinitos por conta do useEffect) IMPORTANTE: A maneira que /control está construída está utilizando processamento excessivo (testei com somente 5 alunos). Certamente dará problema nos computadores dos usuários. É necessário reescrever. Eu ainda não sei a causa do problema, porém imagino que seja o fato de terem muitos calendários acessíveis a partir de uma mesma página. Se cada um tiver um botão de editar que leve a uma nova rota (algo como /control/{nome-do-aluno} -- tomando cuidado com homônimos -- ou control/{id}), isso provavelmente reduzirá o processamento. Pode ser também o sistema de filtragem, que parece ter sido quebrado ou não refeito de acordo com as novas modificações.
 
 FRONT-END
 
 -OK Em "Avaliação", colocar "Avaliação 1".
 -OK Criar um botão de "Limpar Filtros", que faz um reset.
 
-- O sistema de filtragem não está mais funcionando. Consertar.
+-OK O sistema de filtragem não está mais funcionando. Consertar.
+-OK Corrigir o save.
+-OK Corrigir o delete.
 - É necessário uma validação para datas muito fora como 11/11/1111 ou 11/11/2222. Existem outros que estão filtrando entre 1960 e hoje, usar eles. (Quem sabe, depois componentizar isso)
+
+- Resultado deve apresentar a data e não se pendente ou não. A menos que coloquemos os dois.
 
 BACK-END
 

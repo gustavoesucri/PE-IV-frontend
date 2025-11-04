@@ -53,78 +53,91 @@ const Control = () => {
 
   // Carregar permissões e dados
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const studentsResponse = await api.get('/api/students');
-        setStudents(studentsResponse.data);
-        
-        // Carregar outros dados em paralelo
-        await Promise.all([
-          loadAssessments(),
-          loadControls()
-        ]);
+  const createStudentData = (student, assessmentsData, controlsData) => {
+    const studentAssessments = assessmentsData.filter(a => a.studentId === student.id);
+    const primeiraAval = studentAssessments.find(a => a.evaluationType === "primeira");
+    const segundaAval = studentAssessments.find(a => a.evaluationType === "segunda");
+    const control = controlsData.find(c => c.studentId === student.id);
 
-        // Criar dados iniciais após carregar tudo
-        const initialData = studentsResponse.data.map(student => createStudentData(student));
-        setFilteredData(initialData);
-      } catch (error) {
-        console.error("Erro ao carregar estudantes:", error);
-        showMessage("Erro ao carregar lista de controle.", "error");
-      }
+    return {
+      studentId: student.id,
+      nome: student.nome,
+      dataIngresso: student.dataIngresso,
+      dataAvaliacao1: primeiraAval ? primeiraAval.assessmentDate : "",
+      dataAvaliacao2: segundaAval ? segundaAval.assessmentDate : "",
+      dataEntrevista1: control?.dataEntrevista1 || "",
+      dataEntrevista2: control?.dataEntrevista2 || "",
+      dataResultado: control?.dataResultado || "",
+      resultado: control?.resultado || "Pendente",
+      controlId: control?.id
     };
+  };
 
-    const loadUserPermissionsAndData = async () => {
-      try {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          const user = JSON.parse(savedUser);
-
-          // Carregar permissões do cargo
-          const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
-          let rolePermissions = {};
-          if (rolePermsResponse.data.length > 0) {
-            rolePermissions = rolePermsResponse.data[0].permissions;
-          }
-
-          // Carregar permissões específicas do usuário
-          const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
-          let userSpecificPermissions = {};
-          if (userPermsResponse.data.length > 0) {
-            userSpecificPermissions = userPermsResponse.data[0].permissions;
-          }
-
-          // Combinar permissões (usuário sobrepõe cargo)
-          const finalPermissions = { ...rolePermissions };
-          Object.keys(userSpecificPermissions).forEach(perm => {
-            if (userSpecificPermissions[perm] !== null) {
-              finalPermissions[perm] = userSpecificPermissions[perm];
-            }
-          });
-
-          setUserPermissions(finalPermissions);
-
-          // Carregar dados apenas se tiver permissão para visualizar
-          if (finalPermissions.view_control) {
-            await loadData();
-          }
-        }
-      } catch (error) {
-        console.error("Erro ao carregar permissões:", error);
-        showMessage("Erro ao carregar permissões do usuário.", "error");
-      }
-    };
-
-    loadUserPermissionsAndData();
-  }, []);
-
-  const loadAssessments = async () => {
+  const loadData = async (finalPermissions) => {
     try {
-      const response = await api.get('/api/assessments');
-      setAssessments(response.data);
+      const studentsResponse = await api.get('/api/students');
+      const [assessmentsResponse, controlsResponse] = await Promise.all([
+        api.get('/api/assessments'),
+        api.get('/api/controls')
+      ]);
+
+      setStudents(studentsResponse.data);
+      setAssessments(assessmentsResponse.data);
+      setControls(controlsResponse.data);
+
+      const initialData = studentsResponse.data.map(student =>
+        createStudentData(student, assessmentsResponse.data, controlsResponse.data)
+      );
+      setFilteredData(initialData);
     } catch (error) {
-      console.error("Erro ao carregar avaliações:", error);
+      console.error("Erro ao carregar estudantes:", error);
+      showMessage("Erro ao carregar lista de controle.", "error");
     }
   };
+
+  const loadUserPermissionsAndData = async () => {
+    try {
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        const user = JSON.parse(savedUser);
+
+        const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
+        const rolePermissions = rolePermsResponse.data[0]?.permissions || {};
+
+        const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
+        const userSpecificPermissions = userPermsResponse.data[0]?.permissions || {};
+
+        const finalPermissions = { ...rolePermissions };
+        Object.keys(userSpecificPermissions).forEach(perm => {
+          if (userSpecificPermissions[perm] !== null) {
+            finalPermissions[perm] = userSpecificPermissions[perm];
+          }
+        });
+
+        setUserPermissions(finalPermissions);
+
+        if (finalPermissions.view_control) {
+          await loadData(finalPermissions);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao carregar permissões:", error);
+      showMessage("Erro ao carregar permissões do usuário.", "error");
+    }
+  };
+
+  loadUserPermissionsAndData();
+}, []);
+
+
+  // const loadAssessments = async () => {
+  //   try {
+  //     const response = await api.get('/api/assessments');
+  //     setAssessments(response.data);
+  //   } catch (error) {
+  //     console.error("Erro ao carregar avaliações:", error);
+  //   }
+  // };
 
   const loadControls = async () => {
     try {
@@ -227,46 +240,37 @@ const Control = () => {
 
   const handleSave = async () => {
     try {
-      const savedUser = localStorage.getItem("user");
-      const user = savedUser ? JSON.parse(savedUser) : null;
+      let response;
+
+      const dataToSave = {
+        ...formData,
+        studentId: editingData.studentId,
+        id: editingData.controlId || undefined, // só se já existir
+      };
 
       if (editingData.controlId) {
-        // Atualizar controle existente
-        await api.patch(`/api/controls/${editingData.controlId}`, {
-          ...formData,
-          updatedAt: new Date().toISOString()
-        });
+        response = await api.put(`/api/controls/${editingData.controlId}`, dataToSave);
       } else {
-        // Criar novo controle
-        await api.post('/api/controls', {
-          studentId: editingData.studentId,
-          dataIngresso: editingData.dataIngresso,
-          ...formData,
-          createdAt: new Date().toISOString(),
-          createdBy: user ? user.id : null
-        });
+        response = await api.post("/api/controls", dataToSave);
       }
 
-      // Recarregar controles
-      await loadControls();
-      
-      // Atualizar lista local
-      const updatedData = filteredData.map(item => 
-        item.studentId === editingData.studentId 
-          ? { ...item, ...formData, controlId: editingData.controlId || Date.now() }
+      const savedControl = response.data;
+
+      // Atualiza localmente com o ID real
+      const updatedData = filteredData.map(item =>
+        item.studentId === savedControl.studentId
+          ? { ...item, ...savedControl, controlId: savedControl.id }
           : item
       );
-      setFilteredData(updatedData);
 
-      showMessage("Controle atualizado com sucesso!", "success");
+      setFilteredData(updatedData);
+      await loadControls();
+      showMessage("Controle salvo com sucesso!", "success");
       handleCloseEditModal();
+
     } catch (error) {
       console.error("Erro ao salvar controle:", error);
-      if (error.response && error.response.status === 403) {
-        showMessage("Acesso negado. Você não tem permissão para esta ação.");
-      } else {
-        showMessage("Erro ao salvar controle. Tente novamente.");
-      }
+      showMessage("Erro ao salvar controle. Tente novamente.");
     }
   };
 
