@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./DirectorPanel.module.css";
 import Menu from "../../components/Menu/Menu";
-import { Shield, Bell, Users, Settings, ChevronRight, UserCog } from "lucide-react";
+import { Shield, Bell, Users, Settings, ChevronRight, UserCog, User, Trash2, X } from "lucide-react";
 import api from "../../api";
 
 const NOTIFICATION_EVENTS = [
@@ -13,7 +13,8 @@ const NOTIFICATION_EVENTS = [
     { id: "user_created", label: "Novo usuário criado" },
 ];
 
-const PERMISSION_LABELS = {
+// Permissões que aparecem para todos os cargos
+const COMMON_PERMISSION_LABELS = {
     view_students: "Ver estudantes",
     create_students: "Criar estudantes",
     view_companies: "Ver empresas",
@@ -25,6 +26,10 @@ const PERMISSION_LABELS = {
     view_control: "Ver controle interno",
     create_observations: "Registrar acompanhamento",
     view_observations: "Ver acompanhamento",
+};
+
+// Permissões exclusivas do diretor
+const DIRECTOR_EXCLUSIVE_PERMISSIONS = {
     manage_users: "Gerenciar usuários",
     manage_permissions: "Gerenciar permissões",
 };
@@ -42,6 +47,16 @@ const DirectorPanel = () => {
     const [activeTab, setActiveTab] = useState("roles");
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedUserId, setSelectedUserId] = useState(null);
+    const [hoveredRole, setHoveredRole] = useState(null);
+    const [deleteModal, setDeleteModal] = useState({ isOpen: false, roleToDelete: null });
+
+    // Função para obter as labels de permissão baseadas no cargo
+    const getPermissionLabels = (role) => {
+        if (role === "diretor") {
+            return { ...COMMON_PERMISSION_LABELS, ...DIRECTOR_EXCLUSIVE_PERMISSIONS };
+        }
+        return COMMON_PERMISSION_LABELS;
+    };
 
     // Função para carregar dados
     const loadData = useCallback(async () => {
@@ -107,6 +122,60 @@ const DirectorPanel = () => {
             loadData();
         }
     }, [activeTab, loadData]);
+
+    // Função para deletar cargo
+    const deleteRole = async (role) => {
+        try {
+            // Verificar se há usuários usando este cargo
+            const usersWithRole = users.filter(user => user.role === role);
+            
+            if (usersWithRole.length > 0) {
+                alert(`Não é possível deletar o cargo "${role}" pois existem ${usersWithRole.length} usuário(s) usando este cargo. Atribua outro cargo aos usuários antes de deletar.`);
+                return;
+            }
+
+            // Buscar o ID da rolePermission para deletar
+            const rolePermsResponse = await api.get('/api/rolePermissions');
+            const roleToDelete = rolePermsResponse.data.find(rp => rp.role === role);
+            
+            if (roleToDelete) {
+                await api.delete(`/api/rolePermissions/${roleToDelete.id}`);
+                
+                // Recarregar dados
+                loadData();
+                
+                // Se o cargo deletado era o selecionado, selecionar o primeiro disponível
+                if (selectedRole === role) {
+                    const newCategories = categories.filter(cat => cat !== role);
+                    if (newCategories.length > 0) {
+                        setSelectedRole(newCategories[0]);
+                    } else {
+                        setSelectedRole("");
+                    }
+                }
+                
+                setDeleteModal({ isOpen: false, roleToDelete: null });
+            }
+        } catch (error) {
+            console.error("Erro ao deletar cargo:", error);
+            alert("Erro ao deletar cargo. Tente novamente.");
+        }
+    };
+
+    // Função para abrir modal de confirmação
+    const openDeleteModal = (role) => {
+        // Impedir deletar o cargo "diretor"
+        if (role === "diretor") {
+            alert("O cargo 'diretor' não pode ser deletado.");
+            return;
+        }
+        setDeleteModal({ isOpen: true, roleToDelete: role });
+    };
+
+    // Função para fechar modal
+    const closeDeleteModal = () => {
+        setDeleteModal({ isOpen: false, roleToDelete: null });
+    };
 
     // Funções para atualizar back-end
     const updateRolePermissions = async (role, permissions) => {
@@ -214,7 +283,11 @@ const DirectorPanel = () => {
 
             <div className={styles.quickActions}>
                 <button className={styles.actionBtn} onClick={() => navigate("/users")}>
-                    <Users size={20} /> Gerenciar Usuários
+                    <User size={20} /> Criar Usuário
+                    <ChevronRight size={18} />
+                </button>
+                <button className={styles.actionBtn} onClick={() => navigate("/users-list")}>
+                    <Users size={20} /> Lista de Usuários
                     <ChevronRight size={18} />
                 </button>
             </div>
@@ -256,8 +329,22 @@ const DirectorPanel = () => {
                                         key={role}
                                         className={`${styles.roleBtn} ${selectedRole === role ? styles.selected : ""}`}
                                         onClick={() => setSelectedRole(role)}
+                                        onMouseEnter={() => setHoveredRole(role)}
+                                        onMouseLeave={() => setHoveredRole(null)}
                                     >
-                                        {role.charAt(0).toUpperCase() + role.slice(1)}
+                                        <span>{role.charAt(0).toUpperCase() + role.slice(1)}</span>
+                                        {hoveredRole === role && role !== "diretor" && (
+                                            <div 
+                                                className={styles.deleteIcon}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    openDeleteModal(role);
+                                                }}
+                                                title="Deletar cargo"
+                                            >
+                                                <Trash2 size={14} />
+                                            </div>
+                                        )}
                                     </button>
                                 ))
                             )}
@@ -266,7 +353,7 @@ const DirectorPanel = () => {
                         {selectedRole && (
                             <div className={styles.permissionsGrid}>
                                 {rolePermissions[selectedRole] ? (
-                                    Object.entries(PERMISSION_LABELS).map(([key, label]) => {
+                                    Object.entries(getPermissionLabels(selectedRole)).map(([key, label]) => {
                                         const value = rolePermissions[selectedRole][key] ?? false;
                                         const isLocked = selectedRole === "diretor";
 
@@ -366,7 +453,7 @@ const DirectorPanel = () => {
                                 </h4>
 
                                 <div className={styles.permissionsGrid}>
-                                    {Object.entries(PERMISSION_LABELS).map(([key, label]) => {
+                                    {Object.entries(getPermissionLabels(selectedUser.role)).map(([key, label]) => {
                                         const rolePerm = rolePermissions[selectedUser.role]?.[key] ?? false;
                                         const userPerm = userSpecificPermissions[selectedUser.id]?.[key] ?? null;
                                         const finalValue = userPerm !== null ? userPerm : rolePerm;
@@ -462,6 +549,43 @@ const DirectorPanel = () => {
                     </div>
                 )}
             </div>
+
+            {/* Modal de Confirmação de Deleção */}
+            {deleteModal.isOpen && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modal}>
+                        <div className={styles.modalHeader}>
+                            <h2 style={{ color: '#dc3545' }}>Confirmar Deleção</h2>
+                            <button className={styles.modalClose} onClick={closeDeleteModal}>
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className={styles.modalContent}>
+                            <p style={{ margin: '1rem 0', fontSize: '1rem', lineHeight: '1.5' }}>
+                                Tem certeza que deseja deletar o cargo <strong>"{deleteModal.roleToDelete}"</strong>?
+                            </p>
+                            <p style={{ color: '#666', fontSize: '0.9rem' }}>
+                                Esta ação não pode ser desfeita.
+                            </p>
+                        </div>
+                        <div className={styles.modalFooter}>
+                            <button
+                                onClick={() => deleteRole(deleteModal.roleToDelete)}
+                                className={styles.deleteButton}
+                            >
+                                Sim, Deletar
+                            </button>
+                            <button
+                                onClick={closeDeleteModal}
+                                className={styles.filterButton}
+                                style={{ backgroundColor: 'var(--cinza)', color: 'var(--preto)' }}
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className={styles.footer}>
                 <p><strong>Todas as alterações são salvas automaticamente no servidor.</strong></p>

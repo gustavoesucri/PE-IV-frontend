@@ -401,7 +401,8 @@
         "view_evaluations": false,
         "view_control": false,
         "create_observations": false,
-        "view_observations": false
+        "view_observations": false,
+        "manage_users": false
       },
       "id": 4
     }
@@ -423,7 +424,9 @@
       "permissions": {
         "create_students": false,
         "view_companies": true,
-        "view_students": true
+        "view_students": false,
+        "create_evaluations": false,
+        "view_evaluations": false
       },
       "id": 2
     }
