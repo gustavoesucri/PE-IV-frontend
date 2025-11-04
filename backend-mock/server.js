@@ -174,6 +174,6 @@ const PORT = 8000;
 server.listen(PORT, () => {
   console.log(`JSON Server rodando em http://localhost:${PORT}`);
   console.log(`Teste login: POST /login`);
-  console.log(`Body: { "username": "Diretor", "password": "admin" }`);
-  console.log(`Usuário disponível: Diretor / admin`);
+  console.log(`Body: { "username": "Diretor", "password": "admin3" }`);
+  console.log(`Usuário disponível: Diretor / admin3`);
 });
