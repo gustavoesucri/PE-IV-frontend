@@ -13,6 +13,8 @@ FRONT-END
 
 -OK Trocar a "hint"(caso tenha esquecido sua senha...) para a cor branco.
 
+- A 'hint' deve ser trocada por um sistema de envio de senha por e-mail, porque ninguém deve saber a senha do outro usuário, nem mesmo o Diretor. Ele poderá criar usuários e gerar uma senha provisória, mas depois não deverá mais poder alterar.
+
 BACK-END
 
 -----------------------------------------------------
