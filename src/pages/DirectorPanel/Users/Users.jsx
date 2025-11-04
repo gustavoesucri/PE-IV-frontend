@@ -52,23 +52,23 @@ const Users = () => {
   const [existingUsers, setExistingUsers] = useState([]); // Estado para armazenar usuários existentes
 
   // Carregar categorias e usuários existentes do back-end
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Carregar categorias
-        const categoriesResponse = await api.get('/api/userCategories');
-        setCategories(categoriesResponse.data);
-
-        // Carregar usuários existentes para validação
-        const usersResponse = await api.get('/api/users');
-        setExistingUsers(usersResponse.data);
-      } catch (error) {
-        console.error("Erro ao carregar dados:", error);
-      }
-    };
-
-    loadData();
-  }, []);
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      // Carregar categorias do rolePermissions em vez de userCategories
+      const rolePermsResponse = await api.get('/api/rolePermissions');
+      const rolesFromPermissions = rolePermsResponse.data.map(rp => rp.role);
+      setCategories(rolesFromPermissions);
+      
+      // Carregar usuários existentes para validação
+      const usersResponse = await api.get('/api/users');
+      setExistingUsers(usersResponse.data);
+    } catch (error) {
+      console.error("Erro ao carregar dados:", error);
+    }
+  };
+  loadData();
+}, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

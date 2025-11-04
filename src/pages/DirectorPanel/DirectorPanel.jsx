@@ -1,6 +1,6 @@
 // src/pages/DirectorPanel/DirectorPanel.jsx
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./DirectorPanel.module.css";
 import Menu from "../../components/Menu/Menu";
 import { Shield, Bell, Users, Settings, ChevronRight, UserCog } from "lucide-react";
@@ -31,6 +31,7 @@ const PERMISSION_LABELS = {
 
 const DirectorPanel = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     // Estados
     const [categories, setCategories] = useState([]);
@@ -42,50 +43,70 @@ const DirectorPanel = () => {
     const [selectedRole, setSelectedRole] = useState("");
     const [selectedUserId, setSelectedUserId] = useState(null);
 
-    // Carregar dados do back-end
-    useEffect(() => {
-        const loadData = async () => {
-            try {    
-                // Carregar categorias
-                const categoriesResponse = await api.get('/api/userCategories');
-                setCategories(categoriesResponse.data);
-                if (categoriesResponse.data.length > 0) {
-                    setSelectedRole(categoriesResponse.data[0]);
-                }
-
-                // Carregar usuários
-                const usersResponse = await api.get('/api/users');
-                setUsers(usersResponse.data);
-
-                // Carregar permissões de cargo
-                const rolePermsResponse = await api.get('/api/rolePermissions');
-                const rolePermsMap = {};
-                rolePermsResponse.data.forEach(rp => {
-                    rolePermsMap[rp.role] = rp.permissions;
-                });
-                setRolePermissions(rolePermsMap);
-
-                // Carregar permissões específicas de usuário
-                const userPermsResponse = await api.get('/api/userSpecificPermissions');
-                const userPermsMap = {};
-                userPermsResponse.data.forEach(up => {
-                    userPermsMap[up.userId] = up.permissions;
-                });
-                setUserSpecificPermissions(userPermsMap);
-
-                // Carregar notificações globais
-                const notifResponse = await api.get('/api/globalNotifications');
-                if (notifResponse.data.length > 0) {
-                    setGlobalNotifications(notifResponse.data[0].notifications);
-                }
-
-            } catch (error) {
-                console.error("Erro ao carregar dados do painel:", error);
+    // Função para carregar dados
+    const loadData = useCallback(async () => {
+        try {
+            // Carregar permissões de cargo - esta é agora a fonte única das categorias
+            const rolePermsResponse = await api.get('/api/rolePermissions');
+            
+            // Extrair categorias únicas do rolePermissions
+            const rolesFromPermissions = rolePermsResponse.data.map(rp => rp.role);
+            const sortedCategories = rolesFromPermissions.sort((a, b) => a.localeCompare(b));
+            
+            setCategories(sortedCategories);
+            
+            // Seleciona a primeira categoria se nenhuma estiver selecionada
+            if (sortedCategories.length > 0 && !selectedRole) {
+                setSelectedRole(sortedCategories[0]);
             }
-        };
 
+            // Carregar usuários
+            const usersResponse = await api.get('/api/users');
+            setUsers(usersResponse.data);
+
+            // Mapear permissões de cargo
+            const rolePermsMap = {};
+            rolePermsResponse.data.forEach(rp => {
+                rolePermsMap[rp.role] = rp.permissions;
+            });
+            setRolePermissions(rolePermsMap);
+
+            // Carregar permissões específicas de usuário
+            const userPermsResponse = await api.get('/api/userSpecificPermissions');
+            const userPermsMap = {};
+            userPermsResponse.data.forEach(up => {
+                userPermsMap[up.userId] = up.permissions;
+            });
+            setUserSpecificPermissions(userPermsMap);
+
+            // Carregar notificações globais
+            const notifResponse = await api.get('/api/globalNotifications');
+            if (notifResponse.data.length > 0) {
+                setGlobalNotifications(notifResponse.data[0].notifications);
+            }
+
+            console.log("Dados carregados com sucesso. Categorias do rolePermissions:", sortedCategories);
+        } catch (error) {
+            console.error("Erro ao carregar dados do painel:", error);
+        }
+    }, [selectedRole]);
+
+    // Carregar dados quando o componente montar
+    useEffect(() => {
         loadData();
-    }, []);
+    }, [loadData]);
+
+    // Recarregar dados sempre que a rota mudar (quando voltar de outras páginas)
+    useEffect(() => {
+        loadData();
+    }, [location.pathname, loadData]);
+
+    // Recarregar quando mudar para a tab de roles
+    useEffect(() => {
+        if (activeTab === "roles") {
+            loadData();
+        }
+    }, [activeTab, loadData]);
 
     // Funções para atualizar back-end
     const updateRolePermissions = async (role, permissions) => {
@@ -227,50 +248,56 @@ const DirectorPanel = () => {
                         <h2 className={styles.sectionTitle}>Permissões por Cargo</h2>
 
                         <div className={styles.roleSelector}>
-                            {categories.map((role) => (
-                                <button
-                                    key={role}
-                                    className={`${styles.roleBtn} ${selectedRole === role ? styles.selected : ""}`}
-                                    onClick={() => setSelectedRole(role)}
-                                >
-                                    {role}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className={styles.permissionsGrid}>
-                            {rolePermissions[selectedRole] ? (
-                                Object.entries(PERMISSION_LABELS).map(([key, label]) => {
-                                    const value = rolePermissions[selectedRole][key] ?? false;
-                                    const isLocked = selectedRole === "diretor";
-
-                                    return (
-                                        <label key={key} className={styles.switchLabel} style={{ opacity: isLocked ? 0.7 : 1 }}>
-                                            <span>{label}</span>
-                                            <div
-                                                className={`${styles.switch} ${value ? styles.on : styles.off} ${isLocked ? styles.locked : ""}`}
-                                                onClick={() => !isLocked && togglePermission(selectedRole, key)}
-                                                style={{ cursor: isLocked ? "not-allowed" : "pointer" }}
-                                            >
-                                                <div className={styles.slider} />
-                                            </div>
-                                            {isLocked && (
-                                                <span style={{ 
-                                                    fontSize: '0.7rem', 
-                                                    color: '#666', 
-                                                    marginLeft: '0.5rem',
-                                                    fontStyle: 'italic'
-                                                }}>
-                                                    (máximo)
-                                                </span>
-                                            )}
-                                        </label>
-                                    );
-                                })
+                            {categories.length === 0 ? (
+                                <p className={styles.info}>Nenhum cargo cadastrado.</p>
                             ) : (
-                                <p className={styles.info}>Nenhuma permissão definida para este cargo.</p>
+                                categories.map((role) => (
+                                    <button
+                                        key={role}
+                                        className={`${styles.roleBtn} ${selectedRole === role ? styles.selected : ""}`}
+                                        onClick={() => setSelectedRole(role)}
+                                    >
+                                        {role.charAt(0).toUpperCase() + role.slice(1)}
+                                    </button>
+                                ))
                             )}
                         </div>
+
+                        {selectedRole && (
+                            <div className={styles.permissionsGrid}>
+                                {rolePermissions[selectedRole] ? (
+                                    Object.entries(PERMISSION_LABELS).map(([key, label]) => {
+                                        const value = rolePermissions[selectedRole][key] ?? false;
+                                        const isLocked = selectedRole === "diretor";
+
+                                        return (
+                                            <label key={key} className={styles.switchLabel} style={{ opacity: isLocked ? 0.7 : 1 }}>
+                                                <span>{label}</span>
+                                                <div
+                                                    className={`${styles.switch} ${value ? styles.on : styles.off} ${isLocked ? styles.locked : ""}`}
+                                                    onClick={() => !isLocked && togglePermission(selectedRole, key)}
+                                                    style={{ cursor: isLocked ? "not-allowed" : "pointer" }}
+                                                >
+                                                    <div className={styles.slider} />
+                                                </div>
+                                                {isLocked && (
+                                                    <span style={{ 
+                                                        fontSize: '0.7rem', 
+                                                        color: '#666', 
+                                                        marginLeft: '0.5rem',
+                                                        fontStyle: 'italic'
+                                                    }}>
+                                                        (máximo)
+                                                    </span>
+                                                )}
+                                            </label>
+                                        );
+                                    })
+                                ) : (
+                                    <p className={styles.info}>Nenhuma permissão definida para este cargo.</p>
+                                )}
+                            </div>
+                        )}
 
                         {selectedRole === "diretor" && (
                             <div style={{
@@ -284,6 +311,20 @@ const DirectorPanel = () => {
                             }}>
                                 <strong>💡 Informação:</strong> O cargo Diretor possui todas as permissões máximas por padrão. 
                                 Para criar cargos com permissões restritas, crie uma nova categoria.
+                            </div>
+                        )}
+
+                        {categories.length === 0 && (
+                            <div style={{
+                                marginTop: '1rem',
+                                padding: '0.75rem',
+                                backgroundColor: '#fff3cd',
+                                border: '1px solid #ffc107',
+                                borderRadius: '6px',
+                                fontSize: '0.9rem',
+                                color: '#856404'
+                            }}>
+                                <strong>⚠️ Aviso:</strong> Nenhum cargo encontrado. Vá para "Gerenciar Usuários" para criar o primeiro cargo.
                             </div>
                         )}
                     </div>

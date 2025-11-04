@@ -160,54 +160,6 @@
         "resultado": "Pendente"
       },
       "id": 2
-    },
-    {
-      "nome": "2",
-      "cpf": "22222222222",
-      "dataNascimento": "2025-02-01",
-      "dataIngresso": "2025-11-03",
-      "observacaoBreve": "",
-      "observacaoDetalhada": "",
-      "acompanhamento": {
-        "av1": false,
-        "av2": false,
-        "entrevista1": false,
-        "entrevista2": false,
-        "resultado": "Pendente"
-      },
-      "id": 3
-    },
-    {
-      "nome": "3",
-      "cpf": "33333333333",
-      "dataNascimento": "2025-11-18",
-      "dataIngresso": "2025-11-22",
-      "observacaoBreve": "",
-      "observacaoDetalhada": "",
-      "acompanhamento": {
-        "av1": false,
-        "av2": false,
-        "entrevista1": false,
-        "entrevista2": false,
-        "resultado": "Pendente"
-      },
-      "id": 4
-    },
-    {
-      "nome": "4",
-      "cpf": "44444444444",
-      "dataNascimento": "2025-11-22",
-      "dataIngresso": "2025-11-12",
-      "observacaoBreve": "",
-      "observacaoDetalhada": "",
-      "acompanhamento": {
-        "av1": false,
-        "av2": false,
-        "entrevista1": false,
-        "entrevista2": false,
-        "resultado": "Pendente"
-      },
-      "id": 5
     }
   ],
   "companies": [
@@ -352,66 +304,6 @@
       },
       "registeredBy": 1,
       "id": 2
-    },
-    {
-      "studentId": 3,
-      "entryDate": "2025-10-28",
-      "assessmentDate": "2025-11-03",
-      "evaluationType": "primeira",
-      "professorName": "Diretor",
-      "responses": {
-        "q1": "raras",
-        "q2": "raras",
-        "q3": "nao",
-        "q4": "nao",
-        "q5": "nao",
-        "q6": "nao",
-        "q7": "nao",
-        "q8": "nao",
-        "q9": "nao",
-        "q10": "nao",
-        "q11": "nao",
-        "q12": "nao",
-        "q13": "nao",
-        "q14": "nao",
-        "q15": "nao",
-        "q16": "nao",
-        "q17": "nao",
-        "q18": "nao",
-        "q19": "nao",
-        "q20": "nao",
-        "q21": "raras",
-        "q22": "nao",
-        "q23": "nao",
-        "q24": "raras",
-        "q25": "nao",
-        "q26": "raras",
-        "q27": "nao",
-        "q28": "raras",
-        "q29": "nao",
-        "q30": "nao",
-        "q31": "nao",
-        "q32": "nao",
-        "q33": "nao",
-        "q34": "nao",
-        "q35": "nao",
-        "q36": "nao",
-        "q37": "nao",
-        "q38": "nao",
-        "q39": "nao",
-        "q40": "nao",
-        "q41": "nao",
-        "q42": "nao",
-        "q43": "nao",
-        "q44": "nao",
-        "q45": "nao",
-        "q46": "nao",
-        "openQ1": "a",
-        "openQ2": "",
-        "openQ3": "Rita"
-      },
-      "registeredBy": 1,
-      "id": 3
     }
   ],
   "controls": [
@@ -436,25 +328,6 @@
       "createdAt": "2025-11-03T23:25:43.628Z",
       "createdBy": 1,
       "id": 5
-    },
-    {
-      "studentId": 4,
-      "dataIngresso": "2025-11-22",
-      "dataEntrevista1": "2025-10-28",
-      "dataEntrevista2": "",
-      "dataResultado": "",
-      "resultado": "Pendente",
-      "createdAt": "2025-11-03T23:33:37.285Z",
-      "createdBy": 1,
-      "id": 7
-    },
-    {
-      "dataEntrevista1": "",
-      "dataEntrevista2": "2025-11-12",
-      "dataResultado": "",
-      "resultado": "Pendente",
-      "studentId": 3,
-      "id": 8
     }
   ],
   "rolePermissions": [
@@ -544,6 +417,15 @@
         "view_control": true
       },
       "id": 1
+    },
+    {
+      "userId": 5,
+      "permissions": {
+        "create_students": false,
+        "view_companies": true,
+        "view_students": true
+      },
+      "id": 2
     }
   ],
   "globalNotifications": {
@@ -555,9 +437,24 @@
       "user_created": true
     }
   },
-  "userCategories": [
-    "professor",
-    "psicologo",
-    "diretor"
+  "followUps": [
+    {
+      "id": 1,
+      "alunoId": 1,
+      "dataVisita": "2024-11-01",
+      "contatoCom": "Supervisor João",
+      "parecer": "Aluno apresentou bom desempenho nas atividades iniciais. Adaptação positiva ao ambiente de trabalho.",
+      "dataRegistro": "2024-11-01",
+      "createdBy": 1
+    },
+    {
+      "id": 2,
+      "alunoId": 1,
+      "dataVisita": "2024-11-15",
+      "contatoCom": "RH Maria",
+      "parecer": "Aluno continua com bom desempenho. Participou de treinamento interno com excelente aproveitamento.",
+      "dataRegistro": "2024-11-15",
+      "createdBy": 1
+    }
   ]
 }

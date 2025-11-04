@@ -83,11 +83,16 @@
   transition: background-color 0.2s ease;
 }
 
-.button:hover,
-.buttonSecondary:hover,
-.buttonBack:hover,
-.viewButton:hover {
+.button:hover:not(:disabled),
+.viewButton:hover:not(:disabled) {
   background-color: var(--roxo);
+}
+
+.button:disabled,
+.viewButton:disabled {
+  background-color: var(--cinza);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .buttonSecondary,
@@ -126,6 +131,11 @@
   background: var(--cinza-claro);
   border-radius: 8px;
   font-size: 0.95rem;
+}
+
+.registroActions {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .empty {
@@ -200,4 +210,154 @@
   border: none;
   color: #555;
   cursor: pointer;
+}
+
+/* === BOTÃO DELETE === */
+.deleteButton {
+  background-color: #8B0000;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #dc3545;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.deleteButton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
+}
+
+.deleteButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Efeito de brilho no hover */
+.deleteButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.deleteButton:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+/* === MODAL DE MENSAGEM (novo) === */
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modalHeader h2 {
+  color: var(--azul);
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.modalClose {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--cinza);
+  transition: color 0.2s;
+}
+
+.modalClose:hover {
+  color: var(--roxo);
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modalContent p {
+  margin: 0.5rem 0;
+  color: #333;
+}
+
+.modalFooter {
+  margin-top: 1.5rem;
+  text-align: right;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.modalButton {
+  background-color: var(--azul);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.modalButton:hover {
+  background-color: var(--roxo);
+}
+
+.modalErrorButton {
+  background-color: #dc3545;
+}
+
+.modalErrorButton:hover {
+  background-color: #c82333;
+}
+
+.modalSuccessButton {
+  background-color: #28a745;
+}
+
+.modalSuccessButton:hover {
+  background-color: #218838;
+}
+
+.modalSuccessTitle {
+  color: #28a745;
+}
+
+.modalErrorTitle {
+  color: #dc3545;
+}
+
+.noPermissionMessage {
+  text-align: center;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #6c757d;
+  font-size: 1rem;
+  margin: 1rem 0;
 }
