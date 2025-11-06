@@ -9,19 +9,19 @@ Lembrete para futuro: toda lógica deverá constar no back-end obrigatoriamente.
 
 rota http://localhost:3000/ (login)
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 -OK Trocar a "hint"(caso tenha esquecido sua senha...) para a cor branco.
 
 - A 'hint' deve ser trocada por um sistema de envio de senha por e-mail, porque ninguém deve saber a senha do outro usuário, nem mesmo o Diretor. Ele poderá criar usuários e gerar uma senha provisória, mas depois não deverá mais poder alterar.
 
 BACK-END
-
+✅(Feito)
 -----------------------------------------------------
 
 Página http://localhost:3000/assessment
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 -OK Se na Questão 12 a resposta não for "não", adicionar restrição da submissão do formulário enquanto não for preenchido o textarea "*Em que situações demonstra irritações?"
 
@@ -44,6 +44,7 @@ FRONT-END
 - Obs: Não me parece que o cargo de Diretor possa ter acesso a essa tela de cadastro de avaliação, são competências distintas. Então, aparecer lá embaixo em Nome do Professor "Diretor"(o nome) é um indicativo de que ele tem um acesso que me parece que não deveria.
 
 BACK-END
+✅(Feito)
 
 - Resgatar nome do backend (BD).
 - Ao submeter o formulário, devem ser enviados para persistência:
@@ -63,6 +64,7 @@ BACK-END
 Página http://localhost:3000/assessment-list
 
 FRONT-END
+✅(Feito)
 
 - Ao clicar em Visualizar, a opção de fechar a janela deve estar presente o tempo todo, seja em uma barra da janela, seja "descendo" junto como posição fixa na tela. Importa é que ela esteja sempre acessível e não atrapalhe a visualzação.
 - Ao clicar em Exportar PDF e o PDF ser gerado, sugiro que a tela de visualização feche imediatamente, ao invés de ficar aberta.
@@ -71,16 +73,17 @@ FRONT-END
 - Obs: Verificar com os requisitantes do projeto se a segunda avaliação pode vir antes da primeira ou se ela sempre deverá ser posterior àquela. Se for obrigatório, modificar o projeto de acordo.
 
 BACK-END
-
+✅(Feito)
 - As partes com a resposta pronta "Não respondido" podem ter outro texto -- de modo que não soe que o avaliador não quis responder, mas sim de que não era algo requisitado que ele respondesse (não faria sentido naquele contexto) -- ou até mesmo deixar vazio.
     
 
 -----------------------------------------------------
 http://localhost:3000/control
 
+
 -OK (estava com GETs infinitos por conta do useEffect) IMPORTANTE: A maneira que /control está construída está utilizando processamento excessivo (testei com somente 5 alunos). Certamente dará problema nos computadores dos usuários. É necessário reescrever. Eu ainda não sei a causa do problema, porém imagino que seja o fato de terem muitos calendários acessíveis a partir de uma mesma página. Se cada um tiver um botão de editar que leve a uma nova rota (algo como /control/{nome-do-aluno} -- tomando cuidado com homônimos -- ou control/{id}), isso provavelmente reduzirá o processamento. Pode ser também o sistema de filtragem, que parece ter sido quebrado ou não refeito de acordo com as novas modificações.
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 -OK Em "Avaliação", colocar "Avaliação 1".
 -OK Criar um botão de "Limpar Filtros", que faz um reset.
@@ -92,7 +95,7 @@ FRONT-END
 
 - Resultado deve apresentar a data e não se pendente ou não. A menos que coloquemos os dois.
 
-BACK-END
+BACK-END ✅(Feito)
 
 - Deverá vir do backend:
     - Nome;
@@ -107,7 +110,7 @@ BACK-END
 
 http://localhost:3000/follow-up
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 -OK O "placeholder" "Selecione..." deve ser algo como "Selecione um aluno(a)...".
 - (excluir esta observação depois - é provisório e está fora do lugar, pois é backend. Está aqui para chamar mais atenção.) A lista deve apresentar os nomes vindos do backend.
@@ -120,7 +123,7 @@ FRONT-END
 
 - Deve ser permitida uma retificação dos dados do acompanhamento (editar dentro de Visualizar) (nem que seja necessário via autorização de terceiros. Exemplo, o psicólogo edita e isso vai para o Diretor aprovar ou rejeitar).
 
-BACK-END
+BACK-END ✅(Feito)
 
 - Deve vir do back-end:
     - Lista de Nomes.
@@ -140,7 +143,7 @@ http://localhost:3000/employment-placement
 
 NOTA: Verificar acerca da necessidade ter uma rota como employment-placement-list para listar, na horizontal, enquanto esta ficaria para cadastro. Importante lembrar que muitos dos dados já estariam no banco pois cadastrados em outras telas.
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 - O Nome do Estudante não está vindo do backend.
 - "Nome do Estudante" até pode ser uma seleção, porém necessita obrigatoriamente de uma search bar.
@@ -153,7 +156,7 @@ BACK-END
 
 rota http://localhost:3000/employment-placement-list
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 -OK (feito usando a lib date-fns) Datas devem ser apresentadas em formato DD/MM/YYYY.
 -OK Criar um botão de "Limpar Filtros", que faz um reset.
@@ -164,7 +167,7 @@ FRONT-END
 - O botão de exclusão deve ficar dentro de "Visualizar", pois deve ser dificultado esse caminho e só polui a tela um botão extra (apesar do botão ter ficado com um estilo legal)
 - Adicionar um pequeno margin ou gap entre o "Sim, Deletar" e "Cancelar" na janela que abre ao clicar em Deletar.
 
-BACK-END
+BACK-END ✅(Feito)
 
 - Deve ir ao back-end quando clicar em Filtrar:
     - String para busca de nome;
@@ -183,12 +186,12 @@ BACK-END
 -----------------------------------------------------
 
 rota http://localhost:3000/companies
-
-FRONT-END
+ 
+FRONT-END ✅(Feito)
 
 -OK Adicionar um botão que liste as empresas cadastradas.
 
-BACK-END
+BACK-END ✅(Feito)
 
 -Deverá ser enviado ao back-end:
     - String de filtro de busca por nome.
@@ -216,7 +219,7 @@ BACK-END
 
 rota http://localhost:3000/companies-list
 
-FRONT-END
+FRONT-END ✅(Feito)
 -OK Deve ser criada a apresentação da lista de empresas por nome;
 -OK Deve ser criado um filtro de busca por nome;
 -OK Deve ser criado um botão de detalhes como no de Estudantes;
@@ -232,7 +235,7 @@ FRONT-END
 -OK (opcional) Permitir Busca por CNPJ (parcial).
 -OK Criar um botão de "Limpar" filtros.
 
-BACK-END
+BACK-END ✅(Feito)
 
 - Deverá vir do back-end:
     - Lista de empresas cadastradas.
@@ -249,13 +252,13 @@ BACK-END
 
 rota http://localhost:3000/students 
 
-FRONT-END
-
+FRONT-END ✅(Feito)
+ 
 -OK Colocar Data de Ingresso do aluno na instituição.
 
 -OK Provavelmente, será necessário colocar o CPF do aluno.
-
-BACK-END
+ 
+BACK-END ✅(Feito)
 
 - Deve ser enviado ao back-end:
     - Nome;
@@ -270,7 +273,7 @@ BACK-END
 
 rota http://localhost:3000/students-list
 
-FRONT-END
+FRONT-END ✅(Feito)
 -OK Deve ser criado um filtro de busca por nome.
 -OK Ao clicar em detalhes/Editar, deve mostrar também a Data de Ingresso do aluno na instituição.
 -OK Ao clicar em detalhes/Editar, deve mostrar também status de Ativo ou Inativo.
@@ -290,7 +293,7 @@ Obs: é possível que seja necessário poderes especiais para realizar, editar o
 
 -OK Obs2: Questiono acerca da necessidade de mostrar detalhes para baixo ao clicar no nome. Ou usa-se o ícone ou informações para baixo. Acredito que o ícone permita melhor UX.
 
-BACK-END
+BACK-END ✅(Feito)
 
 Deverá ser enviado ao back-end:
     - String de filtro de busca por nome.
@@ -321,11 +324,11 @@ rota http://localhost:3000/users
 
 Obs: Esta página já está presumindo que um admin de alto nível hierarquico está com acesso. Mas esse acesso veio de onde, foi fornecido por quem?
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 - (para depois) revisar a UI quando se clica em Cadastrar. Está 
 
-BACK-END
+BACK-END ✅(Feito)
 
 - Deverá ir ao back-end:
     - Username;
@@ -341,7 +344,7 @@ rota http://localhost:3000/users-list (deve ser criada para listar os admin cada
 
 Obs: Deverá ser elaborado o que cada tipo de User tem autoridade para fazer dentro do sistema. Para isso, provavelmente, será necessário mais uma página para gerenciar isso.
 
-FRONT-END
+FRONT-END ✅(Feito)
 - Lista de user cadastrados.
 - Botão de edição que abre uma janela para visualizar e editar as permissões e outros atributos.
 - Na janela:
@@ -362,7 +365,7 @@ FRONT-END
 
 - Se nada for alterado em Editar, não enviar os dados ao back-end ao clicar em Salvar.
 
-BACK-END
+BACK-END ✅(Feito)
 
 - Deverá vir do back-end:
     - Lista de users/admins.
@@ -384,7 +387,7 @@ rota http://localhost:3000/administration
 
 Obs: Aqui há a necessidade de verificar quais Dashboards serão feitos/utilizados.
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 - Lista de Alunos em "Alunos em Acompanhamento" precisa de rolagem quando o tamanho da lista em pixels extrapolar o tamanho disponível para apresentar os elementos.
 - Lista de Empresas em "Empresas" precisa de rolagem quando o tamanho da lista em pixels extrapolar o tamanho disponível para apresentar os elementos.
@@ -398,7 +401,7 @@ FRONT-END
 
 -Obs: A janela "X empresas cadastradas" necessita de ampliar de tamanho?
 
-BACK-END
+BACK-END ✅(Feito)
 
 - De acordo com cada dashboard. Geralmente listas mais completas de dados.
 
@@ -406,13 +409,13 @@ BACK-END
 
 rota http://localhost:3000/settings
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 -OK Listar e-mail atualmente cadastrado do usuário;
 - (pode ser para depois) Ao editar o e-mail e depois editar a senha, o aviso de e-mail atualizado com sucesso permanece na tela ainda, ainda da senha atualizada com sucesso. Porém, como o novo e-mail já aparece ali, não há a necessidade sequer dessa duplicidade da mensagem, que já aparece no modal.
 
-
-BACK-END
+ 
+BACK-END ✅(Feito)
 
 - Deverá ir ao back-end:
     - id user;
@@ -432,14 +435,14 @@ rota http://localhost:3000/director-panel
 
 - Obs: Em inglês, talvez o nome mais adequado para o contexto seja "principal" ao invés de "director".
 
-FRONT-END
+FRONT-END ✅(Feito)
 
 - Em "Permissões por Cargo", colocar os nomes Capitalizados (maiúscula na primeira) e acentuar "psicologo".
 
 - Garantir que os toggle buttons só ativem/desativem se for modificado no backend (BD). Ou seja, clique, aguarda a resposta do backend e modifica se modificado lá. Do contrário, lançar um aviso dizendo que houve falha na comunicação com o servidor.
 
 
-BACK-END
+BACK-END ✅(Feito)
 
 -
 
@@ -455,143 +458,33 @@ GERAL:
 
 -----------------------------------------------------
 
-Legenda de Priorização
-Alta Prioridade (Essenciais)
+RESUMO FINAL:
 
-Funcionalidades críticas para o funcionamento básico do sistema e segurança:
+Todo o Frontend foi feito em React(JavaScript). Optamos por JavaScript em vez de TypeScript. 
 
-Gerenciamento de permissões e cargos.
+Backend foi feito em JSON-server para simular um backend simples e posteriormente faremos em NestJS.
 
-Melhorias mínimas no sistema de notificações (para garantir que o básico funcione).
+O que Falta: 
+👉 Verificar todas as páginas a procura de bugs, erros de filtragem e outros que provavelmente pode ter.
 
-Média Prioridade (Importantes, mas não urgentes)
+👉 Refletir cada página para terminar sistemas de validações de usuários, estudantes, empresas em todas as páginas de criação e listagem.
 
-Funcionalidades que melhoram a experiência, mas não impedem o uso:
+👉 Implementar o sistema de Notificações coerente ao Website(atualmente só tem um ícone e outros pequenos detalhes feitos apenas no frontend)
+      ● Precisa-se implementar um Sistema completo de Notificações que envie notificações para os usuários sendo eles:
+        ⚪︎ Professor
+        ⚪︎ Psicológo
+        ⚪︎ Diretor
+        ⚪︎ Entre outros que podem ser criados...
 
-Sistema de notificações – configurações pessoais.
+      ● Cada cargo tem notificações padrão setadas e os usuários tem configurações próprias de notificações que eles podem personalizar,além disso
+        O usuário que tiver o cargo "Diretor" a qual tem acesso a página DirectorPanel poderá definir Configurações de Notificações globais para todos
+        os usuários e também ser possível definir regras de notificações por cargos assim como é para o acesso de outras páginas.
 
-Página de visualização da lista de acompanhamentos.
+      ● Precisa-se criar uma página no frontend que provavelmente ficará no DirectorPanel para ser acessada, acredito que por ser uma página que provavelmente
+        terá muitas configurações e onde será gerenciado as notificações enviadas aos usuários, o melhor seria fazer uma página própria para ela tendo apenas
+        um botão para acessar ela e colocar como item no Menu também.
 
-Página de visualização da lista de avaliações.
-
-Baixa Prioridade (Melhorias e extras)
-
-Funcionalidades que podem ser feitas depois:
-
-Acompanhamento de progresso do aluno.(Pode ser implementado como complemento na página de Dashboard: Administration)
-
-Se Der Tempo (Funcionalidades avançadas)
-
-Funcionalidades opcionais que podem ser feitas se houver tempo sobrando:
-
-Sistema avançado de notificações (customização avançada).
-
-Plano de Implementação Detalhado
-1. Alta Prioridade (Essenciais para a Funcionalidade Principal)
-Gerenciamento de Permissões e Cargos
-
-Objetivo: Criar uma página para gerenciar permissões de usuários, com possibilidade de configurar permissões por cargo (Professor, Psicólogo, Diretor) e permissões especiais por usuário.
-
-Impacto: Essencial para garantir controle sobre o que cada tipo de usuário pode acessar e modificar no sistema.
-
-Front-end: Criar a interface para visualização e configuração de permissões.
-
-Back-end: Implementar lógica de permissões e cargos no sistema.
-
-Melhorias no Sistema de Notificações
-
-Objetivo: Implementar as melhorias mínimas para garantir que as notificações funcionem corretamente, como eventos importantes (ex: novos registros de alunos, avaliações, etc.) e permitir a ativação/desativação dessas notificações.
-
-Front-end: Adicionar interfaces de gerenciamento de notificações nas configurações do usuário (Settings).
-
-Back-end: Implementar a lógica básica de envio de notificações e armazenamento das preferências do usuário.
-
-2. Média Prioridade (Funcionalidades Importantes, mas podem ser expandidas mais tarde)
-Sistema de Notificações – Configurações Pessoais
-
-Objetivo: Complementar o settings onde os usuários possam definir como receber notificações
-
-Front-end: Complementar o settings com mais configurações pessoais sobre notificações.
-
-Back-end: Implementar lógica para salvar e gerenciar as preferências de notificações do usuário.
-
-Página de Visualização da Lista de Avaliações
-
-Objetivo: Criar uma página para exibir as avaliações de cada aluno, com a possibilidade de visualizar as respostas fornecidas.
-
-Front-end: Criar a interface para visualizar avaliações.
-
-Back-end: Criar endpoints para buscar as avaliações e respostas de cada aluno.
-
-Página de Visualização da Lista de Acompanhamentos
-
-Objetivo: Criar uma página para exibir as observações da página de Acompanhamentos.
-
-Front-end: Criar a interface para visualizar as observações de acompanhamento.
-
-Back-end: Criar endpoints para buscar as observações de acompanhamento dos alunos.
-
-3. Baixa Prioridade (Melhorias e Extras)
-Acompanhamento de Progresso do Aluno
-
-Objetivo: Criar uma página para acompanhar o progresso geral do aluno, incluindo desempenho em avaliações, observações, e outros dados relevantes.
-
-Front-end: Criar a interface para visualizar o progresso do aluno. Ou pode ser implementado e complementado no dashboard para cada usuário. Contudo verificar se não vai ficar muita coisa para ser colocada em uma única tela, o que pode sobrecarregar o usuário com muitas informações.
-
-Back-end: Criar endpoints para exibir informações sobre o progresso do aluno.
-
-4. Se Der Tempo (Funcionalidades Futuras)
-Sistema Avançado de Notificações
-
-Objetivo: Criar um sistema de notificações personalizadas, com opções avançadas de segmentação, como "notificar todos os professores quando uma avaliação é registrada" ou "enviar feedback personalizado aos alunos".
-
-Front-end: Criar a interface para o administrador configurar notificações avançadas e personalizadas.
-
-Back-end: Implementar a lógica para segmentação e personalização das notificações.
-
-Categorias de Usuários e Permissões
-1. Professor
-
-Permissões:
-
-Pode visualizar alunos, registros e avaliações.
-
-Pode criar registros de alunos, mas não pode criar ou editar usuários.
-
-Pode adicionar observações de acompanhamento (se autorizado).
-
-Configurações de Notificações: Pode configurar suas próprias notificações em Settings, mas não tem acesso às configurações globais.
-
-2. Psicólogo
-
-Permissões:
-
-Pode visualizar alunos e adicionar observações de acompanhamento.
-
-Pode visualizar as avaliações dos alunos, mas não pode criar ou editar usuários.
-
-Configurações de Notificações: Pode configurar suas próprias notificações em Settings, mas não pode acessar configurações globais.
-
-3. Diretor (Administrador Master)
-
-Permissões:
-
-Acesso total a todos os recursos do sistema, incluindo criação e edição de usuários.
-
-Pode configurar permissões de outros usuários, definindo cargos e permissões especiais.
-
-Pode gerenciar as notificações do sistema, definindo as preferências globais de notificações.
-
-Acesso a relatórios completos de avaliações e observações de acompanhamento.
-
-Configurações de Notificações: Pode configurar notificações tanto para si mesmo quanto para o sistema, acessando as configurações globais.
-
-Resumo Final
-
-Alta Prioridade: Focar no gerenciamento de permissões e cargos e nas melhorias mínimas do sistema de notificações.
-
-Média Prioridade: Implementar configurações pessoais de notificações e criar as páginas de visualização de avaliações e acompanhamentos.
-
-Baixa Prioridade: Criar a página de acompanhamento de progresso do aluno.
-
-Se Der Tempo: Avançar para o sistema de notificações avançado e personalizações.
+         ⚪︎ Notification_management.jsx(acho que é um bom nome)
+           Está página será onde o usuário que tiver cargo "Diretor" poderá criar notificações por exemplo: "Usuário novo foi criado!" Disparar essa notificação
+           sempre que o usuário foi criado, dar possibilidades de escolhas de quais notificações ele quer criar, de qual página, do que, toda essa lógica demanda
+           a criação de um algoritmo complexo, além de um design UX/UI consistente nesta página para que o usuário com cargo "Diretor" não se perca.
