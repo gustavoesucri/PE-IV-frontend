@@ -11,8 +11,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 60px); /* Ajustado para dar espaço ao menu */
-  padding-top: 3rem; /* Reduzido pois o menu já tem seu próprio espaço */
+  height: calc(100vh - 60px);
+  padding-top: 3rem;
   position: relative;
   overflow: hidden;
 }
@@ -27,6 +27,8 @@
   overflow: hidden;
   transition: box-shadow 0.3s ease;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
 }
 
 .studentsContainer:hover {
@@ -43,6 +45,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .studentsContainerHeader h2 {
@@ -78,8 +81,6 @@
   padding: 0.8rem;
   width: 200px;
   z-index: 1100;
-  transition: opacity 0.3s ease;
-  opacity: 0;
   animation: fadeIn 0.3s forwards;
 }
 
@@ -124,19 +125,19 @@
 .studentsBox {
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
   padding: 1rem;
-  max-height: calc(100% - 40px);
   overflow-y: auto;
+  flex: 1;
 }
 
 .studentRow {
   display: flex;
   justify-content: space-between;
-  padding: 0.9rem 1rem;
+  align-items: center;
+  padding: 0.9rem;
   background: var(--cinza-claro);
   border-radius: 8px;
-  cursor: pointer;
+  margin-bottom: 0.5rem;
   transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.2s ease;
 }
 
@@ -146,14 +147,31 @@
   background: var(--cinza);
 }
 
+.studentInfo {
+  flex: 1;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .studentName {
   font-weight: 600;
   color: var(--preto);
+  font-size: 0.95rem;
 }
 
 .studentObs {
   color: var(--cinza-escuro);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+}
+
+.emptyMessage {
+  text-align: center;
+  color: var(--cinza-escuro);
+  font-style: italic;
+  padding: 2rem;
 }
 
 /* Modal Styles */
@@ -205,6 +223,7 @@
 .infoRow {
   display: flex;
   margin-bottom: 1rem;
+  align-items: flex-start;
 }
 
 .infoGroup {
@@ -218,6 +237,7 @@
   font-weight: 600;
   width: 150px;
   color: var(--preto);
+  flex-shrink: 0;
 }
 
 .value {
@@ -333,20 +353,24 @@
   margin-left: 0.5rem;
 }
 
-/* Notes Widget */
+/* Notes Widget - TOTALMENTE LIMPO */
 .notesContainer {
-  background: var(--cinza-claro);
+  background: var(--branco);
   border-radius: 12px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: absolute;
   cursor: move;
-  padding: 0.5rem;
+  padding: 15px;
   transition: box-shadow 0.3s ease;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  overflow: hidden;
 }
 
 .notesContainer:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .notesContent {
@@ -354,6 +378,8 @@
   flex-direction: column;
   height: 100%;
   position: relative;
+  flex: 1;
+  border: none;
 }
 
 .notesTextarea {
@@ -361,27 +387,70 @@
   background: transparent;
   border: none;
   resize: none;
-  padding: 0.5rem;
+  padding: 1rem;
   font-size: 1rem;
   color: var(--preto);
   outline: none;
+  font-family: inherit;
+  line-height: 1.5;
+  /* Remove todos os outlines e bordas de foco */
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
+.notesTextarea:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.notesTextarea::placeholder {
+  color: var(--cinza-escuro);
+  opacity: 0.7;
+}
+
+/* Botão de remover nota - canto superior direito */
+.removeNoteButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none !important; /* Força sem background */
+  border: none !important; /* Força sem borda */
+  color: #dc3545;
+  cursor: pointer;
+  padding: 0.4rem;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 11;
+}
+
+.removeNoteButton:hover {
+  transform: scale(1.1);
+}
+
+/* Botão de adicionar nova nota - canto inferior direito */
 .addNoteButton {
   position: absolute;
-  bottom: 0.5rem;
-  right: 0.5rem;
+  bottom: 8px;
+  right: 8px;
   background: var(--azul);
   color: var(--branco);
   border: none;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
+  z-index: 11;
+  backdrop-filter: blur(5px);
 }
 
 .addNoteButton:hover {
@@ -389,11 +458,69 @@
   transform: scale(1.1);
 }
 
+/* Estilos para os botões de remover */
+.removeButton {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.removeButton:hover {
+  opacity: 1;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.removeNoteButton {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.removeNoteButton:hover {
+  opacity: 1;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
 /* Scrollable content */
 .scrollable {
-  max-height: calc(100% - 50px);
   overflow-y: auto;
-  padding-right: 10px;
+  padding-right: 5px;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  background: var(--cinza-claro);
+  border-radius: 3px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background: var(--cinza);
+  border-radius: 3px;
+}
+
+.scrollable::-webkit-scrollbar-thumb:hover {
+  background: var(--cinza-escuro);
 }
 
 /* Handle para redimensionamento */
@@ -405,4 +532,14 @@
   right: 0;
   background: transparent;
   cursor: se-resize;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1.1rem;
+  color: #666;
+  flex: 1;
 }

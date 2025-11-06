@@ -167,6 +167,62 @@ server.post('/api/users', (req, res, next) => {
   }, 300);
 });
 
+server.use((req, res, next) => {
+  // ... seu código existente de autorização ...
+  next();
+});
+
+// === MIDDLEWARE PARA GARANTIR USER SETTINGS (NOVO) ===
+server.use((req, res, next) => {
+  // Apenas para rotas autenticadas que precisam de userSettings
+  if (req.user && req.method === 'GET' && (
+    req.path.includes('/api/userSettings') || 
+    req.path.includes('/api/administration')
+  )) {
+    const db = router.db;
+    
+    // BUSCA APENAS O PRIMEIRO userSettings DO USUÁRIO (evita duplicatas)
+    const userSettings = db.get('userSettings').find({ userId: req.user.id }).value();
+    
+    if (!userSettings) {
+      console.log(`Criando userSettings automáticas para usuário ${req.user.id} (${req.user.username})`);
+      
+      const defaultSettings = db.get('defaultUserSettings').value();
+      const newUserSettings = {
+        ...defaultSettings,
+        id: Date.now(),
+        userId: req.user.id,
+        updatedAt: new Date().toISOString(),
+        notes: [{ id: Date.now(), content: "" }],
+        companies: [], // Garantir que existe
+        monitoredStudents: [] // Garantir que existe
+      };
+      
+      db.get('userSettings').push(newUserSettings).write();
+      console.log(`✅ UserSettings criadas para usuário ${req.user.id}`);
+    } else {
+      // GARANTIR QUE OS CAMPOS EXISTEM (migração para estrutura nova)
+      const needsUpdate = !userSettings.companies || !userSettings.monitoredStudents;
+      if (needsUpdate) {
+        console.log(`Atualizando estrutura do userSettings para usuário ${req.user.id}`);
+        const updatedSettings = {
+          ...userSettings,
+          companies: userSettings.companies || userSettings.favoriteCompanies || [],
+          monitoredStudents: userSettings.monitoredStudents || [],
+          updatedAt: new Date().toISOString()
+        };
+        
+        db.get('userSettings')
+          .find({ id: userSettings.id })
+          .assign(updatedSettings)
+          .write();
+      }
+    }
+  }
+  next();
+});
+
+
 // === ROTEADOR PADRÃO ===
 server.use(router);
 

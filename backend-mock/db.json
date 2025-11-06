@@ -3,30 +3,23 @@
     {
       "id": 1,
       "email": "rodrigo.editado2@gmail.com",
-      "password": "admin3",
+      "password": "admin",
       "username": "Diretor",
       "role": "diretor"
-    },
-    {
-      "username": "Alfredo Motta",
-      "password": "1234",
-      "email": "alf@alf.com",
-      "role": "professor",
-      "id": 3
-    },
-    {
-      "username": "Rodolfo",
-      "password": "123",
-      "email": "",
-      "role": "psicologo",
-      "id": 4
     },
     {
       "username": "a",
       "password": "a",
       "email": "",
       "role": "cadastrador de empresas",
-      "id": 5
+      "id": 2
+    },
+    {
+      "username": "b",
+      "password": "b",
+      "email": "",
+      "role": "psicologo",
+      "id": 3
     }
   ],
   "userSettings": [
@@ -35,28 +28,46 @@
       "userId": 1,
       "widgetPositions": {
         "studentsWidget": {
-          "x": 20,
-          "y": 60,
+          "x": 59,
+          "y": 63,
           "width": 600,
           "height": 300
         },
         "companiesWidget": {
-          "x": 640,
-          "y": 60,
-          "width": 600,
+          "x": 849,
+          "y": 64,
+          "width": 593,
           "height": 300
         },
         "counterWidget": {
-          "x": 20,
-          "y": 385,
+          "x": 26,
+          "y": 418,
           "width": 300,
           "height": 100
         },
         "statsWidget": {
-          "x": 640,
-          "y": 380,
+          "x": 700,
+          "y": 424,
           "width": 400,
-          "height": 250
+          "height": 257
+        },
+        "noteWidget_1762369220307": {
+          "x": 340,
+          "y": 412,
+          "width": 300,
+          "height": 150
+        },
+        "noteWidget_1762427362756": {
+          "x": 363,
+          "y": 592,
+          "width": 300,
+          "height": 150
+        },
+        "noteWidget_1762427375028": {
+          "x": 355,
+          "y": 618,
+          "width": 300,
+          "height": 150
         }
       },
       "sidebarOrder": [
@@ -70,41 +81,350 @@
         "control",
         "follow-up"
       ],
-      "notes": [],
+      "notes": [
+        {
+          "id": 1762369220307,
+          "content": "dfsdafds"
+        },
+        {
+          "id": 1762427375028,
+          "content": "sadsa"
+        }
+      ],
       "monitoredStudents": [],
-      "favoriteCompanies": [],
-      "updatedAt": "2025-11-03T19:02:20.770Z",
+      "favoriteCompanies": [
+        {
+          "id": 2,
+          "nome": "Corp ABC",
+          "cnpj": "98765432109876",
+          "rua": "Avenida Principal",
+          "numero": 456,
+          "bairro": "Bairro Norte",
+          "estado": "RJ",
+          "cep": "20000-000"
+        }
+      ],
+      "updatedAt": "2025-11-06T11:52:36.534Z",
       "settings": {
         "notifySystem": false,
         "notifyEmail": false
-      }
+      },
+      "companies": []
+    },
+    {
+      "userId": 2,
+      "widgetPositions": {
+        "studentsWidget": {
+          "x": 60,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "companiesWidget": {
+          "x": 690,
+          "y": 61,
+          "width": 600,
+          "height": 299
+        },
+        "counterWidget": {
+          "x": 60,
+          "y": 385,
+          "width": 300,
+          "height": 100
+        },
+        "statsWidget": {
+          "x": 690,
+          "y": 380,
+          "width": 400,
+          "height": 260
+        },
+        "noteWidget_1762429980701": {
+          "x": 380,
+          "y": 380,
+          "width": 300,
+          "height": 150
+        }
+      },
+      "sidebarOrder": [
+        "administration",
+        "settings",
+        "students",
+        "director-panel",
+        "companies",
+        "employment-placement",
+        "assessment",
+        "control",
+        "follow-up"
+      ],
+      "notes": [
+        {
+          "id": 1762429980701,
+          "content": "xzzsad"
+        }
+      ],
+      "monitoredStudents": [],
+      "companies": [],
+      "updatedAt": "2025-11-06T11:57:58.437Z",
+      "settings": {
+        "notifySystem": true,
+        "notifyEmail": false
+      },
+      "id": 2
+    },
+    {
+      "userId": 2,
+      "widgetPositions": {
+        "studentsWidget": {
+          "x": 60,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "companiesWidget": {
+          "x": 690,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "counterWidget": {
+          "x": 60,
+          "y": 385,
+          "width": 300,
+          "height": 100
+        },
+        "statsWidget": {
+          "x": 690,
+          "y": 380,
+          "width": 400,
+          "height": 260
+        },
+        "noteWidget_1762429980726": {
+          "x": 467,
+          "y": 551,
+          "width": 300,
+          "height": 197
+        }
+      },
+      "sidebarOrder": [
+        "administration",
+        "settings",
+        "students",
+        "director-panel",
+        "companies",
+        "employment-placement",
+        "assessment",
+        "control",
+        "follow-up"
+      ],
+      "notes": [
+        {
+          "id": 1762429980726,
+          "content": "asdasdas"
+        }
+      ],
+      "monitoredStudents": [],
+      "companies": [
+        {
+          "id": 1,
+          "nome": "Empresa XYZ",
+          "cnpj": "12345678901234",
+          "rua": "Rua Exemplo",
+          "numero": 123,
+          "bairro": "Bairro Centro",
+          "estado": "SP",
+          "cep": "01234-567"
+        }
+      ],
+      "updatedAt": "2025-11-06T11:53:24.860Z",
+      "settings": {
+        "notifySystem": true,
+        "notifyEmail": false
+      },
+      "id": 3
+    },
+    {
+      "userId": 3,
+      "widgetPositions": {
+        "studentsWidget": {
+          "x": 60,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "companiesWidget": {
+          "x": 690,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "counterWidget": {
+          "x": 60,
+          "y": 385,
+          "width": 300,
+          "height": 100
+        },
+        "statsWidget": {
+          "x": 690,
+          "y": 380,
+          "width": 400,
+          "height": 260
+        },
+        "noteWidget_1762430034116": {
+          "x": 380,
+          "y": 380,
+          "width": 300,
+          "height": 150
+        },
+        "noteWidget_1762430039438": {
+          "x": 365,
+          "y": 558,
+          "width": 300,
+          "height": 150
+        },
+        "noteWidget_1762431750867": {
+          "x": 363,
+          "y": 641,
+          "width": 300,
+          "height": 150
+        }
+      },
+      "sidebarOrder": [
+        "administration",
+        "settings",
+        "students",
+        "director-panel",
+        "companies",
+        "employment-placement",
+        "assessment",
+        "control",
+        "follow-up"
+      ],
+      "notes": [
+        {
+          "id": 1762430034116,
+          "content": "Alun"
+        },
+        {
+          "id": 1762431750867,
+          "content": "Alunosadsadas"
+        }
+      ],
+      "monitoredStudents": [
+        {
+          "id": 1,
+          "nome": "Rodrigo Martins",
+          "observacaoBreve": "Faltando muito no trabalho",
+          "observacaoDetalhada": "Faltou às últimas 3 reuniões e precisa melhorar a pontualidade.",
+          "dataNascimento": "1998-05-15",
+          "acompanhamento": {
+            "dataEntrada": "2023-04-01",
+            "av1": true,
+            "av2": true,
+            "entrevista1": true,
+            "entrevista2": true,
+            "resultado": "Aprovado"
+          }
+        }
+      ],
+      "companies": [
+        {
+          "id": 1,
+          "nome": "Empresa XYZ",
+          "cnpj": "12345678901234",
+          "rua": "Rua Exemplo",
+          "numero": 123,
+          "bairro": "Bairro Centro",
+          "estado": "SP",
+          "cep": "01234-567"
+        }
+      ],
+      "updatedAt": "2025-11-06T12:22:59.422Z",
+      "settings": {
+        "notifySystem": true,
+        "notifyEmail": false
+      },
+      "id": 4
+    },
+    {
+      "userId": 3,
+      "widgetPositions": {
+        "studentsWidget": {
+          "x": 60,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "companiesWidget": {
+          "x": 690,
+          "y": 60,
+          "width": 600,
+          "height": 300
+        },
+        "counterWidget": {
+          "x": 60,
+          "y": 385,
+          "width": 300,
+          "height": 100
+        },
+        "statsWidget": {
+          "x": 690,
+          "y": 380,
+          "width": 400,
+          "height": 260
+        }
+      },
+      "sidebarOrder": [
+        "administration",
+        "settings",
+        "students",
+        "director-panel",
+        "companies",
+        "employment-placement",
+        "assessment",
+        "control",
+        "follow-up"
+      ],
+      "notes": [
+        {
+          "id": 1762430034116,
+          "content": ""
+        }
+      ],
+      "monitoredStudents": [],
+      "companies": [],
+      "updatedAt": "2025-11-06T11:53:54.116Z",
+      "settings": {
+        "notifySystem": true,
+        "notifyEmail": false
+      },
+      "id": 5
     }
   ],
   "defaultUserSettings": {
     "widgetPositions": {
       "studentsWidget": {
-        "x": 20,
+        "x": 60,
         "y": 60,
         "width": 600,
         "height": 300
       },
       "companiesWidget": {
-        "x": 640,
+        "x": 690,
         "y": 60,
         "width": 600,
         "height": 300
       },
       "counterWidget": {
-        "x": 20,
+        "x": 60,
         "y": 385,
         "width": 300,
         "height": 100
       },
       "statsWidget": {
-        "x": 640,
+        "x": 690,
         "y": 380,
         "width": 400,
-        "height": 250
+        "height": 260
       }
     },
     "sidebarOrder": [
@@ -135,7 +455,7 @@
       "dataNascimento": "1998-05-15",
       "dataIngresso": "2023-04-01",
       "observacaoBreve": "Faltando muito no trabalho",
-      "observacaoDetalhada": "Faltou às últimas 3 reuniões e precisa melhorar a pontualidade.\n",
+      "observacaoDetalhada": "Faltou às últimas 3 reuniões e precisa melhorar a pontualidade.",
       "acompanhamento": {
         "av1": true,
         "av2": true,
@@ -146,6 +466,7 @@
       "status": "Ativo"
     },
     {
+      "id": 2,
       "nome": "Estudante 1",
       "cpf": "11111111111",
       "dataNascimento": "1111-11-11",
@@ -159,7 +480,7 @@
         "entrevista2": false,
         "resultado": "Pendente"
       },
-      "id": 2
+      "status": "Ativo"
     }
   ],
   "companies": [
@@ -174,24 +495,34 @@
       "cep": "01234-567"
     },
     {
+      "id": 2,
+      "nome": "Empresa ABC",
+      "cnpj": "98765432109876",
+      "rua": "Avenida Principal",
+      "numero": 456,
+      "bairro": "Bairro Norte",
+      "estado": "RJ",
+      "cep": "20000-000"
+    },
+    {
+      "id": 3,
       "nome": "C",
       "cnpj": "71312485000105",
       "rua": "C",
       "numero": "",
       "bairro": "",
       "estado": "",
-      "cep": "",
-      "id": 2
+      "cep": ""
     },
     {
+      "id": 4,
       "nome": "D",
       "cnpj": "65568284000162",
       "rua": "",
       "numero": "",
       "bairro": "",
       "estado": "",
-      "cep": "",
-      "id": 3
+      "cep": ""
     }
   ],
   "placements": [
@@ -208,6 +539,7 @@
       "createdBy": 1
     },
     {
+      "id": 2,
       "studentId": 1,
       "empresaId": 1,
       "dataAdmissao": "2025-11-05",
@@ -216,10 +548,10 @@
       "dataDesligamento": "2025-11-26",
       "status": "Ativo",
       "createdAt": "2025-11-03T17:08:43.473Z",
-      "createdBy": 2,
-      "id": 2
+      "createdBy": 2
     },
     {
+      "id": 3,
       "studentId": 1,
       "empresaId": 3,
       "dataAdmissao": "3333-03-31",
@@ -228,8 +560,7 @@
       "dataDesligamento": "4444-11-11",
       "status": "Ativo",
       "createdAt": "2025-11-03T19:19:03.671Z",
-      "createdBy": 1,
-      "id": 3
+      "createdBy": 1
     }
   ],
   "assessments": [
@@ -246,6 +577,7 @@
       "registeredBy": 1
     },
     {
+      "id": 2,
       "studentId": 2,
       "entryDate": "2025-11-02",
       "assessmentDate": "2025-11-03",
@@ -302,12 +634,73 @@
         "openQ2": "",
         "openQ3": ""
       },
-      "registeredBy": 1,
-      "id": 2
+      "registeredBy": 1
+    }
+  ],
+  "assessmentTemplates": [
+    {
+      "id": 1,
+      "name": "Avaliação Inicial",
+      "type": "primeira",
+      "questions": [
+        {
+          "id": "q1",
+          "text": "O aluno demonstra interesse pelas atividades?",
+          "type": "boolean"
+        },
+        {
+          "id": "q2",
+          "text": "O aluno se comunica adequadamente com a equipe?",
+          "type": "boolean"
+        },
+        {
+          "id": "q3",
+          "text": "O aluno cumpre prazos estabelecidos?",
+          "type": "boolean"
+        },
+        {
+          "id": "openQ1",
+          "text": "Observações gerais sobre o desempenho:",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Avaliação de Acompanhamento",
+      "type": "segunda",
+      "questions": [
+        {
+          "id": "q1",
+          "text": "O aluno apresenta evolução no desempenho?",
+          "type": "boolean"
+        },
+        {
+          "id": "q2",
+          "text": "O aluno se adaptou ao ambiente de trabalho?",
+          "type": "boolean"
+        },
+        {
+          "id": "q3",
+          "text": "O aluno demonstra autonomia nas tarefas?",
+          "type": "boolean"
+        },
+        {
+          "id": "openQ1",
+          "text": "Pontos fortes observados:",
+          "type": "text"
+        },
+        {
+          "id": "openQ2",
+          "text": "Pontos que precisam melhorar:",
+          "type": "text"
+        }
+      ]
     }
   ],
   "controls": [
     {
+      "id": 1,
       "studentId": 1,
       "dataIngresso": "2023-04-01",
       "dataEntrevista1": "2025-11-13",
@@ -315,10 +708,10 @@
       "dataResultado": "2025-11-13",
       "resultado": "Em andamento",
       "createdAt": "2025-11-03T23:24:36.509Z",
-      "createdBy": 1,
-      "id": 3
+      "createdBy": 1
     },
     {
+      "id": 2,
       "studentId": 1,
       "dataIngresso": "2023-04-01",
       "dataEntrevista1": "2025-11-20",
@@ -326,8 +719,7 @@
       "dataResultado": "",
       "resultado": "Aprovado",
       "createdAt": "2025-11-03T23:25:43.628Z",
-      "createdBy": 1,
-      "id": 5
+      "createdBy": 1
     }
   ],
   "rolePermissions": [
@@ -389,6 +781,7 @@
       }
     },
     {
+      "id": 4,
       "role": "cadastrador de empresas",
       "permissions": {
         "view_students": false,
@@ -403,34 +796,10 @@
         "create_observations": false,
         "view_observations": false,
         "manage_users": false
-      },
-      "id": 4
+      }
     }
   ],
-  "userSpecificPermissions": [
-    {
-      "userId": 3,
-      "permissions": {
-        "create_companies": true,
-        "view_placements": true,
-        "create_placements": true,
-        "view_evaluations": true,
-        "view_control": true
-      },
-      "id": 1
-    },
-    {
-      "userId": 5,
-      "permissions": {
-        "create_students": false,
-        "view_companies": true,
-        "view_students": false,
-        "create_evaluations": false,
-        "view_evaluations": false
-      },
-      "id": 2
-    }
-  ],
+  "userSpecificPermissions": [],
   "globalNotifications": {
     "id": 1,
     "notifications": {
@@ -458,6 +827,55 @@
       "parecer": "Aluno continua com bom desempenho. Participou de treinamento interno com excelente aproveitamento.",
       "dataRegistro": "2024-11-15",
       "createdBy": 1
+    }
+  ],
+  "observations": [
+    {
+      "id": 1,
+      "studentId": 1,
+      "type": "comportamental",
+      "title": "Falta de pontualidade",
+      "description": "Aluno chegou 30 minutos atrasado na reunião sem justificativa prévia.",
+      "date": "2024-11-01",
+      "createdBy": 1,
+      "priority": "medium"
+    },
+    {
+      "id": 2,
+      "studentId": 1,
+      "type": "desempenho",
+      "title": "Bom desempenho técnico",
+      "description": "Aluno demonstrou excelente habilidade na resolução do problema proposto.",
+      "date": "2024-11-05",
+      "createdBy": 1,
+      "priority": "low"
+    }
+  ],
+  "systemSettings": {
+    "id": 1,
+    "schoolName": "Centro de Formação Profissional",
+    "schoolAddress": "Rua da Educação, 123 - Centro",
+    "schoolPhone": "(11) 9999-9999",
+    "academicYear": "2024",
+    "maxStudentsPerClass": 30,
+    "assessmentDeadlineDays": 30,
+    "autoBackup": true,
+    "backupInterval": 24
+  },
+  "reports": [
+    {
+      "id": 1,
+      "type": "monthly_summary",
+      "title": "Relatório Mensal - Outubro 2024",
+      "period": "2024-10",
+      "data": {
+        "totalStudents": 31,
+        "activePlacements": 25,
+        "newAssessments": 8,
+        "completedFollowUps": 12
+      },
+      "generatedAt": "2024-11-01T10:00:00Z",
+      "generatedBy": 1
     }
   ]
 }
