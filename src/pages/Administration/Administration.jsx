@@ -303,57 +303,60 @@ const Administration = () => {
 
   // Salvar configurações no backend
   const saveUserSettings = useCallback(async (updates) => {
-    if (!currentUser || !userSettings) {
-      console.log("Não foi possível salvar: usuário ou configurações não disponíveis");
-      return;
-    }
+  if (!currentUser || !userSettings?.id) return;
 
-    try {
-      const updatedSettings = {
-        ...userSettings,
-        ...updates,
-        updatedAt: new Date().toISOString()
-      };
+  try {
+    await api.patch(`/api/userSettings/${userSettings.id}`, {
+      ...updates,
+      updatedAt: new Date().toISOString()
+    });
 
-      console.log("Salvando configurações:", updates);
-      await api.patch(`/api/userSettings/${userSettings.id}`, updatedSettings);
-      setUserSettings(updatedSettings);
-      
-    } catch (error) {
-      console.error("Erro ao salvar configurações:", error);
-    }
-  }, [currentUser, userSettings]);
+    // Atualiza estado local de forma segura
+    setUserSettings(prev => ({
+      ...prev,
+      ...updates,
+      updatedAt: new Date().toISOString()
+    }));
+
+  } catch (error) {
+    console.error("Erro ao salvar configurações:", error);
+  }
+}, [currentUser, userSettings?.id]);
 
   // Salvar alunos monitorados (apenas se tiver permissão)
-  useEffect(() => {
-    if (isInitialized && userSettings && userPermissions.view_students) {
-      saveUserSettings({ monitoredStudents });
-    }
-  }, [monitoredStudents, saveUserSettings, userSettings, userPermissions.view_students, isInitialized]);
+  // useEffect(() => {
+  //   if (isInitialized && userSettings && userPermissions.view_students) {
+  //     saveUserSettings({ monitoredStudents });
+  //   }
+  // }, [monitoredStudents, saveUserSettings, userSettings, userPermissions.view_students, isInitialized]);
 
-  // Salvar empresas (apenas se tiver permissão)
-  useEffect(() => {
-    if (isInitialized && userSettings && userPermissions.view_companies) {
-      saveUserSettings({ companies });
-    }
-  }, [companies, saveUserSettings, userSettings, userPermissions.view_companies, isInitialized]);
+  // // Salvar empresas (apenas se tiver permissão)
+  // useEffect(() => {
+  //   if (isInitialized && userSettings && userPermissions.view_companies) {
+  //     saveUserSettings({ companies });
+  //   }
+  // }, [companies, saveUserSettings, userSettings, userPermissions.view_companies, isInitialized]);
 
-  // Salvar notas
-  useEffect(() => {
-    if (isInitialized && userSettings && notes.length > 0) {
-      saveUserSettings({ notes });
-    }
-  }, [notes, saveUserSettings, userSettings, isInitialized]);
+  // // Salvar notas
+  // useEffect(() => {
+  //   if (isInitialized && userSettings && notes.length > 0) {
+  //     saveUserSettings({ notes });
+  //   }
+  // }, [notes, saveUserSettings, userSettings, isInitialized]);
 
   // Salvar posições dos widgets
-  const saveWidgetPosition = useCallback(async (widgetId, x, y, width, height) => {
-    if (!isInitialized || !userSettings) return;
-    
-    const newPositions = { ...widgetPositions, [widgetId]: { x, y, width, height } };
-    setWidgetPositions(newPositions);
-    
-    await saveUserSettings({ widgetPositions: newPositions });
-  }, [widgetPositions, userSettings, saveUserSettings, isInitialized]);
+const saveWidgetPosition = async (widgetId, x, y, width, height) => {
+  if (!isInitialized || !userSettings?.id) return;
+
+  const newPositions = {
+    ...widgetPositions,
+    [widgetId]: { x, y, width, height }
+  };
+
+  setWidgetPositions(newPositions);
+
+  saveUserSettings({ widgetPositions: newPositions });
+};
 
   // Funções de estudantes
   const openStudentProfile = (student) => {
@@ -364,18 +367,23 @@ const Administration = () => {
 
   const toggleAddStudentDropdown = () => setShowAddStudentDropdown((v) => !v);
 
-  const addStudent = (student) => {
-    if (userPermissions.view_students) {
-      setMonitoredStudents((prev) => [...prev, student]);
-      setShowAddStudentDropdown(false);
-    }
-  };
+const addStudent = (student) => {
+  if (!userPermissions.view_students) return;
 
-  const removeStudent = (studentId) => {
-    if (userPermissions.view_students) {
-      setMonitoredStudents((prev) => prev.filter(student => student.id !== studentId));
-    }
-  };
+  const updated = [...monitoredStudents, student];
+  setMonitoredStudents(updated);
+  saveUserSettings({ monitoredStudents: updated });
+  setShowAddStudentDropdown(false);
+};
+
+
+const removeStudent = (studentId) => {
+  if (!userPermissions.view_students) return;
+
+  const updated = monitoredStudents.filter(s => s.id !== studentId);
+  setMonitoredStudents(updated);
+  saveUserSettings({ monitoredStudents: updated });
+};
 
   // Funções de empresas
   const openCompanyProfile = (company) => {
@@ -386,67 +394,73 @@ const Administration = () => {
 
   const toggleAddCompanyDropdown = () => setShowAddCompanyDropdown((v) => !v);
 
-  const addCompany = (company) => {
-    if (userPermissions.view_companies) {
-      setCompanies((prev) => [...prev, company]);
-      setShowAddCompanyDropdown(false);
-    }
-  };
+const addCompany = (company) => {
+  if (!userPermissions.view_companies) return;
 
-  const removeCompany = (companyId) => {
-    if (userPermissions.view_companies) {
-      setCompanies((prev) => prev.filter(company => company.id !== companyId));
-    }
-  };
+  const updated = [...companies, company];
+  setCompanies(updated);
+  saveUserSettings({ companies: updated });
+  setShowAddCompanyDropdown(false);
+};
+
+const removeCompany = (companyId) => {
+  if (!userPermissions.view_companies) return;
+
+  const updated = companies.filter(c => c.id !== companyId);
+  setCompanies(updated);
+  saveUserSettings({ companies: updated });
+};
 
   // Funções de notas
-  const addNewNote = () => {
-    const newNote = { id: Date.now(), content: "" };
-    const updatedNotes = [...notes, newNote];
-    setNotes(updatedNotes);
-    
-    const newPositions = { ...widgetPositions };
-    const index = notes.length;
-    newPositions[`noteWidget_${newNote.id}`] = {
-      x: 325 + index * 50,
-      y: 380 + index * 20,
+const addNewNote = () => {
+  const newNote = { id: Date.now(), content: "" };
+  const updatedNotes = [...notes, newNote];
+
+  const newPositions = {
+    ...widgetPositions,
+    [`noteWidget_${newNote.id}`]: {
+      x: 325 + notes.length * 50,
+      y: 380 + notes.length * 20,
       width: 300,
       height: 150,
-    };
-    setWidgetPositions(newPositions);
-    
-    if (userSettings) {
-      saveUserSettings({ 
-        notes: updatedNotes,
-        widgetPositions: newPositions 
-      });
     }
   };
 
-  const removeNote = (noteId) => {
-    if (notes.length <= 1) {
-      setNotes([{ id: Date.now(), content: "" }]);
-      return;
-    }
-    
-    const updatedNotes = notes.filter(note => note.id !== noteId);
-    setNotes(updatedNotes);
-    
-    const newPositions = { ...widgetPositions };
-    delete newPositions[`noteWidget_${noteId}`];
-    setWidgetPositions(newPositions);
-    
-    if (userSettings) {
-      saveUserSettings({ 
-        notes: updatedNotes,
-        widgetPositions: newPositions 
-      });
-    }
-  };
+  setNotes(updatedNotes);
+  setWidgetPositions(newPositions);
 
-  const updateNote = (id, newContent) => {
-    setNotes((prev) => prev.map((note) => (note.id === id ? { ...note, content: newContent } : note)));
-  };
+  saveUserSettings({
+    notes: updatedNotes,
+    widgetPositions: newPositions
+  });
+};
+
+const removeNote = (noteId) => {
+  const updatedNotes =
+    notes.length <= 1
+      ? [{ id: Date.now(), content: "" }]
+      : notes.filter(note => note.id !== noteId);
+
+  const newPositions = { ...widgetPositions };
+  delete newPositions[`noteWidget_${noteId}`];
+
+  setNotes(updatedNotes);
+  setWidgetPositions(newPositions);
+
+  saveUserSettings({
+    notes: updatedNotes,
+    widgetPositions: newPositions
+  });
+};
+
+const updateNote = (id, newContent) => {
+  const updated = notes.map(note =>
+    note.id === id ? { ...note, content: newContent } : note
+  );
+
+  setNotes(updated);
+  saveUserSettings({ notes: updated });
+};
 
   // Cleanup
   useEffect(() => {
