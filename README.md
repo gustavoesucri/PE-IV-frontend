@@ -8,6 +8,6 @@ Front-end do Projeto de Extensão IV
 
 - Em outro, rodar 'npm start' na pasta do projeto /PE-IV-FRONTEND .
 
-- No login utilizar: usuário: 'Diretor' e senha 'admin3'.
+- No login utilizar: usuário: 'Diretor' e senha 'admin'.
 
 
