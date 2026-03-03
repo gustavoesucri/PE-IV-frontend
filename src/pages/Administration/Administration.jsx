@@ -14,13 +14,14 @@ const Administration = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [userPermissions, setUserPermissions] = useState({});
   const [allCompanies, setAllCompanies] = useState([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Estados que serão salvos no backend
   const [monitoredStudents, setMonitoredStudents] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [notes, setNotes] = useState([]);
   const [widgetPositions, setWidgetPositions] = useState({});
-  const [isInitialized, setIsInitialized] = useState(false);
+
 
   // Dados de exemplo
   const availableStudents = [

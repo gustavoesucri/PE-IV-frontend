@@ -1,0 +1,26 @@
+Maneira de analisar para dar encaminhamento em tempo hábil (ou o mais próximo disso):
+
+Analisar as telas que espelham ou tem a relacionamento necessário (não opcional) com a documentação entregue pelo Instituto e priorizar essas telas. Ou seja, telas-espelho, telas de cadastro e telas de busca. Dashboards, notificações, indicadores, booleans que não representam dados necessários, esses tipos de dados são extra-features, que consumirão o tempo e energia do time em detrimento do essencial.
+
+Exemplos de telas a analisar:
+		- Tela-espelho de avaliação (aquela do radio button).
+		- Tela de cadastro de alunos (porque são os avaliados)
+		- Tela de listagem de alunos (porque de nada adianta cadastrar alunos e não poder acessar os dados)
+
+Dashboards são tipo de listagem secundária, mais genérica e menos especialista. São bons numa aplicação, mas não essenciais (pelo menos não neste tipo).
+
+Administration (Não é prioridade analisar. Não temos tempo para gastar em extra-features):
+	Frontend:
+		- Remover possibilidade de adicionar notas extras. Deve ter somente uma.
+	
+	Backend:
+		- Alunos, para selecionar Alunos favoritos.
+		- Usuário, tem FK de array de ids de alunos, para representar alunos favoritos de Administration.
+		- Empresas.
+		
+	
+	
+Lista de Estudantes:
+
+		- Nas linhas resultantes tem que ter um boolean para cada aluno, que quando for true sinalizará que o aluno é favorito em Administration (ou seja, no array de ids de alunos vinculado ao usuário).
+		- 
