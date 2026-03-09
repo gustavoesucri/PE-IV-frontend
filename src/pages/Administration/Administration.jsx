@@ -95,10 +95,10 @@ const Administration = () => {
       const defaultSettings = {
         userId: userId,
         widgetPositions: {
-          studentsWidget: { x: 60, y: 60, width: 600, height: 300 },
-          companiesWidget: { x: 690, y: 60, width: 600, height: 300 },
-          counterWidget: { x: 60, y: 385, width: 300, height: 100 },
-          statsWidget: { x: 690, y: 380, width: 400, height: 260 },
+          studentsWidget: { x: 59, y: 63, width: 600, height: 300 },
+          companiesWidget: { x: 849, y: 64, width: 593, height: 300 },
+          counterWidget: { x: 26, y: 418, width: 300, height: 100 },
+          statsWidget: { x: 700, y: 424, width: 400, height: 257 },
         },
         sidebarOrder: [
           "administration",
@@ -121,34 +121,50 @@ const Administration = () => {
         }
       };
 
+      console.log('📤 Criando novo userSettings para userId:', userId);
       const response = await api.post('/api/userSettings', defaultSettings);
+      console.log('✅ UserSettings criado com sucesso:', response.data);
       return response.data;
       
     } catch (error) {
-      console.error("Erro ao criar configurações padrão:", error);
-      return {
+      console.error("❌ Erro ao criar configurações padrão:", {
+        userId: userId,
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        url: error.config?.url
+      });
+      
+      console.warn('⚠️ CRIANDO ID FAKE - userSettings não foi criado no banco!');
+      
+      const fakeSettings = {
         id: Date.now(),
         userId: userId,
         widgetPositions: {
-          studentsWidget: { x: 60, y: 60, width: 600, height: 300 },
-          companiesWidget: { x: 690, y: 60, width: 600, height: 300 },
-          counterWidget: { x: 60, y: 385, width: 300, height: 100 },
-          statsWidget: { x: 690, y: 380, width: 400, height: 260 },
+          studentsWidget: { x: 59, y: 63, width: 600, height: 300 },
+          companiesWidget: { x: 849, y: 64, width: 593, height: 300 },
+          counterWidget: { x: 26, y: 418, width: 300, height: 100 },
+          statsWidget: { x: 700, y: 424, width: 400, height: 257 },
         },
         notes: [{ id: Date.now(), content: "" }],
         monitoredStudents: [],
         companies: [],
         updatedAt: new Date().toISOString()
       };
+      
+      console.warn('🚨 RETORNANDO FAKE:', { id: fakeSettings.id, userId: fakeSettings.userId });
+      
+      return fakeSettings;
     }
   }, []);
 
   const loadWidgetPositions = useCallback((settings) => {
     const defaultPositions = {
-      studentsWidget: { x: 60, y: 60, width: 600, height: 300 },
-      companiesWidget: { x: 690, y: 60, width: 600, height: 300 },
-      counterWidget: { x: 60, y: 385, width: 300, height: 100 },
-      statsWidget: { x: 690, y: 380, width: 400, height: 260 },
+      studentsWidget: { x: 59, y: 63, width: 600, height: 300 },
+      companiesWidget: { x: 849, y: 64, width: 593, height: 300 },
+      counterWidget: { x: 26, y: 418, width: 300, height: 100 },
+      statsWidget: { x: 700, y: 424, width: 400, height: 257 },
     };
     
     const savedPositions = settings.widgetPositions || {};
@@ -175,7 +191,9 @@ const Administration = () => {
   const loadUserSettings = useCallback(async (userId, permissions) => {
     try {
       // Buscar userSettings do backend
+      console.log('📥 Buscando userSettings para userId:', userId);
       const response = await api.get(`/api/userSettings?userId=${userId}`);
+      console.log('Resposta do GET:', response.data);
       
       let settings;
       
@@ -184,7 +202,7 @@ const Administration = () => {
         settings = response.data[0];
         setUserSettings(settings);
         
-        console.log("Settings carregados:", settings);
+        console.log("✅ Settings carregados do banco:", settings);
         
         // Carregar dados do backend baseado nas permissões
         if (permissions.view_students) {
@@ -199,7 +217,7 @@ const Administration = () => {
         
       } else {
         // SE NÃO EXISTIR CONFIGURAÇÕES, CRIAR NOVAS
-        console.log("Criando novas configurações para usuário:", userId);
+        console.log("📝 Criando novas configurações para usuário:", userId);
         const newSettings = await createDefaultUserSettings(userId);
         settings = newSettings;
         setUserSettings(newSettings);
@@ -217,17 +235,18 @@ const Administration = () => {
       }
       
       // Carregar posições dos widgets
+      console.log('🎯 Carregando posições dos widgets, settings.id:', settings?.id);
       loadWidgetPositions(settings);
       
     } catch (error) {
-      console.error("Erro ao carregar configurações do usuário:", error);
+      console.error("❌ Erro ao carregar configurações do usuário:", error);
       // Fallback para dados padrão em caso de erro
       setNotes([{ id: Date.now(), content: "" }]);
       setWidgetPositions({
-        studentsWidget: { x: 60, y: 60, width: 600, height: 300 },
-        companiesWidget: { x: 690, y: 60, width: 600, height: 300 },
-        counterWidget: { x: 60, y: 385, width: 300, height: 100 },
-        statsWidget: { x: 690, y: 380, width: 400, height: 260 },
+        studentsWidget: { x: 59, y: 63, width: 600, height: 300 },
+        companiesWidget: { x: 849, y: 64, width: 593, height: 300 },
+        counterWidget: { x: 26, y: 418, width: 300, height: 100 },
+        statsWidget: { x: 700, y: 424, width: 400, height: 257 },
       });
     }
   }, [createDefaultUserSettings, loadWidgetPositions]);
@@ -304,13 +323,31 @@ const Administration = () => {
 
   // Salvar configurações no backend
   const saveUserSettings = useCallback(async (updates) => {
-  if (!currentUser || !userSettings?.id) return;
+  if (!currentUser || !userSettings?.id) {
+    console.warn('⚠️ Não pode salvar settings', {
+      currentUser: !!currentUser,
+      'userSettings?.id': userSettings?.id,
+      currentUserId: currentUser?.id
+    });
+    return;
+  }
 
   try {
+    const token = localStorage.getItem('token');
+    console.log('📤 Iniciando PATCH para /api/userSettings/:id', {
+      settingsId: userSettings.id,
+      userId: currentUser.id,
+      tokenExists: !!token,
+      tokenLength: token?.length,
+      updateKeys: Object.keys(updates)
+    });
+    
     await api.patch(`/api/userSettings/${userSettings.id}`, {
       ...updates,
       updatedAt: new Date().toISOString()
     });
+
+    console.log('✅ PATCH bem-sucedido');
 
     // Atualiza estado local de forma segura
     setUserSettings(prev => ({
@@ -319,8 +356,17 @@ const Administration = () => {
       updatedAt: new Date().toISOString()
     }));
 
+    console.log('✅ Settings salvos com sucesso');
+
   } catch (error) {
-    console.error("Erro ao salvar configurações:", error);
+    console.error("❌ Erro ao salvar configurações:", {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      url: error.config?.url,
+      method: error.config?.method
+    });
   }
 }, [currentUser, userSettings?.id]);
 
@@ -347,7 +393,17 @@ const Administration = () => {
 
   // Salvar posições dos widgets
 const saveWidgetPosition = async (widgetId, x, y, width, height) => {
-  if (!isInitialized || !userSettings?.id) return;
+  console.log('🔄 saveWidgetPosition chamado:', {
+    widgetId,
+    isInitialized,
+    userSettingsId: userSettings?.id,
+    currentUserId: currentUser?.id
+  });
+
+  if (!isInitialized || !userSettings?.id) {
+    console.warn('⚠️ Não pode salvar - isInitialized:', isInitialized, 'userSettings?.id:', userSettings?.id);
+    return;
+  }
 
   const newPositions = {
     ...widgetPositions,
@@ -356,6 +412,7 @@ const saveWidgetPosition = async (widgetId, x, y, width, height) => {
 
   setWidgetPositions(newPositions);
 
+  console.log('📤 Enviando novo posicionamento:', { widgetId, x, y, width, height });
   saveUserSettings({ widgetPositions: newPositions });
 };
 

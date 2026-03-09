@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import styles from "./UsersList.module.css";
 import Menu from "../../../../components/Menu/Menu";
+import { useNavigate } from "react-router-dom";
 import api from "../../../../api";
 
 const UsersList = () => {
@@ -26,8 +27,26 @@ const UsersList = () => {
   const [passwordMatch, setPasswordMatch] = useState(null);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [userPasswordFromServer, setUserPasswordFromServer] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const navigate = useNavigate();
+
+  // Proteção: apenas diretor pode acessar esta página
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('user');
+      if (!saved) {
+        navigate('/');
+        return;
+      }
+      const u = JSON.parse(saved);
+      if (!u || u.role !== 'diretor') {
+        navigate('/');
+      }
+    } catch (err) {
+      console.error('Erro verificando acesso a UsersList:', err);
+      navigate('/');
+    }
+  }, [navigate]);
   // Carregar usuários e categorias do back-end
   useEffect(() => {
     const loadData = async () => {
@@ -74,12 +93,7 @@ const UsersList = () => {
     });
 
     // Buscar senha atual do usuário do back-end
-    try {
-      const userResponse = await api.get(`/api/users/${user.id}`);
-      setUserPasswordFromServer(userResponse.data.password);
-    } catch (error) {
-      console.error("Erro ao buscar senha do usuário:", error);
-    }
+    // Não buscar senha diretamente do servidor (não seguro). Verificação acontecerá no salvar via endpoint de verificação.
 
     setIsEditModalOpen(true);
     setPasswordData({
@@ -191,8 +205,10 @@ const UsersList = () => {
           return;
         }
 
-        // Verificar se a senha atual está correta
-        if (passwordData.currentPassword !== userPasswordFromServer) {
+        // Verificar se a senha atual está correta via endpoint seguro
+        try {
+          await api.post(`/api/users/${editingUser.id}/verify-password`, { password: passwordData.currentPassword });
+        } catch (err) {
           setPasswordError("Senha atual incorreta!");
           return;
         }

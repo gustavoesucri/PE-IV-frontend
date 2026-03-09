@@ -20,7 +20,8 @@ const Settings = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
   const [tempEmail, setTempEmail] = useState("");
-  const [currentPasswordFromServer, setCurrentPasswordFromServer] = useState("");
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  
 
   // Formatar categoria (role) para exibição
   const formatRole = (role) => {
@@ -36,26 +37,20 @@ const Settings = () => {
         if (savedUser) {
           const user = JSON.parse(savedUser);
           setCurrentUser(user);
-          
-          // Buscar dados completos do usuário (incluindo senha) do back-end
-          try {
-            const userResponse = await api.get(`/api/users/${user.id}`);
-            setCurrentPasswordFromServer(userResponse.data.password);
-          } catch (error) {
-            console.error("Erro ao buscar dados do usuário:", error);
-          }
-          
           // Carregar configurações do usuário do back-end
           const response = await api.get(`/api/userSettings?userId=${user.id}`);
           if (response.data && response.data.length > 0) {
             setUserSettings(response.data[0]);
           } else {
-            throw new Error("Configurações não encontradas");
+            // No settings found, keep userSettings null but still mark loaded
+            console.warn("Configurações não encontradas");
           }
         }
       } catch (error) {
         console.error("Erro ao carregar configurações:", error);
         setSuccessMessage("Erro ao carregar configurações do servidor");
+      } finally {
+        setSettingsLoaded(true);
       }
     };
 
@@ -104,10 +99,7 @@ const Settings = () => {
       setCurrentUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
       
-      // Atualizar a senha local se for uma alteração de senha
-      if (userData.password) {
-        setCurrentPasswordFromServer(userData.password);
-      }
+      // Não armazenamos senha no frontend por segurança
       
       return response.data;
     } catch (error) {
@@ -158,8 +150,10 @@ const Settings = () => {
       return;
     }
 
-    // Verificar se a senha atual está correta
-    if (passwordData.currentPassword !== currentPasswordFromServer) {
+    // Verificar se a senha atual está correta (verificar no backend)
+    try {
+      await api.post(`/api/users/${currentUser.id}/verify-password`, { password: passwordData.currentPassword });
+    } catch (err) {
       setPasswordError("Senha atual incorreta!");
       return;
     }
@@ -308,27 +302,33 @@ const Settings = () => {
         )}
       </div>
 
-      <div className={styles.switchContainer}>
-        <label className={styles.switchLabel}>
-          Notificações do Sistema
-          <div
-            className={`${styles.switch} ${userSettings?.settings?.notifySystem ? styles.on : styles.off}`}
-            onClick={handleNotifySystemToggle}
-          >
-            <div className={styles.slider}></div>
-          </div>
-        </label>
+      {!settingsLoaded ? (
+        <div className={styles.switchContainer}>
+          <div style={{ padding: '1rem', color: '#666' }}>Carregando preferências...</div>
+        </div>
+      ) : (
+        <div className={styles.switchContainer}>
+          <label className={styles.switchLabel}>
+            Notificações do Sistema
+            <div
+              className={`${styles.switch} ${userSettings?.settings?.notifySystem ? styles.on : styles.off}`}
+              onClick={handleNotifySystemToggle}
+            >
+              <div className={styles.slider}></div>
+            </div>
+          </label>
 
-        <label className={styles.switchLabel}>
-          Notificações de Alunos por Email
-          <div
-            className={`${styles.switch} ${userSettings?.settings?.notifyEmail ? styles.on : styles.off}`}
-            onClick={handleNotifyEmailToggle}
-          >
-            <div className={styles.slider}></div>
-          </div>
-        </label>
-      </div>
+          <label className={styles.switchLabel}>
+            Notificações de Alunos por Email
+            <div
+              className={`${styles.switch} ${userSettings?.settings?.notifyEmail ? styles.on : styles.off}`}
+              onClick={handleNotifyEmailToggle}
+            >
+              <div className={styles.slider}></div>
+            </div>
+          </label>
+        </div>
+      )}
 
       {/* Modal Editar Senha */}
       {isModalOpen && (

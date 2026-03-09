@@ -17,7 +17,7 @@ const handleSubmit = async (e) => {
   setLoading(true);
 
   try {
-    const response = await api.post("/login", { username, password });
+    const response = await api.post("/auth/login", { username, password });
 
     localStorage.setItem("token", response.data.accessToken);
     localStorage.setItem("user", JSON.stringify(response.data.user));

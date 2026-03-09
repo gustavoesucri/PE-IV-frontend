@@ -38,6 +38,24 @@ const DirectorPanel = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // Protege acesso: somente diretor pode ver este painel
+    useEffect(() => {
+        try {
+            const saved = localStorage.getItem('user');
+            if (!saved) {
+                navigate('/');
+                return;
+            }
+            const u = JSON.parse(saved);
+            if (!u || u.role !== 'diretor') {
+                navigate('/');
+            }
+        } catch (err) {
+            console.error('Erro verificando usuário para DirectorPanel', err);
+            navigate('/');
+        }
+    }, [navigate]);
+
     // Estados
     const [categories, setCategories] = useState([]);
     const [users, setUsers] = useState([]);

@@ -35,6 +35,23 @@ const DEFAULT_PERMISSIONS = {
 
 const Users = () => {
   const navigate = useNavigate();
+  // Proteção: apenas diretor pode acessar esta página
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('user');
+      if (!saved) {
+        navigate('/');
+        return;
+      }
+      const u = JSON.parse(saved);
+      if (!u || u.role !== 'diretor') {
+        navigate('/');
+      }
+    } catch (err) {
+      console.error('Erro verificando acesso a Users:', err);
+      navigate('/');
+    }
+  }, [navigate]);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
