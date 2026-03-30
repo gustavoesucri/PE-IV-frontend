@@ -38,7 +38,7 @@ const Settings = () => {
           const user = JSON.parse(savedUser);
           setCurrentUser(user);
           // Carregar configurações do usuário do back-end
-          const response = await api.get(`/api/userSettings?userId=${user.id}`);
+          const response = await api.get(`/user-settings?userId=${user.id}`);
           if (response.data && response.data.length > 0) {
             setUserSettings(response.data[0]);
           } else {
@@ -73,7 +73,7 @@ const Settings = () => {
         updatedAt: new Date().toISOString()
       };
 
-      const response = await api.patch(`/api/userSettings/${userSettings.id}`, updatedSettings);
+      const response = await api.patch(`/user-settings/${userSettings.id}`, updatedSettings);
       setUserSettings(response.data);
       return response.data;
     } catch (error) {
@@ -89,7 +89,7 @@ const Settings = () => {
     }
 
     try {
-      const response = await api.patch(`/api/users/${currentUser.id}`, userData);
+      const response = await api.patch(`/users/${currentUser.id}`, userData);
       
       // Atualizar também no localStorage (sem a senha por segurança)
       const userDataForStorage = { ...userData };
@@ -152,7 +152,7 @@ const Settings = () => {
 
     // Verificar se a senha atual está correta (verificar no backend)
     try {
-      await api.post(`/api/users/${currentUser.id}/verify-password`, { password: passwordData.currentPassword });
+      await api.post(`/users/${currentUser.id}/verify-password`, { password: passwordData.currentPassword });
     } catch (err) {
       setPasswordError("Senha atual incorreta!");
       return;

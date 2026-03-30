@@ -25,7 +25,7 @@ export const usePermissions = () => {
         // Buscar permissões do cargo
         let rolePermissions = {};
         try {
-          const rolePermsResponse = await api.get(`/role-permissions?role=${user.role}`);
+          const rolePermsResponse = await api.get(`/permissions/role-permissions?role=${user.role}`);
           if (rolePermsResponse.data && rolePermsResponse.data.length > 0) {
             rolePermissions = rolePermsResponse.data[0].permissions;
             console.log('📋 Permissões do cargo:', rolePermissions);
@@ -39,7 +39,7 @@ export const usePermissions = () => {
         // Buscar permissões específicas do usuário
         let userSpecificPermissions = {};
         try {
-          const userPermsResponse = await api.get(`/user-specific-permissions?userId=${user.id}`);
+          const userPermsResponse = await api.get(`/permissions/user-specific-permissions?userId=${user.id}`);
           if (userPermsResponse.data && userPermsResponse.data.length > 0) {
             userSpecificPermissions = userPermsResponse.data[0].permissions;
             console.log('🔧 Permissões específicas do usuário:', userSpecificPermissions);

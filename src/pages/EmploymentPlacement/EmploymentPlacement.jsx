@@ -3,9 +3,11 @@ import styles from "./EmploymentPlacement.module.css";
 import { useNavigate } from "react-router-dom";
 import Menu from "../../components/Menu/Menu";
 import api from "../../api";
+import { usePermissions } from "../../hooks/usePermissions";
 
 const EmploymentPlacement = () => {
   const navigate = useNavigate();
+  const { permissions: userPermissions, loading: permissionsLoading } = usePermissions();
 
   // Estados do formulário
   const [selectedStudentId, setSelectedStudentId] = useState("");
@@ -22,47 +24,21 @@ const EmploymentPlacement = () => {
   // Estados de UI
   const [error, setError] = useState("");
   const [successModal, setSuccessModal] = useState(false);
-  const [userPermissions, setUserPermissions] = useState({});
 
   // Carregar dados
   useEffect(() => {
+    if (permissionsLoading) return;
+
     const loadData = async () => {
       try {
         // Carregar estudantes ativos
-        const studentsResponse = await api.get('/api/students');
+        const studentsResponse = await api.get('/students');
         const activeStudents = studentsResponse.data.filter(student => student.status === "Ativo");
         setStudents(activeStudents);
 
         // Carregar empresas
-        const companiesResponse = await api.get('/api/companies');
+        const companiesResponse = await api.get('/companies');
         setCompanies(companiesResponse.data);
-
-        // Carregar permissões do usuário
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          const user = JSON.parse(savedUser);
-
-          const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
-          let rolePermissions = {};
-          if (rolePermsResponse.data.length > 0) {
-            rolePermissions = rolePermsResponse.data[0].permissions;
-          }
-
-          const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
-          let userSpecificPermissions = {};
-          if (userPermsResponse.data.length > 0) {
-            userSpecificPermissions = userPermsResponse.data[0].permissions;
-          }
-
-          const finalPermissions = { ...rolePermissions };
-          Object.keys(userSpecificPermissions).forEach(perm => {
-            if (userSpecificPermissions[perm] !== null) {
-              finalPermissions[perm] = userSpecificPermissions[perm];
-            }
-          });
-
-          setUserPermissions(finalPermissions);
-        }
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
         setError("Erro ao carregar dados. Tente novamente.");
@@ -70,7 +46,7 @@ const EmploymentPlacement = () => {
     };
 
     loadData();
-  }, []);
+  }, [permissionsLoading]);
 
   const handleSave = async () => {
     // Verificar permissão apenas quando tentar salvar
@@ -98,7 +74,7 @@ const EmploymentPlacement = () => {
 
     try {
       // VERIFICAÇÃO DE ENCAMINHAMENTO DUPLICADO
-      const placementsResponse = await api.get('/api/placements');
+      const placementsResponse = await api.get('/placements');
       const existingPlacement = placementsResponse.data.find(
         placement =>
           placement.studentId === parseInt(selectedStudentId) &&
@@ -126,7 +102,7 @@ const EmploymentPlacement = () => {
         createdBy: user ? user.id : null
       };
 
-      await api.post('/api/placements', newPlacement);
+      await api.post('/placements', newPlacement);
 
       // Limpar formulário
       setSelectedStudentId("");

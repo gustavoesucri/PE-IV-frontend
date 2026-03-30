@@ -105,6 +105,21 @@
   background-color: var(--cinza-escuro);
 }
 
+.cancelButton {
+  background-color: transparent;
+  color: var(--preto);
+  border: 1px solid #ccc;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancelButton:hover {
+  background-color: #e9e9e9;
+}
+
 .viewButton {
   padding: 0.4rem 0.8rem;
   font-size: 0.9rem;

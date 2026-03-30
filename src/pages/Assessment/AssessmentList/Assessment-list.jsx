@@ -7,6 +7,7 @@ import jsPDF from 'jspdf';
 import logoPdf from '../../../assets/logo-pdf.png';
 import infoPdf from '../../../assets/info-pdf.png';
 import api from "../../../api";
+import { usePermissions } from "../../../hooks/usePermissions";
 
 const questions = [
     "1 - Atende as regras.", "2 - Socializa com o grupo.", "3 - Isola-se do grupo", "4 - Possui tolerância a frustração.",
@@ -54,46 +55,20 @@ const AssessmentList = () => {
     const [selectedAssessment, setSelectedAssessment] = useState(null);
     const [students, setStudents] = useState([]);
     const [assessments, setAssessments] = useState([]);
-    const [userPermissions, setUserPermissions] = useState({});
+    const { permissions: userPermissions, loading: permissionsLoading } = usePermissions();
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
     const [modalType, setModalType] = useState("");
 
-    // Carregar dados e permissões
+    // Carregar dados quando permissões estiverem prontas
     useEffect(() => {
-        const loadDataAndPermissions = async () => {
+        if (permissionsLoading) return;
+
+        const loadData = async () => {
             try {
-                const savedUser = localStorage.getItem("user");
-                if (savedUser) {
-                    const user = JSON.parse(savedUser);
-
-                    // Carregar permissões
-                    const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
-                    let rolePermissions = {};
-                    if (rolePermsResponse.data.length > 0) {
-                        rolePermissions = rolePermsResponse.data[0].permissions;
-                    }
-
-                    const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
-                    let userSpecificPermissions = {};
-                    if (userPermsResponse.data.length > 0) {
-                        userSpecificPermissions = userPermsResponse.data[0].permissions;
-                    }
-
-                    const finalPermissions = { ...rolePermissions };
-                    Object.keys(userSpecificPermissions).forEach(perm => {
-                        if (userSpecificPermissions[perm] !== null) {
-                            finalPermissions[perm] = userSpecificPermissions[perm];
-                        }
-                    });
-
-                    setUserPermissions(finalPermissions);
-
-                    // Carregar dados apenas se tiver permissão para visualizar
-                    if (finalPermissions.view_evaluations) {
-                        await loadStudents();
-                        await loadAssessments();
-                    }
+                if (userPermissions.view_assessments) {
+                    await loadStudents();
+                    await loadAssessments();
                 }
             } catch (error) {
                 console.error("Erro ao carregar dados:", error);
@@ -101,12 +76,12 @@ const AssessmentList = () => {
             }
         };
 
-        loadDataAndPermissions();
-    }, []);
+        loadData();
+    }, [permissionsLoading, userPermissions]);
 
     const loadStudents = async () => {
         try {
-            const response = await api.get('/api/students');
+            const response = await api.get('/students');
             setStudents(response.data);
         } catch (error) {
             console.error("Erro ao carregar estudantes:", error);
@@ -116,7 +91,7 @@ const AssessmentList = () => {
 
     const loadAssessments = async () => {
         try {
-            const response = await api.get('/api/assessments');
+            const response = await api.get('/assessments');
             setAssessments(response.data);
         } catch (error) {
             console.error("Erro ao carregar avaliações:", error);
@@ -143,7 +118,7 @@ const AssessmentList = () => {
     };
 
     const handleView = (type) => {
-        if (!userPermissions.view_evaluations) {
+        if (!userPermissions.view_assessments) {
             showMessage("Você não tem permissão para visualizar avaliações. Consulte o diretor.");
             return;
         }
@@ -257,7 +232,7 @@ const AssessmentList = () => {
             <h1 className={styles.title}>Lista de Avaliações</h1>
 
             <div className={styles.tableWrapper}>
-                {userPermissions.view_evaluations ? (
+                {userPermissions.view_assessments ? (
                     <>
                         <div className={styles.formGroup}>
                             <select

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputMask from "react-input-mask";
 import styles from "./Companies.module.css";
 import Menu from "../../components/Menu/Menu";
 import api from "../../api";
+import { usePermissions } from "../../hooks/usePermissions";
 import { X } from "lucide-react";
 
 const brazilianStates = [
@@ -40,6 +41,7 @@ const validateCNPJ = (cnpj) => {
 
 const Companies = () => {
   const navigate = useNavigate();
+  const { permissions: userPermissions } = usePermissions();
   const [formData, setFormData] = useState({
     nome: "",
     cnpj: "",
@@ -49,51 +51,9 @@ const Companies = () => {
     estado: "",
     cep: "",
   });
-  const [userPermissions, setUserPermissions] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
-
-  // Carregar permissões
-  useEffect(() => {
-    const loadUserPermissions = async () => {
-      try {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          const user = JSON.parse(savedUser);
-
-          // Carregar permissões do cargo
-          const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
-          let rolePermissions = {};
-          if (rolePermsResponse.data.length > 0) {
-            rolePermissions = rolePermsResponse.data[0].permissions;
-          }
-
-          // Carregar permissões específicas do usuário
-          const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
-          let userSpecificPermissions = {};
-          if (userPermsResponse.data.length > 0) {
-            userSpecificPermissions = userPermsResponse.data[0].permissions;
-          }
-
-          // Combinar permissões (usuário sobrepõe cargo)
-          const finalPermissions = { ...rolePermissions };
-          Object.keys(userSpecificPermissions).forEach(perm => {
-            if (userSpecificPermissions[perm] !== null) {
-              finalPermissions[perm] = userSpecificPermissions[perm];
-            }
-          });
-
-          setUserPermissions(finalPermissions);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar permissões:", error);
-        showMessage("Erro ao carregar permissões do usuário.", "error");
-      }
-    };
-
-    loadUserPermissions();
-  }, []);
 
   const showMessage = (message, type = "error") => {
     setModalMessage(message);
@@ -155,7 +115,7 @@ const Companies = () => {
     };
 
     // Verificar se CNPJ ou nome já existem
-    const companiesResponse = await api.get('/api/companies');
+    const companiesResponse = await api.get('/companies');
     const cnpjExists = companiesResponse.data.some(
       company => company.cnpj === companyData.cnpj
     );
@@ -175,7 +135,7 @@ const Companies = () => {
     }
 
     // Enviar para o back-end
-    await api.post('/api/companies', companyData);
+    await api.post('/companies', companyData);
 
     showMessage("Empresa cadastrada com sucesso!", "success");
     

@@ -127,7 +127,7 @@ const Menu = () => {
 
           // Carregar configurações do usuário do back-end
           try {
-            const response = await api.get(`/api/userSettings?userId=${user.id}`);
+            const response = await api.get(`/user-settings?userId=${user.id}`);
             if (response.data && response.data.length > 0) {
               setUserSettings(response.data[0]);
             }
@@ -227,7 +227,7 @@ const Menu = () => {
         updatedAt: new Date().toISOString()
       };
 
-      await api.patch(`/api/userSettings/${userSettings.id}`, updatedSettings);
+      await api.patch(`/user-settings/${userSettings.id}`, updatedSettings);
       setUserSettings(updatedSettings);
     } catch (error) {
       console.error("Erro ao salvar ordem do menu:", error);

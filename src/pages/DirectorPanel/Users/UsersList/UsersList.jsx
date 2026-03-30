@@ -54,13 +54,14 @@ const UsersList = () => {
         setLoading(true);
 
         // Carregar usuários
-        const usersResponse = await api.get('/api/users');
+        const usersResponse = await api.get('/users');
         setUsers(usersResponse.data);
         setFilteredUsers(usersResponse.data);
 
-        // Carregar categorias
-        const categoriesResponse = await api.get('/api/userCategories');
-        setCategories(categoriesResponse.data);
+        // Carregar categorias a partir de rolePermissions
+        const rolePermsResponse = await api.get('/api/rolePermissions');
+        const rolesFromPermissions = rolePermsResponse.data.map(rp => rp.role);
+        setCategories(rolesFromPermissions);
 
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
@@ -179,7 +180,7 @@ const UsersList = () => {
       setPasswordError("");
 
       // Verificar se username já existe (excluindo o usuário atual)
-      const usersResponse = await api.get('/api/users');
+      const usersResponse = await api.get('/users');
       const usernameExists = usersResponse.data.some(
         user => user.username === formData.username && user.id !== editingUser.id
       );
@@ -207,7 +208,7 @@ const UsersList = () => {
 
         // Verificar se a senha atual está correta via endpoint seguro
         try {
-          await api.post(`/api/users/${editingUser.id}/verify-password`, { password: passwordData.currentPassword });
+          await api.post(`/users/${editingUser.id}/verify-password`, { password: passwordData.currentPassword });
         } catch (err) {
           setPasswordError("Senha atual incorreta!");
           return;
@@ -223,7 +224,7 @@ const UsersList = () => {
       }
 
       // Atualizar usuário
-      await api.patch(`/api/users/${editingUser.id}`, updateData);
+      await api.patch(`/users/${editingUser.id}`, updateData);
 
       // Atualizar lista local
       const updatedUsers = users.map(u =>
@@ -262,7 +263,7 @@ const UsersList = () => {
       }
 
       // Deletar usuário
-      await api.delete(`/api/users/${deletingUser.id}`);
+      await api.delete(`/users/${deletingUser.id}`);
 
       // Atualizar lista local
       const updatedUsers = users.filter(u => u.id !== deletingUser.id);

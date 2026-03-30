@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import styles from "./FollowUp.module.css";
 import Menu from "../../components/Menu/Menu";
 import api from "../../api";
+import { usePermissions } from "../../hooks/usePermissions";
 
 const FollowUp = () => {
   // === ESTADOS PRINCIPAIS ===
@@ -12,7 +13,7 @@ const FollowUp = () => {
   const [generalFeedback, setGeneralFeedback] = useState("");
   const [error, setError] = useState("");
   const [successModal, setSuccessModal] = useState(false);
-  const [userPermissions, setUserPermissions] = useState({});
+  const { permissions: userPermissions, loading: permissionsLoading } = usePermissions();
 
   // === ESTADOS DO MODAL INTERNO ===
   const [viewMode, setViewMode] = useState("form"); // "form" | "lista" | "visualizar"
@@ -43,72 +44,36 @@ const FollowUp = () => {
     setModalType("");
   };
 
-  // Carregar permissões e dados
+  // Carregar dados quando permissões estiverem prontas
   useEffect(() => {
-    const loadUserPermissionsAndData = async () => {
+    if (permissionsLoading) return;
+
+    const loadData = async () => {
       try {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          const user = JSON.parse(savedUser);
+        const studentsResponse = await api.get('/students');
+        setStudents(studentsResponse.data);
 
-          // Carregar permissões do cargo
-          const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
-          let rolePermissions = {};
-          if (rolePermsResponse.data.length > 0) {
-            rolePermissions = rolePermsResponse.data[0].permissions;
-          }
+        const companiesResponse = await api.get('/companies');
+        setCompanies(companiesResponse.data);
 
-          // Carregar permissões específicas do usuário
-          const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
-          let userSpecificPermissions = {};
-          if (userPermsResponse.data.length > 0) {
-            userSpecificPermissions = userPermsResponse.data[0].permissions;
-          }
-
-          // Combinar permissões (usuário sobrepõe cargo)
-          const finalPermissions = { ...rolePermissions };
-          Object.keys(userSpecificPermissions).forEach(perm => {
-            if (userSpecificPermissions[perm] !== null) {
-              finalPermissions[perm] = userSpecificPermissions[perm];
-            }
-          });
-
-          setUserPermissions(finalPermissions);
-
-          // SEMPRE carregar os dados, independente das permissões
-          // Carregar estudantes, empresas e encaminhamentos
-          try {
-            const studentsResponse = await api.get('/api/students');
-            setStudents(studentsResponse.data);
-
-            const companiesResponse = await api.get('/api/companies');
-            setCompanies(companiesResponse.data);
-
-            const placementsResponse = await api.get('/api/placements');
-            setPlacements(placementsResponse.data);
-          } catch (error) {
-            console.error("Erro ao carregar dados:", error);
-            showMessage("Erro ao carregar dados dos alunos.", "error");
-          }
-
-          // Carregar registros de acompanhamento
-          try {
-            const response = await api.get('/api/followUps');
-            setRegistros(response.data);
-          } catch (error) {
-            console.error("Erro ao carregar registros:", error);
-            // Em caso de erro, usar dados vazios
-            setRegistros([]);
-          }
-        }
+        const placementsResponse = await api.get('/placements');
+        setPlacements(placementsResponse.data);
       } catch (error) {
-        console.error("Erro ao carregar permissões:", error);
-        showMessage("Erro ao carregar permissões do usuário.", "error");
+        console.error("Erro ao carregar dados:", error);
+        showMessage("Erro ao carregar dados dos alunos.", "error");
+      }
+
+      try {
+        const response = await api.get('/follow-ups');
+        setRegistros(response.data);
+      } catch (error) {
+        console.error("Erro ao carregar registros:", error);
+        setRegistros([]);
       }
     };
 
-    loadUserPermissionsAndData();
-  }, []);
+    loadData();
+  }, [permissionsLoading]);
 
   const selectedStudent = students.find(a => a.id === Number(selectedStudentId));
   const studentPlacement = placements.find(p => p.studentId === Number(selectedStudentId));
@@ -151,7 +116,7 @@ const FollowUp = () => {
       };
 
       // Salvar no backend
-      const response = await api.post('/api/followUps', novoRegistro);
+      const response = await api.post('/follow-ups', novoRegistro);
 
       // Atualizar lista local
       setRegistros(prev => [...prev, response.data]);
@@ -188,7 +153,7 @@ const FollowUp = () => {
 
     try {
       // Deletar do backend
-      await api.delete(`/api/followUps/${registroToDelete.id}`);
+      await api.delete(`/follow-ups/${registroToDelete.id}`);
 
       // Atualizar lista local
       setRegistros(prev => prev.filter(r => r.id !== registroToDelete.id));
@@ -488,8 +453,7 @@ const FollowUp = () => {
               </button>
               <button
                 onClick={handleDeleteCancel}
-                className={styles.filterButton}
-                style={{ backgroundColor: 'var(--cinza)', color: 'var(--preto)' }}
+                className={styles.cancelButton}
               >
                 Cancelar
               </button>

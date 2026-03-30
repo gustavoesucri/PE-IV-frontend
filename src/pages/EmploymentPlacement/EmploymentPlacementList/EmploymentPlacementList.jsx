@@ -4,8 +4,10 @@ import styles from "./EmploymentPlacementList.module.css";
 import Menu from "../../../components/Menu/Menu";
 import { X } from "lucide-react";
 import api from "../../../api";
+import { usePermissions } from "../../../hooks/usePermissions";
 
 const EmploymentPlacementList = () => {
+  const { permissions: userPermissions, loading: permissionsLoading } = usePermissions();
   const [search, setSearch] = useState("");
   const [dateType, setDateType] = useState("dataAdmissao");
   const [dateFrom, setDateFrom] = useState("");
@@ -21,47 +23,21 @@ const EmploymentPlacementList = () => {
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
-  const [userPermissions, setUserPermissions] = useState({});
   
   const [selectedPlacement, setSelectedPlacement] = useState(null);
   const [deletingPlacement, setDeletingPlacement] = useState(null);
 
   // Carregar dados e permissões
   useEffect(() => {
+    if (permissionsLoading) return;
+
     const loadDataAndPermissions = async () => {
       try {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          const user = JSON.parse(savedUser);
-
-          // Carregar permissões
-          const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
-          let rolePermissions = {};
-          if (rolePermsResponse.data.length > 0) {
-            rolePermissions = rolePermsResponse.data[0].permissions;
-          }
-
-          const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
-          let userSpecificPermissions = {};
-          if (userPermsResponse.data.length > 0) {
-            userSpecificPermissions = userPermsResponse.data[0].permissions;
-          }
-
-          const finalPermissions = { ...rolePermissions };
-          Object.keys(userSpecificPermissions).forEach(perm => {
-            if (userSpecificPermissions[perm] !== null) {
-              finalPermissions[perm] = userSpecificPermissions[perm];
-            }
-          });
-
-          setUserPermissions(finalPermissions);
-
-          // Carregar dados apenas se tiver permissão para visualizar
-          if (finalPermissions.view_placements) {
-            await loadPlacements();
-            await loadStudents();
-            await loadCompanies();
-          }
+        // Carregar dados apenas se tiver permissão para visualizar
+        if (userPermissions.view_placements) {
+          await loadPlacements();
+          await loadStudents();
+          await loadCompanies();
         }
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
@@ -70,11 +46,11 @@ const EmploymentPlacementList = () => {
     };
 
     loadDataAndPermissions();
-  }, []);
+  }, [permissionsLoading, userPermissions]);
 
   const loadPlacements = async () => {
     try {
-      const response = await api.get('/api/placements');
+      const response = await api.get('/placements');
       setPlacements(response.data);
       setFilteredPlacements(response.data);
     } catch (error) {
@@ -85,7 +61,7 @@ const EmploymentPlacementList = () => {
 
   const loadStudents = async () => {
     try {
-      const response = await api.get('/api/students');
+      const response = await api.get('/students');
       setStudents(response.data);
     } catch (error) {
       console.error("Erro ao carregar estudantes:", error);
@@ -95,7 +71,7 @@ const EmploymentPlacementList = () => {
 
   const loadCompanies = async () => {
     try {
-      const response = await api.get('/api/companies');
+      const response = await api.get('/companies');
       setCompanies(response.data);
     } catch (error) {
       console.error("Erro ao carregar empresas:", error);
@@ -183,7 +159,7 @@ const EmploymentPlacementList = () => {
 
   const handleDelete = async () => {
     try {
-      await api.delete(`/api/placements/${deletingPlacement.id}`);
+      await api.delete(`/placements/${deletingPlacement.id}`);
 
       // Atualizar lista local
       const updatedPlacements = placements.filter(p => p.id !== deletingPlacement.id);

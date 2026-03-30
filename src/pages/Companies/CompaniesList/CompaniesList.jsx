@@ -4,6 +4,7 @@ import styles from "./CompaniesList.module.css";
 import Menu from "../../../components/Menu/Menu";
 import { X } from "lucide-react";
 import api from "../../../api";
+import { usePermissions } from "../../../hooks/usePermissions";
 
 const brazilianStates = [
   "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS",
@@ -38,6 +39,7 @@ const validateCNPJ = (cnpj) => {
 };
 
 const CompaniesList = () => {
+  const { permissions: userPermissions } = usePermissions();
   const [companies, setCompanies] = useState([]);
   const [search, setSearch] = useState("");
   const [stateFilter, setStateFilter] = useState("");
@@ -49,7 +51,6 @@ const CompaniesList = () => {
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
-  const [userPermissions, setUserPermissions] = useState({});
   const [cnpjFilter, setCnpjFilter] = useState("");
 
   const [formData, setFormData] = useState({
@@ -62,62 +63,23 @@ const CompaniesList = () => {
     cep: "",
   });
 
-  // Carregar permissões e empresas
+  // Carregar empresas
   useEffect(() => {
     const loadCompanies = async () => {
       try {
-        const response = await api.get('/api/companies');
-        setCompanies(response.data);
-        setFilteredCompanies(response.data);
+        if (userPermissions.view_companies) {
+          const response = await api.get('/companies');
+          setCompanies(response.data);
+          setFilteredCompanies(response.data);
+        }
       } catch (error) {
         console.error("Erro ao carregar empresas:", error);
         showMessage("Erro ao carregar lista de empresas.", "error");
       }
     };
 
-    const loadUserPermissionsAndCompanies = async () => {
-      try {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          const user = JSON.parse(savedUser);
-
-          // Carregar permissões do cargo
-          const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
-          let rolePermissions = {};
-          if (rolePermsResponse.data.length > 0) {
-            rolePermissions = rolePermsResponse.data[0].permissions;
-          }
-
-          // Carregar permissões específicas do usuário
-          const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
-          let userSpecificPermissions = {};
-          if (userPermsResponse.data.length > 0) {
-            userSpecificPermissions = userPermsResponse.data[0].permissions;
-          }
-
-          // Combinar permissões (usuário sobrepõe cargo)
-          const finalPermissions = { ...rolePermissions };
-          Object.keys(userSpecificPermissions).forEach(perm => {
-            if (userSpecificPermissions[perm] !== null) {
-              finalPermissions[perm] = userSpecificPermissions[perm];
-            }
-          });
-
-          setUserPermissions(finalPermissions);
-
-          // Carregar empresas apenas se tiver permissão para visualizar
-          if (finalPermissions.view_companies) {
-            await loadCompanies();
-          }
-        }
-      } catch (error) {
-        console.error("Erro ao carregar permissões:", error);
-        showMessage("Erro ao carregar permissões do usuário.", "error");
-      }
-    };
-
-    loadUserPermissionsAndCompanies();
-  }, []);
+    loadCompanies();
+  }, [userPermissions.view_companies]);
 
   const showMessage = (message, type = "error") => {
     setModalMessage(message);
@@ -235,7 +197,7 @@ const CompaniesList = () => {
       };
 
       // Atualizar no back-end
-      await api.patch(`/api/companies/${editingCompany.id}`, companyData);
+      await api.patch(`/companies/${editingCompany.id}`, companyData);
       
       // Atualizar lista local
       const updatedCompanies = companies.map(c => 
@@ -260,7 +222,7 @@ const CompaniesList = () => {
   const handleDelete = async () => {
     try {
       // Deletar empresa
-      await api.delete(`/api/companies/${deletingCompany.id}`);
+      await api.delete(`/companies/${deletingCompany.id}`);
 
       // Atualizar lista local
       const updatedCompanies = companies.filter(c => c.id !== deletingCompany.id);

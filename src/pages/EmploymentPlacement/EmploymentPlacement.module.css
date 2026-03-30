@@ -125,11 +125,11 @@
 }
 
 .modalButton {
-  margin-top: 1rem;
   padding: 0.6rem 1.2rem;
   background-color: var(--azul);
   color: var(--branco);
   border: none;
+  margin: 10px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;

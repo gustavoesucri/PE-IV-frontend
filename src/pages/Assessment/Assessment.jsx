@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import parse from 'html-react-parser';
 import Menu from "../../components/Menu/Menu";
 import api from "../../api";
+import { usePermissions } from "../../hooks/usePermissions";
 
 const Assessment = () => {
   const [selectedStudentId, setSelectedStudentId] = useState("");
@@ -14,8 +15,8 @@ const Assessment = () => {
   const [hasConfirmedDate, setHasConfirmedDate] = useState(false);
   const [students, setStudents] = useState([]);
   const [existingAssessments, setExistingAssessments] = useState([]);
-  const [userPermissions, setUserPermissions] = useState({});
   const [currentUser, setCurrentUser] = useState(null);
+  const { permissions: userPermissions, loading: permissionsLoading } = usePermissions();
 
   // Estados para modais
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
@@ -63,61 +64,39 @@ const Assessment = () => {
     { value: "nao", label: "Não" },
   ];
 
-  // Carregar dados e permissões
+  // Carregar usuário atual
   useEffect(() => {
-    const loadDataAndPermissions = async () => {
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setCurrentUser(JSON.parse(savedUser));
+    }
+    const today = new Date().toISOString().split("T")[0];
+    setAssessmentDate(today);
+    setDefaultAssessmentDate(today);
+  }, []);
+
+  // Carregar dados quando permissões estiverem prontas
+  useEffect(() => {
+    if (permissionsLoading) return;
+
+    const loadData = async () => {
       try {
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
-          const user = JSON.parse(savedUser);
-          setCurrentUser(user);
-
-          // Carregar permissões
-          const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
-          let rolePermissions = {};
-          if (rolePermsResponse.data.length > 0) {
-            rolePermissions = rolePermsResponse.data[0].permissions;
-          }
-
-          const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
-          let userSpecificPermissions = {};
-          if (userPermsResponse.data.length > 0) {
-            userSpecificPermissions = userPermsResponse.data[0].permissions;
-          }
-
-          const finalPermissions = { ...rolePermissions };
-          Object.keys(userSpecificPermissions).forEach(perm => {
-            if (userSpecificPermissions[perm] !== null) {
-              finalPermissions[perm] = userSpecificPermissions[perm];
-            }
-          });
-
-          setUserPermissions(finalPermissions);
-
-          // Carregar dados apenas se tiver permissão
-          if (finalPermissions.create_evaluations) {
-            await loadStudents();
-            await loadExistingAssessments();
-          }
+        if (userPermissions.create_assessments) {
+          await loadStudents();
+          await loadExistingAssessments();
         }
-
-        // Preencher data atual
-        const today = new Date().toISOString().split("T")[0];
-        setAssessmentDate(today);
-        setDefaultAssessmentDate(today);
-
       } catch (error) {
         console.error("Erro ao carregar dados:", error);
         showMessage("Erro ao carregar dados. Tente novamente.", "error");
       }
     };
 
-    loadDataAndPermissions();
-  }, []);
+    loadData();
+  }, [permissionsLoading, userPermissions]);
 
   const loadStudents = async () => {
     try {
-      const response = await api.get('/api/students');
+      const response = await api.get('/students');
       setStudents(response.data);
     } catch (error) {
       console.error("Erro ao carregar estudantes:", error);
@@ -127,7 +106,7 @@ const Assessment = () => {
 
   const loadExistingAssessments = async () => {
     try {
-      const response = await api.get('/api/assessments');
+      const response = await api.get('/assessments');
       setExistingAssessments(response.data);
     } catch (error) {
       console.error("Erro ao carregar avaliações existentes:", error);
@@ -171,7 +150,7 @@ const Assessment = () => {
     e.preventDefault();
 
     // Verificar permissão
-    if (!userPermissions.create_evaluations) {
+    if (!userPermissions.create_assessments) {
       setPermissionModalOpen(true);
       return;
     }
@@ -299,10 +278,10 @@ const Assessment = () => {
         registeredBy: currentUser?.id || null
       };
 
-      await api.post('/api/assessments', newAssessment);
+      await api.post('/assessments', newAssessment);
 
       // Atualizar lista de avaliações existentes
-      const updatedAssessments = await api.get('/api/assessments');
+      const updatedAssessments = await api.get('/assessments');
       setExistingAssessments(updatedAssessments.data);
 
       showSuccess(`Avaliação do estudante enviada com sucesso!`);
@@ -349,7 +328,7 @@ const Assessment = () => {
           Avaliação Usuário em período de Experiência
         </h2>
 
-        {!userPermissions.create_evaluations ? (
+        {!userPermissions.create_assessments ? (
           <div className={styles.noPermissionMessage}>
             Não foi possível carregar a visualização devido a falta de permissões, se for um problema, consulte o diretor.
           </div>

@@ -3,6 +3,7 @@ import styles from "./Control.module.css";
 import Menu from "../../components/Menu/Menu";
 import { X } from "lucide-react";
 import api from "../../api";
+import { usePermissions } from "../../hooks/usePermissions";
 
 const Control = () => {
   const [search, setSearch] = useState("");
@@ -17,7 +18,7 @@ const Control = () => {
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
-  const [userPermissions, setUserPermissions] = useState({});
+  const { permissions: userPermissions, loading: permissionsLoading } = usePermissions();
 
   const [students, setStudents] = useState([]);
   const [assessments, setAssessments] = useState([]);
@@ -51,83 +52,56 @@ const Control = () => {
     };
   }, [assessments, controls]);
 
-  // Carregar permissões e dados
+  // Carregar dados quando permissões estiverem prontas
   useEffect(() => {
-  const createStudentData = (student, assessmentsData, controlsData) => {
-    const studentAssessments = assessmentsData.filter(a => a.studentId === student.id);
-    const primeiraAval = studentAssessments.find(a => a.evaluationType === "primeira");
-    const segundaAval = studentAssessments.find(a => a.evaluationType === "segunda");
-    const control = controlsData.find(c => c.studentId === student.id);
+    if (permissionsLoading) return;
 
-    return {
-      studentId: student.id,
-      nome: student.nome,
-      dataIngresso: student.dataIngresso,
-      dataAvaliacao1: primeiraAval ? primeiraAval.assessmentDate : "",
-      dataAvaliacao2: segundaAval ? segundaAval.assessmentDate : "",
-      dataEntrevista1: control?.dataEntrevista1 || "",
-      dataEntrevista2: control?.dataEntrevista2 || "",
-      dataResultado: control?.dataResultado || "",
-      resultado: control?.resultado || "Pendente",
-      controlId: control?.id
+    const createStudentDataLocal = (student, assessmentsData, controlsData) => {
+      const studentAssessments = assessmentsData.filter(a => a.studentId === student.id);
+      const primeiraAval = studentAssessments.find(a => a.evaluationType === "primeira");
+      const segundaAval = studentAssessments.find(a => a.evaluationType === "segunda");
+      const control = controlsData.find(c => c.studentId === student.id);
+
+      return {
+        studentId: student.id,
+        nome: student.nome,
+        dataIngresso: student.dataIngresso,
+        dataAvaliacao1: primeiraAval ? primeiraAval.assessmentDate : "",
+        dataAvaliacao2: segundaAval ? segundaAval.assessmentDate : "",
+        dataEntrevista1: control?.dataEntrevista1 || "",
+        dataEntrevista2: control?.dataEntrevista2 || "",
+        dataResultado: control?.dataResultado || "",
+        resultado: control?.resultado || "Pendente",
+        controlId: control?.id
+      };
     };
-  };
 
-  const loadData = async (finalPermissions) => {
-    try {
-      const studentsResponse = await api.get('/api/students');
-      const [assessmentsResponse, controlsResponse] = await Promise.all([
-        api.get('/api/assessments'),
-        api.get('/api/controls')
-      ]);
+    const loadData = async () => {
+      try {
+        const studentsResponse = await api.get('/students');
+        const [assessmentsResponse, controlsResponse] = await Promise.all([
+          api.get('/assessments'),
+          api.get('/controls')
+        ]);
 
-      setStudents(studentsResponse.data);
-      setAssessments(assessmentsResponse.data);
-      setControls(controlsResponse.data);
+        setStudents(studentsResponse.data);
+        setAssessments(assessmentsResponse.data);
+        setControls(controlsResponse.data);
 
-      const initialData = studentsResponse.data.map(student =>
-        createStudentData(student, assessmentsResponse.data, controlsResponse.data)
-      );
-      setFilteredData(initialData);
-    } catch (error) {
-      console.error("Erro ao carregar estudantes:", error);
-      showMessage("Erro ao carregar lista de controle.", "error");
-    }
-  };
-
-  const loadUserPermissionsAndData = async () => {
-    try {
-      const savedUser = localStorage.getItem("user");
-      if (savedUser) {
-        const user = JSON.parse(savedUser);
-
-        const rolePermsResponse = await api.get(`/api/rolePermissions?role=${user.role}`);
-        const rolePermissions = rolePermsResponse.data[0]?.permissions || {};
-
-        const userPermsResponse = await api.get(`/api/userSpecificPermissions?userId=${user.id}`);
-        const userSpecificPermissions = userPermsResponse.data[0]?.permissions || {};
-
-        const finalPermissions = { ...rolePermissions };
-        Object.keys(userSpecificPermissions).forEach(perm => {
-          if (userSpecificPermissions[perm] !== null) {
-            finalPermissions[perm] = userSpecificPermissions[perm];
-          }
-        });
-
-        setUserPermissions(finalPermissions);
-
-        if (finalPermissions.view_control) {
-          await loadData(finalPermissions);
-        }
+        const initialData = studentsResponse.data.map(student =>
+          createStudentDataLocal(student, assessmentsResponse.data, controlsResponse.data)
+        );
+        setFilteredData(initialData);
+      } catch (error) {
+        console.error("Erro ao carregar estudantes:", error);
+        showMessage("Erro ao carregar lista de controle.", "error");
       }
-    } catch (error) {
-      console.error("Erro ao carregar permissões:", error);
-      showMessage("Erro ao carregar permissões do usuário.", "error");
-    }
-  };
+    };
 
-  loadUserPermissionsAndData();
-}, []);
+    if (userPermissions.view_control) {
+      loadData();
+    }
+  }, [permissionsLoading, userPermissions]);
 
 
   // const loadAssessments = async () => {
@@ -141,7 +115,7 @@ const Control = () => {
 
   const loadControls = async () => {
     try {
-      const response = await api.get('/api/controls');
+      const response = await api.get('/controls');
       setControls(response.data);
     } catch (error) {
       console.error("Erro ao carregar controles:", error);
@@ -249,9 +223,9 @@ const Control = () => {
       };
 
       if (editingData.controlId) {
-        response = await api.put(`/api/controls/${editingData.controlId}`, dataToSave);
+        response = await api.put(`/controls/${editingData.controlId}`, dataToSave);
       } else {
-        response = await api.post("/api/controls", dataToSave);
+        response = await api.post("/controls", dataToSave);
       }
 
       const savedControl = response.data;
@@ -277,7 +251,7 @@ const Control = () => {
   const handleDelete = async () => {
     try {
       if (deletingData.controlId) {
-        await api.delete(`/api/controls/${deletingData.controlId}`);
+        await api.delete(`/controls/${deletingData.controlId}`);
       }
 
       // Recarregar controles

@@ -4,17 +4,19 @@ import { Rnd } from "react-rnd";
 import Menu from "../../components/Menu/Menu";
 import styles from "./Administration.module.css";
 import api from "../../api";
+import { usePermissions } from "../../hooks/usePermissions";
 
 const Administration = () => {
+  const { permissions: userPermissions, loading: permissionsLoading } = usePermissions();
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showAddStudentDropdown, setShowAddStudentDropdown] = useState(false);
   const [showAddCompanyDropdown, setShowAddCompanyDropdown] = useState(false);
   const [userSettings, setUserSettings] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [userPermissions, setUserPermissions] = useState({});
   const [allCompanies, setAllCompanies] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [permissionsReady, setPermissionsReady] = useState(false);
 
   // Estados que serão salvos no backend
   const [monitoredStudents, setMonitoredStudents] = useState([]);
@@ -83,12 +85,39 @@ const Administration = () => {
   // Carregar todas as empresas para o contador
   const loadAllCompanies = useCallback(async () => {
     try {
-      const response = await api.get('/api/companies');
+      const response = await api.get('/companies');
+      console.log('📦 Empresas carregadas:', response.data.length);
       setAllCompanies(response.data);
     } catch (error) {
       console.error("Erro ao carregar empresas:", error);
     }
   }, []);
+
+  // Recarregar empresas a cada 30 segundos E quando página ganha foco
+  useEffect(() => {
+    if (!userPermissions.view_companies) return;
+
+    // Carrega imediatamente
+    loadAllCompanies();
+
+    // Carrega a cada 30 segundos
+    const intervalId = setInterval(() => {
+      console.log('🔄 Recarregando empresas (intervalo)...');
+      loadAllCompanies();
+    }, 30000);
+
+    // Carrega quando janela recebe foco
+    const handleFocus = () => {
+      console.log('🔄 Recarregando empresas (window focus)...');
+      loadAllCompanies();
+    };
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [loadAllCompanies, userPermissions.view_companies]);
 
   const createDefaultUserSettings = useCallback(async (userId) => {
     try {
@@ -122,7 +151,7 @@ const Administration = () => {
       };
 
       console.log('📤 Criando novo userSettings para userId:', userId);
-      const response = await api.post('/api/userSettings', defaultSettings);
+      const response = await api.post('/user-settings', defaultSettings);
       console.log('✅ UserSettings criado com sucesso:', response.data);
       return response.data;
       
@@ -192,7 +221,7 @@ const Administration = () => {
     try {
       // Buscar userSettings do backend
       console.log('📥 Buscando userSettings para userId:', userId);
-      const response = await api.get(`/api/userSettings?userId=${userId}`);
+      const response = await api.get(`/user-settings?userId=${userId}`);
       console.log('Resposta do GET:', response.data);
       
       let settings;
@@ -251,42 +280,21 @@ const Administration = () => {
     }
   }, [createDefaultUserSettings, loadWidgetPositions]);
 
-  // Carregar permissões do usuário
-  const loadUserPermissions = useCallback(async (userData) => {
-    try {
-      // Buscar permissões da role
-      const roleResponse = await api.get(`/api/rolePermissions?role=${userData.role}`);
-      const rolePermissions = roleResponse.data[0]?.permissions || {};
-
-      // Buscar permissões específicas do usuário
-      const userSpecificResponse = await api.get(`/api/userSpecificPermissions?userId=${userData.id}`);
-      const userSpecificPermissions = userSpecificResponse.data[0]?.permissions || {};
-
-      // Combinar permissões
-      const combinedPermissions = {
-        ...rolePermissions,
-        ...userSpecificPermissions
-      };
-
-      setUserPermissions(combinedPermissions);
-      console.log("Permissões carregadas:", combinedPermissions);
-
-      return combinedPermissions;
-
-    } catch (error) {
-      console.error("Erro ao carregar permissões:", error);
-      const defaultPermissions = {
-        view_students: false,
-        view_companies: false,
-        create_companies: false
-      };
-      setUserPermissions(defaultPermissions);
-      return defaultPermissions;
-    }
-  }, []);
-
-  // Carregar usuário e permissões - CORRIGIDO sem dependências problemáticas
+  // Aguardar carregamento das permissões
   useEffect(() => {
+    console.log('🔑 Permissões carregadas:', { isLoading: permissionsLoading, permissions: userPermissions });
+    if (!permissionsLoading && Object.keys(userPermissions).length > 0) {
+      setPermissionsReady(true);
+    }
+  }, [permissionsLoading, userPermissions]);
+
+  // Carregar usuário e widgets - AGUARDA PERMISSÕES CHEGAREM
+  useEffect(() => {
+    if (!permissionsReady) {
+      console.log('⏳ Aguardando permissões carregarem...');
+      return;
+    }
+
     const initializeUserData = async () => {
       try {
         const savedUser = localStorage.getItem("user");
@@ -298,18 +306,20 @@ const Administration = () => {
         const userData = JSON.parse(savedUser);
         setCurrentUser(userData);
 
-        // 1. Primeiro carrega permissões
-        const permissions = await loadUserPermissions(userData);
+        console.log('📊 Inicializando Administration com permissões:', userPermissions);
 
-        // 2. Depois carrega empresas (se tiver permissão)
-        if (permissions.view_companies) {
+        // 1. Carrega empresas (se tiver permissão)
+        if (userPermissions.view_companies) {
+          console.log('📦 Carregando empresas...');
           await loadAllCompanies();
         }
 
-        // 3. Finalmente carrega configurações com as permissões
-        await loadUserSettings(userData.id, permissions);
+        // 2. Carrega configurações com as permissões
+        console.log('⚙️ Carregando configurações do usuário...');
+        await loadUserSettings(userData.id, userPermissions);
         
         setIsInitialized(true);
+        console.log('✅ Administration inicializado com sucesso');
         
       } catch (error) {
         console.error("Erro ao inicializar dados do usuário:", error);
@@ -319,55 +329,60 @@ const Administration = () => {
 
     initializeUserData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Dependências removidas - função é executada apenas uma vez
+  }, [permissionsReady, userPermissions, loadAllCompanies, loadUserSettings]);
 
-  // Salvar configurações no backend
+  // Salvar configurações no backend - RETORNA PROMISE
   const saveUserSettings = useCallback(async (updates) => {
-  if (!currentUser || !userSettings?.id) {
-    console.warn('⚠️ Não pode salvar settings', {
-      currentUser: !!currentUser,
-      'userSettings?.id': userSettings?.id,
-      currentUserId: currentUser?.id
-    });
-    return;
-  }
+  return new Promise(async (resolve) => {
+    if (!currentUser || !userSettings?.id) {
+      console.warn('⚠️ Não pode salvar settings', {
+        currentUser: !!currentUser,
+        'userSettings?.id': userSettings?.id,
+        currentUserId: currentUser?.id
+      });
+      resolve(false);
+      return;
+    }
 
-  try {
-    const token = localStorage.getItem('token');
-    console.log('📤 Iniciando PATCH para /api/userSettings/:id', {
-      settingsId: userSettings.id,
-      userId: currentUser.id,
-      tokenExists: !!token,
-      tokenLength: token?.length,
-      updateKeys: Object.keys(updates)
-    });
-    
-    await api.patch(`/api/userSettings/${userSettings.id}`, {
-      ...updates,
-      updatedAt: new Date().toISOString()
-    });
+    try {
+      const token = localStorage.getItem('token');
+      console.log('📤 Iniciando PATCH para /user-settings/:id', {
+        settingsId: userSettings.id,
+        userId: currentUser.id,
+        tokenExists: !!token,
+        tokenLength: token?.length,
+        updateKeys: Object.keys(updates)
+      });
+      
+      await api.patch(`/user-settings/${userSettings.id}`, {
+        ...updates,
+        updatedAt: new Date().toISOString()
+      });
 
-    console.log('✅ PATCH bem-sucedido');
+      console.log('✅ PATCH bem-sucedido');
 
-    // Atualiza estado local de forma segura
-    setUserSettings(prev => ({
-      ...prev,
-      ...updates,
-      updatedAt: new Date().toISOString()
-    }));
+      // Atualiza estado local de forma segura
+      setUserSettings(prev => ({
+        ...prev,
+        ...updates,
+        updatedAt: new Date().toISOString()
+      }));
 
-    console.log('✅ Settings salvos com sucesso');
+      console.log('✅ Settings salvos com sucesso');
+      resolve(true);
 
-  } catch (error) {
-    console.error("❌ Erro ao salvar configurações:", {
-      message: error.message,
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      data: error.response?.data,
-      url: error.config?.url,
-      method: error.config?.method
-    });
-  }
+    } catch (error) {
+      console.error("❌ Erro ao salvar configurações:", {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        url: error.config?.url,
+        method: error.config?.method
+      });
+      resolve(false);
+    }
+  });
 }, [currentUser, userSettings?.id]);
 
   // Salvar alunos monitorados (apenas se tiver permissão)
@@ -425,22 +440,37 @@ const saveWidgetPosition = async (widgetId, x, y, width, height) => {
 
   const toggleAddStudentDropdown = () => setShowAddStudentDropdown((v) => !v);
 
-const addStudent = (student) => {
+const addStudent = async (student) => {
   if (!userPermissions.view_students) return;
 
   const updated = [...monitoredStudents, student];
   setMonitoredStudents(updated);
-  saveUserSettings({ monitoredStudents: updated });
+  const saved = await saveUserSettings({ monitoredStudents: updated });
+  
+  if (saved) {
+    console.log('✅ Aluno adicionado e salvo:', student.nome);
+  } else {
+    console.error('❌ Falha ao salvar aluno, revertendo...');
+    setMonitoredStudents(monitoredStudents);
+  }
+  
   setShowAddStudentDropdown(false);
 };
 
 
-const removeStudent = (studentId) => {
+const removeStudent = async (studentId) => {
   if (!userPermissions.view_students) return;
 
   const updated = monitoredStudents.filter(s => s.id !== studentId);
   setMonitoredStudents(updated);
-  saveUserSettings({ monitoredStudents: updated });
+  const saved = await saveUserSettings({ monitoredStudents: updated });
+  
+  if (saved) {
+    console.log('✅ Aluno removido e salvo:', studentId);
+  } else {
+    console.error('❌ Falha ao salvar remoção de aluno, revertendo...');
+    setMonitoredStudents(monitoredStudents);
+  }
 };
 
   // Funções de empresas
@@ -452,25 +482,40 @@ const removeStudent = (studentId) => {
 
   const toggleAddCompanyDropdown = () => setShowAddCompanyDropdown((v) => !v);
 
-const addCompany = (company) => {
+const addCompany = async (company) => {
   if (!userPermissions.view_companies) return;
 
   const updated = [...companies, company];
   setCompanies(updated);
-  saveUserSettings({ companies: updated });
+  const saved = await saveUserSettings({ companies: updated });
+  
+  if (saved) {
+    console.log('✅ Empresa adicionada e salva:', company.nome);
+  } else {
+    console.error('❌ Falha ao salvar empresa, revertendo...');
+    setCompanies(companies);
+  }
+  
   setShowAddCompanyDropdown(false);
 };
 
-const removeCompany = (companyId) => {
+const removeCompany = async (companyId) => {
   if (!userPermissions.view_companies) return;
 
   const updated = companies.filter(c => c.id !== companyId);
   setCompanies(updated);
-  saveUserSettings({ companies: updated });
+  const saved = await saveUserSettings({ companies: updated });
+  
+  if (saved) {
+    console.log('✅ Empresa removida e salva:', companyId);
+  } else {
+    console.error('❌ Falha ao salvar remoção de empresa, revertendo...');
+    setCompanies(companies);
+  }
 };
 
   // Funções de notas
-const addNewNote = () => {
+const addNewNote = async () => {
   const newNote = { id: Date.now(), content: "" };
   const updatedNotes = [...notes, newNote];
 
@@ -487,13 +532,19 @@ const addNewNote = () => {
   setNotes(updatedNotes);
   setWidgetPositions(newPositions);
 
-  saveUserSettings({
+  const saved = await saveUserSettings({
     notes: updatedNotes,
     widgetPositions: newPositions
   });
+  
+  if (saved) {
+    console.log('✅ Nota adicionada e salva');
+  } else {
+    console.error('❌ Falha ao salvar nota');
+  }
 };
 
-const removeNote = (noteId) => {
+const removeNote = async (noteId) => {
   const updatedNotes =
     notes.length <= 1
       ? [{ id: Date.now(), content: "" }]
@@ -505,19 +556,29 @@ const removeNote = (noteId) => {
   setNotes(updatedNotes);
   setWidgetPositions(newPositions);
 
-  saveUserSettings({
+  const saved = await saveUserSettings({
     notes: updatedNotes,
     widgetPositions: newPositions
   });
+  
+  if (saved) {
+    console.log('✅ Nota removida e salva');
+  } else {
+    console.error('❌ Falha ao remover nota');
+  }
 };
 
-const updateNote = (id, newContent) => {
+const updateNote = async (id, newContent) => {
   const updated = notes.map(note =>
     note.id === id ? { ...note, content: newContent } : note
   );
 
   setNotes(updated);
-  saveUserSettings({ notes: updated });
+  const saved = await saveUserSettings({ notes: updated });
+  
+  if (!saved) {
+    console.error('❌ Falha ao atualizar nota');
+  }
 };
 
   // Cleanup
@@ -535,11 +596,13 @@ const updateNote = (id, newContent) => {
   }, []);
 
   // Se não inicializou ainda, não renderiza nada
-  if (!isInitialized) {
+  if (!isInitialized || !permissionsReady) {
     return (
       <div className={styles.container}>
         <Menu />
-        <div className={styles.loading}>Carregando dashboard...</div>
+        <div className={styles.loading}>
+          {!permissionsReady ? '🔐 Carregando permissões...' : '📊 Carregando dashboard...'}
+        </div>
       </div>
     );
   }

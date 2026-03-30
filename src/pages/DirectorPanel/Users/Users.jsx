@@ -11,8 +11,8 @@ const PERMISSION_LABELS = {
   create_companies: "Criar empresas",
   view_placements: "Ver encaminhados",
   create_placements: "Criar encaminhados",
-  create_evaluations: "Registrar avaliações",
-  view_evaluations: "Ver avaliações",
+  create_assessments: "Registrar avaliações",
+  view_assessments: "Ver avaliações",
   view_control: "Ver controle interno",
   create_observations: "Registrar acompanhamento",
   view_observations: "Ver acompanhamento",
@@ -26,8 +26,8 @@ const DEFAULT_PERMISSIONS = {
   create_companies: false,
   view_placements: true,
   create_placements: false,
-  create_evaluations: false,
-  view_evaluations: true,
+  create_assessments: false,
+  view_assessments: true,
   view_control: false,
   create_observations: false,
   view_observations: true,
@@ -78,7 +78,7 @@ useEffect(() => {
       setCategories(rolesFromPermissions);
       
       // Carregar usuários existentes para validação
-      const usersResponse = await api.get('/api/users');
+      const usersResponse = await api.get('/users');
       setExistingUsers(usersResponse.data);
     } catch (error) {
       console.error("Erro ao carregar dados:", error);
@@ -210,10 +210,10 @@ useEffect(() => {
         role: formData.role
       };
 
-      await api.post('/api/users', newUser);
+      await api.post('/users', newUser);
 
       // Atualizar lista de usuários existentes
-      const updatedUsersResponse = await api.get('/api/users');
+      const updatedUsersResponse = await api.get('/users');
       setExistingUsers(updatedUsersResponse.data);
 
       setSuccessMessage("Usuário cadastrado com sucesso!");

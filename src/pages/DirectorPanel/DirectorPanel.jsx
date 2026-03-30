@@ -21,8 +21,8 @@ const COMMON_PERMISSION_LABELS = {
     create_companies: "Criar empresas",
     view_placements: "Ver encaminhados",
     create_placements: "Criar encaminhados",
-    create_evaluations: "Registrar avaliações",
-    view_evaluations: "Ver avaliações",
+    create_assessments: "Registrar avaliações",
+    view_assessments: "Ver avaliações",
     view_control: "Ver controle interno",
     create_observations: "Registrar acompanhamento",
     view_observations: "Ver acompanhamento",
@@ -94,7 +94,7 @@ const DirectorPanel = () => {
             }
 
             // Carregar usuários
-            const usersResponse = await api.get('/api/users');
+            const usersResponse = await api.get('/users');
             setUsers(usersResponse.data);
 
             // Mapear permissões de cargo
