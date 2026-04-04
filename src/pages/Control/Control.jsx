@@ -389,18 +389,22 @@ const Control = () => {
                     <td>{data.resultado}</td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button
-                          className={styles.actionButton}
-                          onClick={() => handleEditClick(data)}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className={styles.deleteButton}
-                          onClick={() => handleDeleteClick(data)}
-                        >
-                          Deletar
-                        </button>
+                        {userPermissions.create_control && (
+                          <button
+                            className={styles.actionButton}
+                            onClick={() => handleEditClick(data)}
+                          >
+                            Editar
+                          </button>
+                        )}
+                        {userPermissions.create_control && (
+                          <button
+                            className={styles.deleteButton}
+                            onClick={() => handleDeleteClick(data)}
+                          >
+                            Deletar
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -492,9 +496,11 @@ const Control = () => {
             </div>
 
             <div className={styles.modalFooter}>
-              <button onClick={handleSave} className={styles.filterButton}>
-                Salvar
-              </button>
+              {userPermissions.create_control && (
+                <button onClick={handleSave} className={styles.filterButton}>
+                  Salvar
+                </button>
+              )}
               <button onClick={handleCloseEditModal} className={styles.clearButton}>
                 Fechar
               </button>

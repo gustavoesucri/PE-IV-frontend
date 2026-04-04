@@ -17,6 +17,8 @@ import StudentsList from './pages/Students/StudentsList/StudentsList';
 import CompaniesList from './pages/Companies/CompaniesList/CompaniesList';
 import AssessmentList from './pages/Assessment/AssessmentList/Assessment-list';
 import DirectorPanel from './pages/DirectorPanel/DirectorPanel';
+import { usePermissions } from './hooks/usePermissions';
+import { ServerStatusProvider } from './hooks/useServerStatus';
 
 // Componente para rotas que requerem autenticação
 const RequireAuth = ({ children }) => {
@@ -45,13 +47,40 @@ const RequireDirector = ({ children }) => {
   return children;
 };
 
+// Componente para rotas que requerem permissão específica
+const RequirePermission = ({ permission, children }) => {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const { hasPermission, loading } = usePermissions();
+
+  if (!token || !user) {
+    return <Navigate to="/" replace />;
+  }
+
+  // Diretor tem acesso total
+  if (user.role === 'diretor') {
+    return children;
+  }
+
+  if (loading) {
+    return <div style={{ padding: '2rem', textAlign: 'center' }}>Carregando permissões...</div>;
+  }
+
+  if (!hasPermission(permission)) {
+    return <Navigate to="/administration" replace />;
+  }
+
+  return children;
+};
+
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Routes>
-          {/* Rota pública */}
-          <Route path="/" element={<Login />} />
+    <ServerStatusProvider>
+      <div className="App">
+        <Router>
+          <Routes>
+            {/* Rota pública */}
+            <Route path="/" element={<Login />} />
           
           {/* Rotas protegidas (qualquer usuário logado) */}
           <Route path="/administration" element={
@@ -61,45 +90,45 @@ function App() {
           } />
           
           <Route path="/students" element={
-            <RequireAuth>
+            <RequirePermission permission="view_students">
               <Students />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           <Route path="/companies" element={
-            <RequireAuth>
+            <RequirePermission permission="view_companies">
               <Companies />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           <Route path="/companies-list" element={
-            <RequireAuth>
+            <RequirePermission permission="view_companies">
               <CompaniesList />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           <Route path="/assessment" element={
-            <RequireAuth>
+            <RequirePermission permission="view_assessments">
               <Assessment />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           <Route path="/assessment-list" element={
-            <RequireAuth>
+            <RequirePermission permission="view_assessments">
               <AssessmentList />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           <Route path="/control" element={
-            <RequireAuth>
+            <RequirePermission permission="view_control">
               <Control />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           <Route path="/students-list" element={
-            <RequireAuth>
+            <RequirePermission permission="view_students">
               <StudentsList />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           <Route path="/settings" element={
@@ -109,21 +138,21 @@ function App() {
           } />
           
           <Route path="/follow-up" element={
-            <RequireAuth>
+            <RequirePermission permission="view_follow_up">
               <FollowUp />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           <Route path="/employment-placement" element={
-            <RequireAuth>
+            <RequirePermission permission="view_placements">
               <EmploymentPlacement />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           <Route path="/employment-placement-list" element={
-            <RequireAuth>
+            <RequirePermission permission="view_placements">
               <EmploymentPlacementList />
-            </RequireAuth>
+            </RequirePermission>
           } />
           
           {/* Rotas apenas para diretor */}
@@ -150,6 +179,7 @@ function App() {
         </Routes>
       </Router>
     </div>
+    </ServerStatusProvider>
   );
 }
 

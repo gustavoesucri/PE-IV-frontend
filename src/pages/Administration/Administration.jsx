@@ -95,20 +95,18 @@ const Administration = () => {
 
   // Recarregar empresas a cada 30 segundos E quando página ganha foco
   useEffect(() => {
-    if (!userPermissions.view_companies) return;
+    if (permissionsLoading || !userPermissions.view_companies) return;
 
     // Carrega imediatamente
     loadAllCompanies();
 
     // Carrega a cada 30 segundos
     const intervalId = setInterval(() => {
-      console.log('🔄 Recarregando empresas (intervalo)...');
       loadAllCompanies();
     }, 30000);
 
     // Carrega quando janela recebe foco
     const handleFocus = () => {
-      console.log('🔄 Recarregando empresas (window focus)...');
       loadAllCompanies();
     };
     window.addEventListener('focus', handleFocus);
@@ -117,7 +115,8 @@ const Administration = () => {
       clearInterval(intervalId);
       window.removeEventListener('focus', handleFocus);
     };
-  }, [loadAllCompanies, userPermissions.view_companies]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [permissionsLoading]);
 
   const createDefaultUserSettings = useCallback(async (userId) => {
     try {
@@ -282,11 +281,10 @@ const Administration = () => {
 
   // Aguardar carregamento das permissões
   useEffect(() => {
-    console.log('🔑 Permissões carregadas:', { isLoading: permissionsLoading, permissions: userPermissions });
-    if (!permissionsLoading && Object.keys(userPermissions).length > 0) {
+    if (!permissionsLoading) {
       setPermissionsReady(true);
     }
-  }, [permissionsLoading, userPermissions]);
+  }, [permissionsLoading]);
 
   // Carregar usuário e widgets - AGUARDA PERMISSÕES CHEGAREM
   useEffect(() => {
@@ -329,7 +327,7 @@ const Administration = () => {
 
     initializeUserData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [permissionsReady, userPermissions, loadAllCompanies, loadUserSettings]);
+  }, [permissionsReady]);
 
   // Salvar configurações no backend - RETORNA PROMISE
   const saveUserSettings = useCallback(async (updates) => {

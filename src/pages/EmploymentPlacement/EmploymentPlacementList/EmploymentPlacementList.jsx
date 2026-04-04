@@ -281,12 +281,14 @@ const EmploymentPlacementList = () => {
                         >
                           Visualizar
                         </button>
-                        <button
-                          className={styles.deleteButton}
-                          onClick={() => handleDeleteClick(p)}
-                        >
-                          Deletar
-                        </button>
+                        {userPermissions.delete_placements && (
+                          <button
+                            className={styles.deleteButton}
+                            onClick={() => handleDeleteClick(p)}
+                          >
+                            Deletar
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

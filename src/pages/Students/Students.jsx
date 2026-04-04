@@ -48,6 +48,24 @@ const Students = () => {
       return;
     }
 
+    // Validação de campos obrigatórios
+    if (!formData.nome.trim()) {
+      showModal("O nome do aluno é obrigatório.");
+      return;
+    }
+    if (!formData.cpf || formData.cpf.replace(/\D/g, '').length !== 11) {
+      showModal("CPF inválido. Informe os 11 dígitos.");
+      return;
+    }
+    if (!formData.dataNascimento) {
+      showModal("A data de nascimento é obrigatória.");
+      return;
+    }
+    if (!formData.dataIngresso) {
+      showModal("A data de ingresso é obrigatória.");
+      return;
+    }
+
     try {
       // Preparar dados para envio
       const studentData = {
@@ -83,11 +101,7 @@ const Students = () => {
 
     } catch (error) {
       console.error("Erro ao cadastrar aluno:", error);
-      if (error.response && error.response.status === 403) {
-        showModal("Acesso negado. Você não tem permissão para esta ação.");
-      } else {
-        showModal("Erro ao cadastrar aluno. Tente novamente.");
-      }
+      showModal(error.message || "Erro ao cadastrar aluno. Tente novamente.");
     }
   };
 
@@ -193,9 +207,11 @@ const Students = () => {
             onChange={handleChange}
           />
 
-          <button className={styles.button} type="submit">
-            Cadastrar
-          </button>
+          {userPermissions.create_students && (
+            <button className={styles.button} type="submit">
+              Cadastrar
+            </button>
+          )}
         </form>
 
         <button className={styles.secondaryButton} onClick={handleNavigate}>

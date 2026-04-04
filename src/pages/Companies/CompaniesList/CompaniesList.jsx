@@ -316,18 +316,22 @@ const CompaniesList = () => {
                     <td>{company.estado}</td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button
-                          className={styles.actionButton}
-                          onClick={() => handleEditClick(company)}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className={styles.deleteButton}
-                          onClick={() => handleDeleteClick(company)}
-                        >
-                          Deletar
-                        </button>
+                        {userPermissions.edit_companies && (
+                          <button
+                            className={styles.actionButton}
+                            onClick={() => handleEditClick(company)}
+                          >
+                            Editar
+                          </button>
+                        )}
+                        {userPermissions.delete_companies && (
+                          <button
+                            className={styles.deleteButton}
+                            onClick={() => handleDeleteClick(company)}
+                          >
+                            Deletar
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -152,13 +152,7 @@ const Companies = () => {
 
   } catch (error) {
     console.error("Erro ao cadastrar empresa:", error);
-    if (error.response && error.response.status === 403) {
-      showMessage("Acesso negado. Você não tem permissão para esta ação.");
-    } else if (error.response && error.response.status === 400) {
-      showMessage("Erro nos dados enviados. Verifique as informações.");
-    } else {
-      showMessage("Erro ao cadastrar empresa. Tente novamente.");
-    }
+    showMessage(error.message || "Erro ao cadastrar empresa. Tente novamente.");
   }
 };
 
@@ -289,9 +283,11 @@ const Companies = () => {
             )}
           </InputMask>
 
-          <button type="submit" className={styles.button}>
-            Cadastrar
-          </button>
+          {userPermissions.create_companies && (
+            <button type="submit" className={styles.button}>
+              Cadastrar
+            </button>
+          )}
         </form>
 
         <button className={styles.secondaryButton} onClick={handleNavigate}>

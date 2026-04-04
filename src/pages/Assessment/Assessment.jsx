@@ -24,47 +24,37 @@ const Assessment = () => {
   const [modalType, setModalType] = useState("");
   const [permissionModalOpen, setPermissionModalOpen] = useState(false);
 
-  const questions = [
-    "1 - Atende as regras.", "2 - Socializa com o grupo.", "3 - Isola-se do grupo", 
-    "4 - Possui tolerância a frustração.", "5 - Respeita colega e professores.", 
-    "6 - Faz relatos fantasiosos.", "7 - Concentra-se nas atividades.", "8 - Tem iniciativa.", 
-    "9 - Sonolência durante as atividades em sala de aula.", "10 - Alterações intensas de humor.", 
-    "11 - Indica oscilação repentina de humor.", "12 - Irrita-se com facilidade.<b>*</b>", 
-    "13 - Ansiedade.", "14 - Escuta quando seus colegas falam.", "15 - Escuta e segue orientação dos professores.", 
-    "16 - Mantem-se em sala de aula.", "17 - Desloca-se muito na sala.", "18 - Fala demasiadamente.", 
-    "19 - É pontual.", "20 - É assíduo.", "21 - Demonstra desejo de trabalhar.", 
-    "22 - Apropria-se indevidamente daquilo que não é seu.", "23 - Indica hábito de banho diário.", 
-    "24 - Indica habito de escovação e qualidade na escovação.", "25 - Indica cuidado com a aparência e limpeza do uniforme.", 
-    "26 - Indica autonomia quanto a estes hábitos (23, 24, 25).", "27 - Indica falta do uso de medicação com oscilações de comportamento.<b>**</b>", 
-    "28 - Tem meio articulado de conseguir receitas e aquisições das medicações.<b>**</b>", "29 - Traz seus materiais organizados.", 
-    "30 - Usa transporte coletivo.", "31 - Tem iniciativa diante das atividades propostas.", 
-    "32 - Localiza-se no espaço da Instituição.", "33 - Situa-se nas trocas de sala e atividades.", 
-    "34 - Interage par a par.", "35 - Interage em grupo.", "36 - Cria conflitos e intrigas.", 
-    "37 - Promove a harmonia.", "38 - Faz intrigas entre colegas x professores.", 
-    "39 - Demonstra interesse em participar das atividades extraclasses.", 
-    "40 - Você percebe que existe interação/participação da família em apoio ao usuário na Instituição.", 
-    "41 - Você percebe superproteção por parte da família quanto a autonomia do usuário.", 
-    "42 - Usuário traz relatos negativos da família (de forma geral).", 
-    "43 - Usuário traz relatos positivos da família (de forma geral).", 
-    "44 - Você percebe incentivo quanto a busca de autonomia para o usuário por parte da família.", 
-    "45 - Você percebe incentivo quanto a inserção do usuário no mercado de trabalho por parte da família.", 
-    "46 - Traz os documentos enviados pela Instituição assinado.",
-  ];
+  // Questões carregadas da API
+  const [questionsData, setQuestionsData] = useState([]);
 
-  const openQuestions = [
-    "47- Em sua opinião o usuário tem perfil para esta instituição? Por quê?", 
-    "<b>*</b>Em que situações demonstra irritações?", 
-    "<b>**</b> Caso o aluno faça uso de medicação.<br><strong><u>Observações</u>:</strong>"
-  ];
+  // Derivar arrays de exibição a partir dos dados da API
+  const mcQuestions = questionsData.filter(q => q.type === 'multiple_choice');
+  const textQuestions = questionsData.filter(q => q.type === 'text');
+  const options = mcQuestions[0]?.options || [];
 
-  const options = [
-    { value: "sim", label: "Sim" },
-    { value: "maioria", label: "Maioria das vezes" },
-    { value: "raras", label: "Raras vezes" },
-    { value: "nao", label: "Não" },
-  ];
+  const markerMap = {};
+  textQuestions.forEach(tq => {
+    if (tq.conditionalField) {
+      const marker = tq.code === 'openQ2' ? '<b>*</b>' : '<b>**</b>';
+      tq.conditionalField.split(',').forEach(field => {
+        markerMap[field.trim()] = marker;
+      });
+    }
+  });
 
-  // Carregar usuário atual
+  const questions = mcQuestions.map(q => {
+    let label = `${q.displayOrder} - ${q.text}`;
+    if (markerMap[q.code]) label += markerMap[q.code];
+    return label;
+  });
+
+  const openQuestions = textQuestions.map(q => {
+    const stars = q.conditionalField ? (q.code === 'openQ2' ? '<b>*</b>' : '<b>**</b> ') : '';
+    const prefix = !q.conditionalField ? `${q.displayOrder}- ` : '';
+    return `${stars}${prefix}${q.text}`;
+  });
+
+  // Carregar usuário atual e questões da API
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -73,6 +63,17 @@ const Assessment = () => {
     const today = new Date().toISOString().split("T")[0];
     setAssessmentDate(today);
     setDefaultAssessmentDate(today);
+
+    // Buscar questões do banco de dados
+    const loadQuestions = async () => {
+      try {
+        const response = await api.get('/assessments/questions');
+        setQuestionsData(response.data);
+      } catch (error) {
+        console.error("Erro ao carregar questões:", error);
+      }
+    };
+    loadQuestions();
   }, []);
 
   // Carregar dados quando permissões estiverem prontas
@@ -257,26 +258,24 @@ const Assessment = () => {
 
   const saveAssessment = async (formData) => {
     try {
-      // Coletar todas as respostas
-      const responses = {};
-      for (let i = 1; i <= questions.length; i++) {
-        responses[`q${i}`] = formData.get(`q${i}`);
-      }
-
-      // Coletar respostas abertas
-      responses.openQ1 = formData.get("openQ1")?.trim() || "";
-      responses.openQ2 = formData.get("openQ2")?.trim() || "";
-      responses.openQ3 = formData.get("openQ3")?.trim() || "";
-
       const newAssessment = {
         studentId: parseInt(selectedStudentId),
         entryDate: entryDate,
         assessmentDate: assessmentDate,
         evaluationType: evaluationType,
         professorName: currentUser?.username || "Usuário",
-        responses: responses,
         registeredBy: currentUser?.id || null
       };
+
+      // Coletar respostas das questões de múltipla escolha (campos individuais)
+      for (let i = 1; i <= mcQuestions.length; i++) {
+        newAssessment[`q${i}`] = formData.get(`q${i}`);
+      }
+
+      // Coletar respostas abertas
+      newAssessment.openQ1 = formData.get("openQ1")?.trim() || "";
+      newAssessment.openQ2 = formData.get("openQ2")?.trim() || "";
+      newAssessment.openQ3 = formData.get("openQ3")?.trim() || "";
 
       await api.post('/assessments', newAssessment);
 

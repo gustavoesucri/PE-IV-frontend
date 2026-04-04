@@ -129,11 +129,7 @@ const FollowUp = () => {
       setGeneralFeedback("");
     } catch (error) {
       console.error("Erro ao salvar acompanhamento:", error);
-      if (error.response && error.response.status === 403) {
-        showMessage("Acesso negado. Você não tem permissão para esta ação.");
-      } else {
-        showMessage("Erro ao salvar acompanhamento. Tente novamente.");
-      }
+      showMessage(error.message || "Erro ao salvar acompanhamento. Tente novamente.");
     }
   };
 
@@ -291,12 +287,14 @@ const FollowUp = () => {
               {error && <div className={styles.error}>{error}</div>}
 
               <div className={styles.buttonGroup}>
-                <button 
-                  className={styles.button} 
-                  onClick={handleSave}
-                >
-                  Salvar
-                </button>
+                {userPermissions.create_follow_up && (
+                  <button 
+                    className={styles.button} 
+                    onClick={handleSave}
+                  >
+                    Salvar
+                  </button>
+                )}
                 <button 
                   className={styles.button} 
                   onClick={abrirLista}
@@ -330,12 +328,14 @@ const FollowUp = () => {
                     >
                       Visualizar
                     </button>
-                    <button
-                      className={styles.deleteButton}
-                      onClick={() => handleDeleteClick(reg)}
-                    >
-                      Deletar
-                    </button>
+                    {userPermissions.create_follow_up && (
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => handleDeleteClick(reg)}
+                      >
+                        Deletar
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

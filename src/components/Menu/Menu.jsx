@@ -10,6 +10,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import useMenu from "./useMenu";
 import styles from "./Menu.module.css";
 import api from "../../api";
+import { usePermissions } from "../../hooks/usePermissions";
 
 // NOTIFICAÇÕES COM DETALHES
 const NOTIFICATIONS_DATA = [
@@ -45,6 +46,17 @@ const Menu = () => {
     toggleSidebar, toggleNotifications, closeSidebar
   } = useMenu();
   const navigate = useNavigate();
+  const { permissions } = usePermissions();
+
+  // Mapa de permissões por item do menu
+  const permissionMap = useMemo(() => ({
+    students: 'view_students',
+    companies: 'view_companies',
+    'employment-placement': 'view_placements',
+    assessment: 'view_assessments',
+    control: 'view_control',
+    'follow-up': 'view_follow_up',
+  }), []);
 
   // Estado para o usuário logado
   const [currentUser, setCurrentUser] = useState(null);
@@ -143,17 +155,28 @@ const Menu = () => {
     loadUserData();
   }, []);
 
-  // Filtrar itens baseados no role do usuário - usando useCallback
+  // Filtrar itens baseados no role do usuário e permissões - usando useCallback
   const getFilteredSidebarItems = useCallback(() => {
     if (!currentUser) return baseSidebarItems;
 
+    let items = baseSidebarItems;
+
     // Se não for diretor, remove o Painel do Diretor
     if (currentUser.role !== "diretor") {
-      return baseSidebarItems.filter(item => item.id !== "director-panel");
+      items = items.filter(item => item.id !== "director-panel");
     }
 
-    return baseSidebarItems;
-  }, [currentUser, baseSidebarItems]);
+    // Filtrar por permissões (diretor vê tudo)
+    if (currentUser.role !== "diretor") {
+      items = items.filter(item => {
+        const requiredPerm = permissionMap[item.id];
+        if (!requiredPerm) return true; // sem permissão definida = visível
+        return permissions[requiredPerm] === true;
+      });
+    }
+
+    return items;
+  }, [currentUser, baseSidebarItems, permissions, permissionMap]);
 
   // Carregar ordem do sidebar do back-end ou usar padrão
   const [sidebarItems, setSidebarItems] = useState(() => {

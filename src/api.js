@@ -1,5 +1,6 @@
 // src/api.js
 import axios from 'axios';
+import { notifyServerDown, notifyServerUp } from './hooks/useServerStatus';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000',
@@ -11,20 +12,8 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
-    // Adiciona token em qualquer requisição autenticada
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      // Log apenas para requisições de userSettings
-      if (config.url?.includes('userSettings')) {
-        console.log('📤 Token adicionado no header:', {
-          url: config.url,
-          method: config.method?.toUpperCase(),
-          tokenPrefix: token.substring(0, 20) + '...',
-          headerExists: !!config.headers.Authorization
-        });
-      }
-    } else {
-      console.warn('⚠️ Nenhum token disponível para requisição:', config.url);
     }
     return config;
   },
@@ -32,31 +21,40 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Servidor respondeu = está online
+    notifyServerUp();
+    return response;
+  },
   (error) => {
+    // Detectar erro de rede (servidor fora do ar)
+    const isNetworkError = !error.response && (error.message === 'Network Error' || error.code === 'ERR_NETWORK');
+    if (isNetworkError && !error.config?._skipOfflineNotify) {
+      notifyServerDown();
+      return Promise.reject(new Error('Servidor fora do ar'));
+    }
+
     // Redireciona para login se token expirar (401)
     if (error.response?.status === 401) {
-      const isUserSettings = error.config?.url?.includes('userSettings');
-      console.error('❌ Erro 401 - Token inválido ou expirado:', {
-        url: error.config?.url,
-        method: error.config?.method?.toUpperCase(),
-        hasAuthHeader: !!error.config?.headers?.Authorization,
-        authHeaderValue: error.config?.headers?.Authorization?.substring(0, 30) + '...',
-        responseMessage: error.response?.data?.message,
-        responseData: error.response?.data,
-        isUserSettings: isUserSettings
-      });
-      
-      if (isUserSettings) {
-        console.group('🔍 Debug de autenticação para userSettings');
-        console.log('Token no localStorage:', localStorage.getItem('token')?.substring(0, 30) + '...');
-        console.log('User no localStorage:', localStorage.getItem('user'));
-        console.groupEnd();
-      }
-      
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/';
+    }
+
+    // Erro de permissão (403)
+    if (error.response?.status === 403) {
+      const message = error.response?.data?.message || 'Você não tem permissão para realizar esta ação.';
+      return Promise.reject(new Error(message));
+    }
+
+    // Erro de validação (400) - class-validator retorna array de mensagens
+    if (error.response?.status === 400) {
+      const data = error.response?.data;
+      if (Array.isArray(data?.message)) {
+        return Promise.reject(new Error(data.message.join('\n')));
+      }
+      const message = data?.message || 'Dados inválidos.';
+      return Promise.reject(new Error(message));
     }
 
     const message = error.response?.data?.message || error.message;

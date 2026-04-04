@@ -116,7 +116,7 @@ const EmploymentPlacement = () => {
 
     } catch (error) {
       console.error("Erro ao salvar encaminhamento:", error);
-      setError("Erro ao salvar encaminhamento. Tente novamente.");
+      setError(error.message || "Erro ao salvar encaminhamento. Tente novamente.");
     }
   };
 
@@ -206,9 +206,11 @@ const EmploymentPlacement = () => {
 
           {error && <div className={styles.error}>{error}</div>}
 
-          <button className={styles.button} type="button" onClick={handleSave}>
-            Salvar Encaminhamento
-          </button>
+          {userPermissions.create_placements && (
+            <button className={styles.button} type="button" onClick={handleSave}>
+              Salvar Encaminhamento
+            </button>
+          )}
         </form>
 
         <button className={styles.secondaryButton} onClick={handleNavigate}>

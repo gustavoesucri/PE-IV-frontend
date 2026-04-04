@@ -305,18 +305,22 @@ const StudentsList = () => {
                   <td>{student.status}</td>
                   <td>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button
-                        className={styles.actionButton}
-                        onClick={() => handleEditClick(student)}
-                      >
-                        Editar
-                      </button>
-                      <button
-                        className={styles.deleteButton}
-                        onClick={() => handleDeleteClick(student)}
-                      >
-                        Deletar
-                      </button>
+                      {userPermissions.edit_students && (
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => handleEditClick(student)}
+                        >
+                          Editar
+                        </button>
+                      )}
+                      {userPermissions.delete_students && (
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => handleDeleteClick(student)}
+                        >
+                          Deletar
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
