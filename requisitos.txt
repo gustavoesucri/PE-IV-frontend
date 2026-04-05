@@ -60,10 +60,48 @@ Tela de Estudantes Encaminhados:
 
     - Acusando erro que veio do backend ao tentar cadastrar um encaminhamento: "property createdAt should not exist". (CORRIGIDO VIA COMENTÁRIO)
 
+    - É interessante ter um validador de datas também. Passou Data de Admissão no ano 1111 e Data Desligamento Prevista no ano de 2222. Passou também Admissão em data futura, como ano 2200.
+
+--------------------
+
+Tela de Lista de Estudantes Encaminhados:
+
+    - UI quebrada para além do botão Visualizar. Não aparece o botão de Exclusão. Testei aumentando a largura para 2000px e os elementos estão lá. Provavelmente necessário uma barra de rolagem horizontal dentro da table.
+
+    - Não há modal de Edição, somente Visualização.
+
+     Filtros parecem funcionais.
+
+     Delete funciona, mas está escondido.
+
+--------------------
+
+Tela de Avaliação:
+
+    - Provável que seja interessante salvar o estado atual da avaliação, pois pode ser um processo demorado. No papel, isso fica salvo automaticamente. A pessoa pode salvar, ou o programa pode salvar a cada 1 minuto, por exemplo. Evidentemente, deverá ter uma tabela ou espaço reservado para esses dados, seja em LocalStorage, seja no BD.
+
+    - Permitir que ao teclar Enter, a avaliação seja submetida.
+
+    - As questões tem um . (ponto final) como no documento, mas será melhor colocar um ? (ponto de interrogação) ou deixar sem pontuação?
+
+Tela de Lista de Avaliações:
+
+    - Permitir que Esc feche o Modal ao clicar em Visualizar. Também ter um "X" de saída no final da página.
+
+    - Ao exportar com sucesso o PDF, fechar o Modal.
+
+    - Ao exportar o pdf, está vindo o texto da pergunta com o ponto final (listado a retificar em "Tela de Avaliação", neste documento) mais : (dois pontos). Ou sej suprime o ponto final e deixa os : (dois pontos), ou se coloca um ? (ponto de interogação) e se suprime os : (dois pontos). Testar. De início, prefiro com ponto de interogação presente.
+
+    - Exportar PDF via back-end? Não vejo necessidade, a menos que implique em segurança de dados, como possibilidade de alteração do script. Nesse sentido, melhor o back-end fazer.
+
 -------------------------------------------------------
 
 - Revisar campos que devem aparecer no front-end.
 
 - Jogar as regras de negócio todas para o back-end (filtros de paginação podem ser mantidos no front-end, o que não impede o back-end de ter paginação própria diferenciada - ex: 1000 resultados vindos do back-end listados de 10 em 10 ou de 100 em 100 no front-end.).
 
+- Importante paginar as Telas de listagem.
 
+- Permitir que ao teclar Enter, os botões principais sejam acionados. Cadastrar, Filtrar, Salvar, Submeter formulário, essas coisas.
+
+- Permitir que Esc feche o Modal.

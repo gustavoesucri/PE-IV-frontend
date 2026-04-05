@@ -249,7 +249,7 @@ const EmploymentPlacementList = () => {
         </button>
       </div>
 
-      <div className={styles.tableWrapper}>
+      <div className={styles.tableWrapper}> {/* Será necessário mexer aqui porque a UI está quebrando. Para testar vendo mais elementos, coloque style={{width: 2000}} */}
         {userPermissions.view_placements ? (
           <table className={styles.table}>
             <thead>
@@ -274,7 +274,7 @@ const EmploymentPlacementList = () => {
                     <td>{p.contatoRh}</td>
                     <td>{formatDate(p.dataDesligamento)}</td>
                     <td>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem'}}>
                         <button
                           className={styles.actionButton}
                           onClick={() => handleView(p)}
