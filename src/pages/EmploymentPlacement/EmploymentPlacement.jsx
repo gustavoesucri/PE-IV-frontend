@@ -98,7 +98,7 @@ const EmploymentPlacement = () => {
         contatoRh: contatoRh.trim(),
         dataDesligamento: dataDesligamento,
         status: "Ativo",
-        createdAt: new Date().toISOString(),
+        // createdAt: new Date().toISOString(),
         createdBy: user ? user.id : null
       };
 

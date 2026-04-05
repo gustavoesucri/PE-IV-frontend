@@ -1,0 +1,69 @@
+Aplicação num todo:
+
+    - A mensagem de tentando reconectar a cada 15 segundos pode ser um contador que muda a cada segundo (15, 14, 13...).
+
+    - Colocar botão de voltar DENTRO da interface do site (facilita UX e permite uso em modo tela cheia). Ação, volta para a tela anterior na hierarquia, não a última do navegador.
+
+--------------------
+
+Tela de login:
+
+    - Não há mensagem sobre digitar senha ou usuário errado. A tela simplesmente atualiza.
+
+    - Esquecimento de senha ainda está sem opção de uso: "Caso tenha esquecido sua senha, consulte o diretor."
+
+--------------------
+
+Tela de cadastro de estudantes:
+
+    - Falta validação sobre data de nascimento e data de ingresso no instituto.
+
+    - A data de ingresso no instituto não pode ser menor do que 14 anos de diferença em relação a data de nascimento. Ou seja, o aluno tem que ter, pelo menos, 14 anos de idade.
+
+    - Barra de seleção de estudante por nome precisa de ser uma barra de busca. Adicionei mais 100 alunos e a UI não mostra mais que 13.
+
+--------------------
+
+Tela de listagem de estudantes:
+
+    - Lista de Alunos necessita de paginação.
+
+    - Erro ao tentar editar cadastro de aluno: "Erro ao atualizar aluno. Tente novamente.". A mensagem de tente novamente é problemática neste caso, deve ser corrigida, e corrigido o erro para atualizar.
+
+    - Talvez colocar para filtrar automaticamente, mas fazer chamadas de tempos em tempos à API. Alternativamente, fazer o botão Filtar ser acionado ao teclar Enter.
+
+    - Ao clicar em filtrar, fazer nova requisição ao backend. Hoje, os dados não atualizam, é somente front-end, portanto.
+
+    - Quando as datas são preenchidas parcialmente, a busca ocorre, mas nem sempre traz o resultado coerente com os filtros. Ou forçar escolher uma data completa (com dia, mês e ano) ou melhorar os filtros para funcionarem parcialmente. Melhor uma data completa.
+
+    Exclusão funcionando.
+
+--------------------
+
+Tela de cadastro de empresas:
+
+    - Validação de CNPJ está ocorrendo no front-end
+
+    - Campo de endereço "Cidade" está ausente da interface.
+
+    - Campo de endereço "Complemento" está ausente da interface.
+
+    - "Cidade" e "Complemento" ausentes da Entity da API e ausentes no front-end.
+
+    Edição e exclusão funcionando.
+
+--------------------
+
+Tela de Estudantes Encaminhados:
+
+    - Ao selecionar o estudante, pode ser mais interessante colocar uma barra de busca. OU talvez limitar ligeiramente o tamanho do dropdown para saber onde ele termina, porque ele dá a percepção de que pode ser que tem alunos do fima da lista não aparecendo na tela (não tem, mas é a impressão que passa).
+
+    - Acusando erro que veio do backend ao tentar cadastrar um encaminhamento: "property createdAt should not exist". (CORRIGIDO VIA COMENTÁRIO)
+
+-------------------------------------------------------
+
+- Revisar campos que devem aparecer no front-end.
+
+- Jogar as regras de negócio todas para o back-end (filtros de paginação podem ser mantidos no front-end, o que não impede o back-end de ter paginação própria diferenciada - ex: 1000 resultados vindos do back-end listados de 10 em 10 ou de 100 em 100 no front-end.).
+
+
