@@ -180,6 +180,32 @@ const EmploymentPlacementList = () => {
     }
   };
 
+  const handleToggleStatus = async (placement) => {
+    try {
+      const newStatus = placement.status === "Ativo" ? "Inativo" : "Ativo";
+      await api.patch(`/placements/${placement.id}`, { status: newStatus });
+
+      // Atualizar lista local
+      const updatedPlacements = placements.map(p =>
+        p.id === placement.id ? { ...p, status: newStatus } : p
+      );
+      setPlacements(updatedPlacements);
+      setFilteredPlacements(updatedPlacements.filter(p => 
+        filteredPlacements.some(fp => fp.id === p.id)
+      ));
+
+      showMessage(`Status alterado para ${newStatus} com sucesso!`, "success");
+      
+    } catch (error) {
+      console.error("Erro ao alterar status:", error);
+      if (error.response && error.response.status === 403) {
+        showMessage("Acesso negado. Você não tem permissão para esta ação.");
+      } else {
+        showMessage("Erro ao alterar status. Tente novamente.");
+      }
+    }
+  };
+
   const closeViewModal = () => {
     setIsViewModalOpen(false);
     setSelectedPlacement(null);
@@ -274,7 +300,18 @@ const EmploymentPlacementList = () => {
                     <td>{p.funcao}</td>
                     <td>{p.contatoRh}</td>
                     <td>{formatDate(p.dataDesligamento)}</td>
-                    <td>{p.status}</td>
+                    <td>
+                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                        {p.status}
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => handleToggleStatus(p)}
+                          title={p.status === "Ativo" ? "Desativar" : "Ativar"}
+                        >
+                          {p.status === "Ativo" ? "Desativar" : "Ativar"}
+                        </button>
+                      </div>
+                    </td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.5rem'}}>
                         <button
