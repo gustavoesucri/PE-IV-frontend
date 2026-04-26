@@ -247,13 +247,13 @@ const EmploymentPlacementList = () => {
           placeholder="Buscar por nome, empresa ou função..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className={styles.input}
+          className={`${styles.input} ${styles.searchInput}`}
         />
 
         <select
           value={dateType}
           onChange={(e) => setDateType(e.target.value)}
-          className={styles.input}
+          className={`${styles.input} ${styles.dateTypeSelect}`}
         >
           <option value="dataAdmissao">Data de Admissão</option>
           <option value="dataDesligamento">Data de Desligamento</option>
@@ -263,20 +263,20 @@ const EmploymentPlacementList = () => {
           type="date"
           value={dateFrom}
           onChange={(e) => setDateFrom(e.target.value)}
-          className={styles.input}
+          className={`${styles.input} ${styles.dateInput}`}
         />
         <span className={styles.rangeSeparator}>até</span>
         <input
           type="date"
           value={dateTo}
           onChange={(e) => setDateTo(e.target.value)}
-          className={styles.input}
+          className={`${styles.input} ${styles.dateInput}`}
         />
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className={styles.input}
+          className={`${styles.input} ${styles.statusSelect}`}
         >
           <option value="Ativo">Ativos</option>
           <option value="Inativo">Inativos</option>

@@ -28,9 +28,30 @@
   font-size: 1rem;
   background-color: var(--cinza-claro);
   text-align: left;
+}
+
+/* Input de busca por nome - flexível e maior */
+.searchInput {
+  min-width: 250px;
+  flex: 2;
+}
+
+/* Select de tipo de data - tamanho fixo */
+.dateTypeSelect {
+  min-width: 192px;
+  max-width: 192px;
+}
+
+/* Input de data - tamanho fixo */
+.dateInput {
+  min-width: 160px;
+  max-width: 160px;
+}
+
+/* Select de status - tamanho fixo */
+.statusSelect {
   min-width: 150px;
-  flex: 1;
-  min-width: 150px;
+  max-width: 150px;
 }
 
 .tableWrapper {
