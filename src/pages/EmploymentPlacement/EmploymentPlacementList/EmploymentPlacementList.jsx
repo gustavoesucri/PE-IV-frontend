@@ -260,6 +260,7 @@ const EmploymentPlacementList = () => {
                 <th>Função</th>
                 <th>Contato RH</th>
                 <th>Provável Desligamento</th>
+                <th>Status</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -273,6 +274,7 @@ const EmploymentPlacementList = () => {
                     <td>{p.funcao}</td>
                     <td>{p.contatoRh}</td>
                     <td>{formatDate(p.dataDesligamento)}</td>
+                    <td>{p.status}</td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.5rem'}}>
                         <button
