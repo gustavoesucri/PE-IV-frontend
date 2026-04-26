@@ -105,3 +105,5 @@ Tela de Lista de Avaliações:
 - Permitir que ao teclar Enter, os botões principais sejam acionados. Cadastrar, Filtrar, Salvar, Submeter formulário, essas coisas.
 
 - Permitir que Esc feche o Modal.
+
+- Revisar datas (quanto a cadastros, regitros, manipulações, edições) a respeito de um problema comum que é a data ser registrada no dia anterior ao input por causa do timezone -3. Isso faz com que a data que era, por exemplo, dia 10/10/2025 00:00 virar 09/10/2025 21:00.
