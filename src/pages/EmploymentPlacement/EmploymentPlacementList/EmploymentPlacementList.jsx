@@ -291,7 +291,7 @@ const EmploymentPlacementList = () => {
         </button>
       </div>
 
-      <div className={styles.tableWrapper}> {/* Será necessário mexer aqui porque a UI está quebrando. Para testar vendo mais elementos, coloque style={{width: 2000}} */}
+      <div className={styles.tableWrapper}>
         {userPermissions.view_placements ? (
           <table className={styles.table}>
             <thead>

@@ -1,7 +1,7 @@
 .container {
   background-color: var(--branco);
   padding: 2rem;
-  max-width: 1095px;
+  max-width: 1400px;
   margin: 2rem auto;
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
@@ -15,8 +15,10 @@
 
 .filters {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
+  align-items: center;
 }
 
 .input {
@@ -26,15 +28,23 @@
   font-size: 1rem;
   background-color: var(--cinza-claro);
   text-align: left;
+  min-width: 150px;
+  flex: 1;
+  min-width: 150px;
 }
 
 .tableWrapper {
   overflow-x: auto;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid var(--cinza);
+  max-height: calc(100vh - 400px);
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 1200px;
 }
 
 .table thead {
@@ -81,6 +91,7 @@
   margin: 0 0.5rem;
   font-weight: bold;
   color: #555;
+  white-space: nowrap;
 }
 
 .filterButton {
