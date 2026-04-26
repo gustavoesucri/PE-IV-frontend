@@ -98,8 +98,9 @@ const StudentsList = () => {
     }
 
     setEditingStudent(student);
+    const { id, createdAt, updatedAt, ...studentSanitized } = student;
     setFormData({ 
-      ...student,
+      ...studentSanitized,
       observacaoBreve: student.observacaoBreve || "",
       observacaoDetalhada: student.observacaoDetalhada || ""
     });
