@@ -12,6 +12,7 @@ const EmploymentPlacementList = () => {
   const [dateType, setDateType] = useState("dataAdmissao");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [statusFilter, setStatusFilter] = useState("Ativo");
   const [filteredPlacements, setFilteredPlacements] = useState([]);
   const [placements, setPlacements] = useState([]);
   const [students, setStudents] = useState([]);
@@ -138,6 +139,10 @@ const EmploymentPlacementList = () => {
       });
     }
 
+    if (statusFilter !== "Todos") {
+      results = results.filter(p => p.status === statusFilter);
+    }
+
     setFilteredPlacements(results);
   };
 
@@ -227,6 +232,7 @@ const EmploymentPlacementList = () => {
     setDateType("dataAdmissao");
     setDateFrom("");
     setDateTo("");
+    setStatusFilter("Ativo");
     setFilteredPlacements(placements);
   };
 
@@ -266,6 +272,16 @@ const EmploymentPlacementList = () => {
           onChange={(e) => setDateTo(e.target.value)}
           className={styles.input}
         />
+
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className={styles.input}
+        >
+          <option value="Ativo">Ativos</option>
+          <option value="Inativo">Inativos</option>
+          <option value="Todos">Todos</option>
+        </select>
 
         <button onClick={handleFilter} className={styles.filterButton}>
           Filtrar
