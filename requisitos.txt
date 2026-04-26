@@ -28,8 +28,6 @@ Tela de listagem de estudantes:
 
     - Lista de Alunos necessita de paginação.
 
-    - Erro ao tentar editar cadastro de aluno: "Erro ao atualizar aluno. Tente novamente.". A mensagem de tente novamente é problemática neste caso, deve ser corrigida, e corrigido o erro para atualizar.
-
     - Talvez colocar para filtrar automaticamente, mas fazer chamadas de tempos em tempos à API. Alternativamente, fazer o botão Filtar ser acionado ao teclar Enter.
 
     - Ao clicar em filtrar, fazer nova requisição ao backend. Hoje, os dados não atualizam, é somente front-end, portanto.
