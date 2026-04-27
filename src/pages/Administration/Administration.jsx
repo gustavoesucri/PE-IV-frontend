@@ -936,3 +936,12 @@ const updateNote = async (id, newContent) => {
 };
 
 export default Administration;
+
+  /* TODO: Implementar indicadores do dashboard:
+   - Total de encaminhamentos ativos (em tempo real) (acho que este já existe)
+   - Total de estudantes sem encaminhamento (acho que este já existe)
+   - Taxa de encaminhamento (% de estudantes com colocação) (acho que este já existe)
+   - Empresa com mais encaminhamentos
+   - Funções mais comuns
+   - Desligamentos previstos nos próximos 30 dias
+   */
