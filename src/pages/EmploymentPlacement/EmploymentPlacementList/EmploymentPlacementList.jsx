@@ -49,6 +49,16 @@ const EmploymentPlacementList = () => {
     loadDataAndPermissions();
   }, [permissionsLoading, userPermissions]);
 
+  // Aplicar filtro de "Ativo" na carga inicial
+  useEffect(() => {
+    if (placements.length > 0) {
+      const activeOnly = placements.filter(p => p.status === "Ativo");
+      setFilteredPlacements(activeOnly);
+    } else if (placements.length === 0) {
+      setFilteredPlacements([]);
+    }
+  }, [placements]);
+
   const loadPlacements = async () => {
     try {
       const response = await api.get('/placements');
@@ -195,9 +205,12 @@ const EmploymentPlacementList = () => {
         p.id === placement.id ? { ...p, status: newStatus } : p
       );
       setPlacements(updatedPlacements);
-      setFilteredPlacements(updatedPlacements.filter(p => 
-        filteredPlacements.some(fp => fp.id === p.id)
-      ));
+      // Manter o filtro atual aplicado após alteração de status
+      if (statusFilter !== "Todos") {
+        setFilteredPlacements(updatedPlacements.filter(p => p.status === statusFilter));
+      } else {
+        setFilteredPlacements(updatedPlacements);
+      }
 
       showMessage(`Status alterado para ${newStatus} com sucesso!`, "success");
       
@@ -233,7 +246,9 @@ const EmploymentPlacementList = () => {
     setDateFrom("");
     setDateTo("");
     setStatusFilter("Ativo");
-    setFilteredPlacements(placements);
+    // Voltar a mostrar apenas os ativos
+    const activeOnly = placements.filter(p => p.status === "Ativo");
+    setFilteredPlacements(activeOnly);
   };
 
   return (
