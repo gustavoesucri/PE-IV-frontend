@@ -26,7 +26,8 @@ const handleSubmit = async (e) => {
   } catch (err) {
     // Garante que NÃO redireciona aqui
     console.log("Erro de login:", err.message);
-    setError(err.message || "Usuário ou senha inválidos");
+    const errorMessage = err.response?.data?.message || err.message || "Usuário ou senha inválidos";
+    setError(errorMessage);
   } finally {
     setLoading(false);
   }

@@ -35,7 +35,8 @@ api.interceptors.response.use(
     }
 
     // Redireciona para login se token expirar (401)
-    if (error.response?.status === 401) {
+    // MAS não redireciona durante o login, pois é erro de credenciais
+    if (error.response?.status === 401 && error.config?.url !== '/auth/login') {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/';
