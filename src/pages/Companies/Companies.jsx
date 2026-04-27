@@ -48,6 +48,8 @@ const Companies = () => {
     rua: "",
     numero: "",
     bairro: "",
+    cidade: "",
+    complemento: "",
     estado: "",
     cep: "",
   });
@@ -110,6 +112,8 @@ const Companies = () => {
       rua: formData.rua.trim(),
       numero: formData.numero,
       bairro: formData.bairro.trim(),
+      cidade: formData.cidade.trim(),
+      complemento: formData.complemento.trim(),
       estado: formData.estado,
       cep: formData.cep.replace(/[^\d]+/g, ""),
     };
@@ -146,6 +150,8 @@ const Companies = () => {
       rua: "",
       numero: "",
       bairro: "",
+      cidade: "",
+      complemento: "",
       estado: "",
       cep: "",
     });
@@ -241,6 +247,32 @@ const Companies = () => {
             type="text"
             placeholder="Digite o bairro"
             value={formData.bairro}
+            onChange={handleChange}
+          />
+
+          <label className={styles.label} htmlFor="cidade">
+            Cidade:
+          </label>
+          <input
+            className={styles.input}
+            id="cidade"
+            name="cidade"
+            type="text"
+            placeholder="Digite a cidade"
+            value={formData.cidade}
+            onChange={handleChange}
+          />
+
+          <label className={styles.label} htmlFor="complemento">
+            Complemento:
+          </label>
+          <input
+            className={styles.input}
+            id="complemento"
+            name="complemento"
+            type="text"
+            placeholder="Ex: Apto 101, Sala 5"
+            value={formData.complemento}
             onChange={handleChange}
           />
 
