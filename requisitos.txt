@@ -1,14 +1,9 @@
 Aplicação num todo:
-
-    - A mensagem de tentando reconectar a cada 15 segundos pode ser um contador que muda a cada segundo (15, 14, 13...).
-
     - Colocar botão de voltar DENTRO da interface do site (facilita UX e permite uso em modo tela cheia). Ação, volta para a tela anterior na hierarquia, não a última do navegador.
 
 --------------------
 
 Tela de login:
-
-    - Não há mensagem sobre digitar senha ou usuário errado. A tela simplesmente atualiza.
 
     - Esquecimento de senha ainda está sem opção de uso: "Caso tenha esquecido sua senha, consulte o diretor."
 

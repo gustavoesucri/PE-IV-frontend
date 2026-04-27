@@ -14,7 +14,9 @@ export const notifyServerUp = () => { if (onServerUp) onServerUp(); };
 
 export const ServerStatusProvider = ({ children }) => {
   const [serverOffline, setServerOffline] = useState(false);
+  const [countdown, setCountdown] = useState(15);
   const retryRef = useRef(null);
+  const countdownRef = useRef(null);
   const isCheckingRef = useRef(false);
   const wasOfflineRef = useRef(false);
 
@@ -44,16 +46,27 @@ export const ServerStatusProvider = ({ children }) => {
     onServerDown = () => {
       wasOfflineRef.current = true;
       setServerOffline(true);
-      // Iniciar retry a cada 15s se não estiver ativo
-      if (!retryRef.current) {
-        retryRef.current = setInterval(checkServer, 15000);
+      setCountdown(15);
+      
+      // Iniciar countdown regressivo a cada 1s
+      if (!countdownRef.current) {
+        countdownRef.current = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev <= 1) {
+              // Chegou a zero — tenta reconectar e reinicia countdown
+              checkServer();
+              return 15;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       }
     };
 
     onServerUp = () => {
-      if (retryRef.current) {
-        clearInterval(retryRef.current);
-        retryRef.current = null;
+      if (countdownRef.current) {
+        clearInterval(countdownRef.current);
+        countdownRef.current = null;
       }
       // Servidor voltou após queda — recarrega para atualizar dados
       if (wasOfflineRef.current) {
@@ -64,9 +77,9 @@ export const ServerStatusProvider = ({ children }) => {
     return () => {
       onServerDown = null;
       onServerUp = null;
-      if (retryRef.current) {
-        clearInterval(retryRef.current);
-        retryRef.current = null;
+      if (countdownRef.current) {
+        clearInterval(countdownRef.current);
+        countdownRef.current = null;
       }
     };
   }, [checkServer]);
@@ -74,12 +87,12 @@ export const ServerStatusProvider = ({ children }) => {
   return (
     <ServerStatusContext.Provider value={{ serverOffline }}>
       {children}
-      {serverOffline && <ServerOfflineOverlay />}
+      {serverOffline && <ServerOfflineOverlay countdown={countdown} />}
     </ServerStatusContext.Provider>
   );
 };
 
-const ServerOfflineOverlay = () => (
+const ServerOfflineOverlay = ({ countdown }) => (
   <div style={{
     position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
     background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center',
@@ -95,7 +108,7 @@ const ServerOfflineOverlay = () => (
       </h2>
       <p style={{ color: '#555', margin: '0 0 1.5rem', lineHeight: 1.5 }}>
         Não foi possível conectar ao servidor.<br />
-        Tentando reconectar automaticamente a cada 15 segundos...
+        Tentando reconectar automaticamente em <strong style={{ color: '#d32f2f', fontSize: '1.1rem' }}>{countdown}</strong> segundos...
       </p>
       <div style={{ display: 'inline-block' }}>
         <div style={{
