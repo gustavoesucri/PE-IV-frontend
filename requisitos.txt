@@ -43,6 +43,8 @@ Tela de cadastro de empresas:
 
     - "Cidade" e "Complemento" ausentes da Entity da API e ausentes no front-end.
 
+    - Campos de endereço para além do CEP devem ser obrigatórios (exceção deve ser o complemento e talvez o número, ou o número deve poder aceitar S/N quando vazio.)
+
     Edição e exclusão funcionando.
 
 --------------------
@@ -76,6 +78,8 @@ Tela de Avaliação:
     - Permitir que ao teclar Enter, a avaliação seja submetida.
 
     - As questões tem um . (ponto final) como no documento, mas será melhor colocar um ? (ponto de interrogação) ou deixar sem pontuação?
+
+    - Ao perguntar sobre a data da avaliação estar na data atual é interessante mover a tela até lá para que o usuário possa ver o valor antes de clicar na opção do modal.
 
 Tela de Lista de Avaliações:
 
