@@ -27,6 +27,19 @@ const Students = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateAge = (dataNascimento, dataIngresso) => {
+    const today = new Date(dataIngresso);
+    const birthDate = new Date(dataNascimento);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age >= 14;
+  };
+
   const showModal = (message, type = "error") => {
     setModalMessage(message);
     setModalType(type);
@@ -41,7 +54,7 @@ const Students = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Verificar permissão para criar estudantes
     if (!userPermissions.create_students) {
       showModal("Você não tem as permissões para criar estudante. Se algo estiver errado consulte o Diretor.");
@@ -66,6 +79,13 @@ const Students = () => {
       return;
     }
 
+      // Validação da idade
+  const age = validateAge(formData.dataNascimento, formData.dataIngresso);
+  if (!age) {
+    showModal("O aluno deve ter no mínimo 14 anos de idade para ser cadastrado.");
+    return;
+  }
+
     try {
       // Preparar dados para envio
       const studentData = {
@@ -88,7 +108,7 @@ const Students = () => {
       await api.post('/students', studentData);
 
       showModal("Aluno cadastrado com sucesso!", "success");
-      
+
       // Limpar formulário
       setFormData({
         nome: "",
@@ -235,7 +255,7 @@ const Students = () => {
               <p>{modalMessage}</p>
             </div>
             <div className={styles.modalFooter}>
-              <button 
+              <button
                 className={`${styles.modalButton} ${modalType === "success" ? styles.modalSuccessButton : styles.modalErrorButton}`}
                 onClick={closeModal}
               >
