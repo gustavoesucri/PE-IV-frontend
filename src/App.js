@@ -1,5 +1,6 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Login from './pages/Login/Login';
 import Administration from './pages/Administration/Administration';
 import Students from './pages/Students/Students';
@@ -17,6 +18,10 @@ import StudentsList from './pages/Students/StudentsList/StudentsList';
 import CompaniesList from './pages/Companies/CompaniesList/CompaniesList';
 import AssessmentList from './pages/Assessment/AssessmentList/Assessment-list';
 import DirectorPanel from './pages/DirectorPanel/DirectorPanel';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
+import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
+import FirstLoginModal from './components/FirstLoginModal';
+import EmailVerificationBanner from './components/EmailVerificationBanner';
 import { usePermissions } from './hooks/usePermissions';
 import { ServerStatusProvider } from './hooks/useServerStatus';
 
@@ -24,11 +29,32 @@ import { ServerStatusProvider } from './hooks/useServerStatus';
 const RequireAuth = ({ children }) => {
   const token = localStorage.getItem('token');
   const user = JSON.parse(localStorage.getItem('user') || 'null');
-  
+  const [showFirstLogin, setShowFirstLogin] = useState(false);
+
+  useEffect(() => {
+    if (user?.primeiroLogin) {
+      setShowFirstLogin(true);
+    }
+  }, [user]);
+
+  const handleFirstLoginComplete = () => {
+    setShowFirstLogin(false);
+    // Recarregar a página para atualizar o estado do usuário
+    window.location.reload();
+  };
+
   if (!token || !user) {
     return <Navigate to="/" replace />;
   }
-  return children;
+
+  return (
+    <>
+      {children}
+      {showFirstLogin && (
+        <FirstLoginModal user={user} onComplete={handleFirstLoginComplete} />
+      )}
+    </>
+  );
 };
 
 // Componente para rotas que requerem role de diretor
@@ -78,9 +104,12 @@ function App() {
     <ServerStatusProvider>
       <div className="App">
         <Router>
+          <EmailVerificationBanner />
           <Routes>
-            {/* Rota pública */}
+            {/* Rotas públicas */}
             <Route path="/" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
           
           {/* Rotas protegidas (qualquer usuário logado) */}
           <Route path="/administration" element={

@@ -9,6 +9,7 @@ const Settings = () => {
   const [userSettings, setUserSettings] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -19,9 +20,17 @@ const Settings = () => {
   const [passwordError, setPasswordError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
+  const [usernameMessage, setUsernameMessage] = useState("");
   const [tempEmail, setTempEmail] = useState("");
+  const [tempUsername, setTempUsername] = useState("");
   const [settingsLoaded, setSettingsLoaded] = useState(false);
-  
+  const [passwordStrength, setPasswordStrength] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    special: false,
+  });
 
   // Formatar categoria (role) para exibição
   const formatRole = (role) => {
@@ -56,6 +65,30 @@ const Settings = () => {
 
     loadUserData();
   }, []);
+
+  // Desestruturar fora do useEffect para evitar warning de dependência
+  const { newPassword } = passwordData;
+
+  // Monitorar força da senha
+  useEffect(() => {
+    setPasswordStrength({
+      length: newPassword.length >= 8,
+      uppercase: /[A-Z]/.test(newPassword),
+      lowercase: /[a-z]/.test(newPassword),
+      number: /[0-9]/.test(newPassword),
+      special: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(newPassword),
+    });
+  }, [newPassword]);
+
+  // Validar senha antes de salvar
+  const validatePasswordStrength = () => {
+    if (!passwordStrength.length) return 'A senha deve ter pelo menos 8 caracteres';
+    if (!passwordStrength.uppercase) return 'A senha deve conter pelo menos uma letra maiúscula';
+    if (!passwordStrength.lowercase) return 'A senha deve conter pelo menos uma letra minúscula';
+    if (!passwordStrength.number) return 'A senha deve conter pelo menos um número';
+    if (!passwordStrength.special) return 'A senha deve conter pelo menos um caractere especial';
+    return null;
+  };
 
   // Atualizar CONFIGURAÇÕES no back-end (notificações)
   const updateUserSettings = async (newSettings) => {
@@ -150,6 +183,13 @@ const Settings = () => {
       return;
     }
 
+    // Validar força da senha
+    const strengthError = validatePasswordStrength();
+    if (strengthError) {
+      setPasswordError(strengthError);
+      return;
+    }
+
     // Verificar se a senha atual está correta (verificar no backend)
     try {
       await api.post(`/users/${currentUser.id}/verify-password`, { password: passwordData.currentPassword });
@@ -178,15 +218,35 @@ const Settings = () => {
   };
 
   // --- Modal Email ---
+  const [emailVerificationSent, setEmailVerificationSent] = useState(false);
+
   const handleOpenEmailModal = () => {
     setIsEmailModalOpen(true);
     setEmailMessage("");
     setTempEmail(currentUser?.email || "");
+    setEmailVerificationSent(false);
   };
 
   const handleCloseEmailModal = () => {
     setIsEmailModalOpen(false);
     setTempEmail("");
+    setEmailVerificationSent(false);
+  };
+
+  const handleSendEmailVerification = async () => {
+    if (!tempEmail || !/\S+@\S+\.\S+/.test(tempEmail)) {
+      setEmailMessage("Por favor, insira um email válido.");
+      return;
+    }
+
+    try {
+      await api.post('/auth/send-verification-email', { email: tempEmail });
+      setEmailVerificationSent(true);
+      setEmailMessage("Email de verificação enviado! Verifique sua caixa de entrada.");
+    } catch (error) {
+      console.error("Erro ao enviar verificação:", error);
+      setEmailMessage(error.response?.data?.message || "Erro ao enviar email de verificação");
+    }
   };
 
   const handleSaveEmail = async () => {
@@ -197,11 +257,53 @@ const Settings = () => {
         setTimeout(() => {
           setIsEmailModalOpen(false);
           setTempEmail("");
-        }, 1500);
+          setEmailVerificationSent(false);
+              }, 1500);
       } catch (error) {
         console.error("Erro ao salvar email:", error);
         setEmailMessage(error.message || "Erro ao salvar email");
       }
+    }
+  };
+
+  // --- Modal Username ---
+  const handleOpenUsernameModal = () => {
+    setIsUsernameModalOpen(true);
+    setUsernameMessage("");
+    setTempUsername(currentUser?.username || "");
+  };
+
+  const handleCloseUsernameModal = () => {
+    setIsUsernameModalOpen(false);
+    setTempUsername("");
+  };
+
+  const handleSaveUsername = async () => {
+    const trimmedUsername = tempUsername.trim();
+
+    if (!trimmedUsername) {
+      setUsernameMessage("Nome de usuário é obrigatório.");
+      return;
+    }
+
+    if (trimmedUsername === currentUser.username) {
+      setUsernameMessage("Informe um nome de usuário diferente do atual.");
+      return;
+    }
+
+    try {
+      const response = await api.patch('/users/me/username', { username: trimmedUsername });
+      const updatedUser = { ...currentUser, username: response.data.username };
+      setCurrentUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUsernameMessage("Nome de usuário atualizado com sucesso!");
+      setTimeout(() => {
+        setIsUsernameModalOpen(false);
+        setTempUsername("");
+      }, 1500);
+    } catch (error) {
+      console.error("Erro ao salvar nome de usuário:", error);
+      setUsernameMessage(error.response?.data?.message || error.message || "Erro ao salvar nome de usuário");
     }
   };
 
@@ -282,6 +384,9 @@ const Settings = () => {
           </p>
         )}
         <div className={styles.buttonsRow}>
+          <button className={styles.editBtn} onClick={handleOpenUsernameModal}>
+            Editar Usuário
+          </button>
           <button className={styles.editBtn} onClick={handleOpenModal}>
             Editar Senha
           </button>
@@ -298,6 +403,11 @@ const Settings = () => {
         {emailMessage && (
           <p className={emailMessage.includes("Erro") ? styles.errorMessage : styles.successMessage}>
             {emailMessage}
+          </p>
+        )}
+        {usernameMessage && (
+          <p className={usernameMessage.includes("Erro") ? styles.errorMessage : styles.successMessage}>
+            {usernameMessage}
           </p>
         )}
       </div>
@@ -366,6 +476,30 @@ const Settings = () => {
               className={styles.input}
             />
 
+            {/* Medidor de força de senha */}
+            {passwordData.newPassword && (
+              <div className={styles.strengthMeter}>
+                <p className={styles.strengthTitle}>Requisitos da senha:</p>
+                <ul className={styles.strengthList}>
+                  <li className={passwordStrength.length ? styles.valid : styles.invalid}>
+                    {passwordStrength.length ? '✓' : '○'} Pelo menos 8 caracteres
+                  </li>
+                  <li className={passwordStrength.uppercase ? styles.valid : styles.invalid}>
+                    {passwordStrength.uppercase ? '✓' : '○'} Uma letra maiúscula
+                  </li>
+                  <li className={passwordStrength.lowercase ? styles.valid : styles.invalid}>
+                    {passwordStrength.lowercase ? '✓' : '○'} Uma letra minúscula
+                  </li>
+                  <li className={passwordStrength.number ? styles.valid : styles.invalid}>
+                    {passwordStrength.number ? '✓' : '○'} Um número
+                  </li>
+                  <li className={passwordStrength.special ? styles.valid : styles.invalid}>
+                    {passwordStrength.special ? '✓' : '○'} Um caractere especial
+                  </li>
+                </ul>
+              </div>
+            )}
+
             {/* Mensagens de erro e validação */}
             {passwordError && (
               <p className={styles.notMatch}>{passwordError}</p>
@@ -382,7 +516,7 @@ const Settings = () => {
             <button
               className={styles.saveBtn}
               onClick={handleSavePassword}
-              disabled={!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword || !passwordMatch}
+              disabled={!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword || !passwordMatch || !passwordStrength.length || !passwordStrength.uppercase || !passwordStrength.lowercase || !passwordStrength.number || !passwordStrength.special}
             >
               Salvar
             </button>
@@ -404,20 +538,71 @@ const Settings = () => {
               value={tempEmail}
               onChange={(e) => setTempEmail(e.target.value)}
               className={styles.input}
+              disabled={emailVerificationSent}
             />
-            
-            {emailMessage && (
-              <p className={emailMessage.includes("Erro") ? styles.notMatch : styles.match}>
-                {emailMessage}
+
+            {!emailVerificationSent ? (
+              <button
+                className={styles.saveBtn}
+                onClick={handleSendEmailVerification}
+                disabled={!tempEmail || !/\S+@\S+\.\S+/.test(tempEmail)}
+              >
+                Enviar Email de Verificação
+              </button>
+            ) : (
+              <>
+                <p className={styles.match}>
+                  ✔ Email de verificação enviado! Verifique sua caixa de entrada.
+                </p>
+                <p className={styles.hint}>
+                  Após verificar seu email, clique em salvar para confirmar a alteração.
+                </p>
+                <button
+                  className={styles.saveBtn}
+                  onClick={handleSaveEmail}
+                  disabled={!tempEmail || !/\S+@\S+\.\S+/.test(tempEmail)}
+                >
+                  Salvar Email
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal Editar Usuário */}
+      {isUsernameModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <button className={styles.closeBtn} onClick={handleCloseUsernameModal}>
+              <X size={20} />
+            </button>
+            <h2>Editar Usuário</h2>
+            <input
+              type="text"
+              placeholder="Digite seu novo nome de usuário"
+              value={tempUsername}
+              onChange={(e) => {
+                setTempUsername(e.target.value);
+                if (usernameMessage) {
+                  setUsernameMessage("");
+                }
+              }}
+              className={styles.input}
+            />
+
+            {usernameMessage && (
+              <p className={usernameMessage.includes("sucesso") ? styles.match : styles.notMatch}>
+                {usernameMessage}
               </p>
             )}
-            
+
             <button
               className={styles.saveBtn}
-              onClick={handleSaveEmail}
-              disabled={!tempEmail || !/\S+@\S+\.\S+/.test(tempEmail)}
+              onClick={handleSaveUsername}
+              disabled={!tempUsername.trim() || tempUsername.trim() === currentUser.username}
             >
-              {currentUser?.email ? "Atualizar" : "Adicionar"}
+              Salvar Usuário
             </button>
           </div>
         </div>

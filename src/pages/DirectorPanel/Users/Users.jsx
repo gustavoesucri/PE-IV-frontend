@@ -126,21 +126,22 @@ useEffect(() => {
       return "Nome de usuário já existe. Por favor, escolha outro.";
     }
 
-    // Validar email apenas se foi preenchido
-    if (email && email.trim() !== "") {
-      const emailExists = existingUsers.some(user => 
-        user.email && user.email.toLowerCase() === email.toLowerCase()
-      );
-      
-      if (emailExists) {
-        return "Email já está em uso. Por favor, use outro email.";
-      }
+    if (!email || email.trim() === "") {
+      return "Email é obrigatório.";
+    }
 
-      // Validação básica de formato de email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return "Por favor, insira um email válido.";
-      }
+    const emailExists = existingUsers.some(user =>
+      user.email && user.email.toLowerCase() === email.toLowerCase()
+    );
+
+    if (emailExists) {
+      return "Email já está em uso. Por favor, use outro email.";
+    }
+
+    // Validação básica de formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return "Por favor, insira um email válido.";
     }
 
     return null;
@@ -186,7 +187,7 @@ useEffect(() => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.username || !formData.password || !formData.role) {
+    if (!formData.username || !formData.email || !formData.password || !formData.role) {
       setErrorMessage("Preencha todos os campos obrigatórios.");
       return;
     }
@@ -206,7 +207,7 @@ useEffect(() => {
       const newUser = {
         username: formData.username,
         password: formData.password,
-        email: formData.email || "",
+        email: formData.email,
         role: formData.role
       };
 
@@ -263,7 +264,7 @@ useEffect(() => {
           />
 
           <label className={styles.label} htmlFor="email">
-            Email (opcional):
+            Email:
           </label>
           <input
             className={styles.input}
@@ -273,6 +274,7 @@ useEffect(() => {
             placeholder="Digite o email"
             value={formData.email}
             onChange={handleChange}
+            required
           />
 
           <label className={styles.label} htmlFor="password">

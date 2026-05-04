@@ -2,13 +2,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
-import api from "../../api"; // Ajuste o caminho se necessário
+import api from "../../api";
+import ForgotPasswordModal from "../../components/ForgotPasswordModal";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
 
 const handleSubmit = async (e) => {
@@ -67,11 +69,19 @@ const handleSubmit = async (e) => {
         </form>
 
         <div className={styles.hint}>
-          <small>
-             Caso tenha esquecido sua senha, consulte o diretor.
-          </small>
+          <button
+            type="button"
+            className={styles.forgotPasswordLink}
+            onClick={() => setShowForgotPassword(true)}
+          >
+            Esqueceu a senha?
+          </button>
         </div>
       </div>
+
+      {showForgotPassword && (
+        <ForgotPasswordModal onClose={() => setShowForgotPassword(false)} />
+      )}
     </div>
   );
 };

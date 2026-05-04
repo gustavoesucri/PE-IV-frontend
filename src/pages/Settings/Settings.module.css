@@ -234,3 +234,38 @@
   margin-top: 10px;
   text-align: center;
 }
+
+/* Medidor de força de senha */
+.strengthMeter {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 15px 0;
+}
+
+.strengthTitle {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.strengthList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+}
+
+.strengthList li {
+  padding: 3px 0;
+  transition: color 0.2s;
+}
+
+.valid {
+  color: #28a745;
+}
+
+.invalid {
+  color: #dc3545;
+}
