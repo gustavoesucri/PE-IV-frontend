@@ -103,8 +103,8 @@
 }
 
 .error {
-  color: #ff6b6b;
-  background: rgba(255, 107, 107, 0.1);
+  color: #ffffff;
+  background: #ff6b6b;
   padding: 0.5rem;
   border-radius: 6px;
   font-size: 0.9rem;
