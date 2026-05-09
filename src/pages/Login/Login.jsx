@@ -28,8 +28,12 @@ const handleSubmit = async (e) => {
   } catch (err) {
     // Garante que NÃO redireciona aqui
     console.log("Erro de login:", err.message);
-    const errorMessage = err.response?.data?.message || err.message || "Usuário ou senha inválidos";
-    setError(errorMessage);
+    if (err.message != "password must be longer than or equal to 3 characters") {
+      const errorMessage = err.response?.data?.message || err.message || "Usuário ou senha inválidos";
+      setError(errorMessage);
+    } else {
+      setError("A senha deve ter pelo menos 3 caracteres");
+    }
   } finally {
     setLoading(false);
   }
