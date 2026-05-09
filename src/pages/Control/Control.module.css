@@ -50,6 +50,10 @@
 
 .tableWrapper {
   overflow-x: auto;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid var(--cinza);
+  max-height: calc(100vh - 400px);
 }
 
 .table {

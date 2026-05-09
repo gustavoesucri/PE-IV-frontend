@@ -9,11 +9,7 @@ Tela de login:
 
 Tela de cadastro de estudantes:
 
-    - Falta validação sobre data de nascimento e data de ingresso no instituto.
-
-    - A data de ingresso no instituto não pode ser menor do que 14 anos de diferença em relação a data de nascimento. Ou seja, o aluno tem que ter, pelo menos, 14 anos de idade.
-
-    - Barra de seleção de estudante por nome precisa de ser uma barra de busca. Adicionei mais 100 alunos e a UI não mostra mais que 13.
+    - (algo de outra tela) Barra de seleção de estudante por nome precisa de ser uma barra de busca. Adicionei mais 100 alunos e a UI não mostra mais que 13. 
 
 --------------------
 
