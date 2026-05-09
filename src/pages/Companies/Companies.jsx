@@ -221,6 +221,7 @@ const Companies = () => {
             placeholder="Digite a rua"
             value={formData.rua}
             onChange={handleChange}
+            required
           />
 
           <label className={styles.label} htmlFor="numero">
@@ -235,6 +236,7 @@ const Companies = () => {
             value={formData.numero}
             onChange={handleChange}
             maxLength="10"
+            required
           />
 
           <label className={styles.label} htmlFor="complemento">
@@ -261,6 +263,7 @@ const Companies = () => {
             placeholder="Digite o bairro"
             value={formData.bairro}
             onChange={handleChange}
+            required
           />
 
           <label className={styles.label} htmlFor="cidade">
@@ -274,6 +277,7 @@ const Companies = () => {
             placeholder="Digite a cidade"
             value={formData.cidade}
             onChange={handleChange}
+            required
           />
 
           <label className={styles.label} htmlFor="estado">
@@ -285,6 +289,7 @@ const Companies = () => {
             name="estado"
             value={formData.estado}
             onChange={handleChange}
+            required
           >
             <option value="" disabled>
               Selecione um estado
@@ -304,6 +309,7 @@ const Companies = () => {
             value={formData.cep}
             onChange={handleChange}
             name="cep"
+            required
           >
             {(inputProps) => (
               <input

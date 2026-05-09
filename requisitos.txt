@@ -27,10 +27,6 @@ Tela de listagem de estudantes:
 
 Tela de cadastro de empresas:
 
-    - Campos de endereço para além do CEP devem ser obrigatórios (exceção deve ser o complemento e talvez o número, ou o número deve poder aceitar S/N quando vazio.)
-
-    Edição e exclusão funcionando.
-
 --------------------
 
 Tela de Estudantes Encaminhados:
