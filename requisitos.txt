@@ -5,8 +5,6 @@ Aplicação num todo:
 
 Tela de login:
 
-    - Esquecimento de senha ainda está sem opção de uso: "Caso tenha esquecido sua senha, consulte o diretor."
-
 --------------------
 
 Tela de cadastro de estudantes:

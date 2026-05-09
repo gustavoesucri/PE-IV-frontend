@@ -27,18 +27,26 @@ const Students = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const validateAge = (dataNascimento, dataIngresso) => {
-    const today = new Date(dataIngresso);
-    const birthDate = new Date(dataNascimento);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
+const validateAge = (dataNascimento, dataIngresso) => {
+  // Criar datas usando apenas ano, mês e dia, ignorando horas (por causa de problema de TimeZone)
+  const [anoIngresso, mesIngresso, diaIngresso] = dataIngresso.split('-').map(Number);
+  const dataIngresoo = new Date(anoIngresso, mesIngresso - 1, diaIngresso); // mês começa do 0
+  console.log("DataIngresso:", dataIngresoo);
 
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
+  const [anoNasc, mesNasc, diaNasc] = dataNascimento.split('-').map(Number);
+  const birthDate = new Date(anoNasc, mesNasc - 1, diaNasc);
+  console.log("Data de nascimento:", birthDate);
 
-    return age >= 14;
-  };
+  let age = dataIngresoo.getFullYear() - birthDate.getFullYear();
+  const m = dataIngresoo.getMonth() - birthDate.getMonth();
+
+  if (m < 0 || (m === 0 && dataIngresoo.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  console.log("Idade:", age);
+  return age >= 14;
+};
 
   const showModal = (message, type = "error") => {
     setModalMessage(message);
@@ -82,7 +90,7 @@ const Students = () => {
       // Validação da idade
   const age = validateAge(formData.dataNascimento, formData.dataIngresso);
   if (!age) {
-    showModal("O aluno deve ter no mínimo 14 anos de idade para ser cadastrado.");
+    showModal("A idade mínima para ingresso no instituto é de 14 anos.");
     return;
   }
 
