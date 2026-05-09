@@ -21,21 +21,11 @@ Tela de listagem de estudantes:
 
     - Ao clicar em filtrar, fazer nova requisição ao backend. Hoje, os dados não atualizam, é somente front-end, portanto.
 
-    - Quando as datas são preenchidas parcialmente, a busca ocorre, mas nem sempre traz o resultado coerente com os filtros. Ou forçar escolher uma data completa (com dia, mês e ano) ou melhorar os filtros para funcionarem parcialmente. Melhor uma data completa.
-
-    Exclusão funcionando.
+    -(abandonado) Quando as datas são preenchidas parcialmente, a busca ocorre, mas nem sempre traz o resultado coerente com os filtros. Ou forçar escolher uma data completa (com dia, mês e ano) ou melhorar os filtros para funcionarem parcialmente. Melhor uma data completa. (CONSIDEREI MELHOR DEIXAR ASSIM. As datas parciais são consideradas empty string, então elas recebem o mesmo valor de datas vazias. Isso dificulta a validação. Tentei uma estratégia de que se ao clicar em cima e preencher valida o campo, e se clicar e nao preencher aí não valida. Porém ficou pior e polui demais com mais mensagens. Melhor deixar assim, por enquanto.)
 
 --------------------
 
 Tela de cadastro de empresas:
-
-    - Validação de CNPJ está ocorrendo no front-end
-
-    - Campo de endereço "Cidade" está ausente da interface.
-
-    - Campo de endereço "Complemento" está ausente da interface.
-
-    - "Cidade" e "Complemento" ausentes da Entity da API e ausentes no front-end.
 
     - Campos de endereço para além do CEP devem ser obrigatórios (exceção deve ser o complemento e talvez o número, ou o número deve poder aceitar S/N quando vazio.)
 

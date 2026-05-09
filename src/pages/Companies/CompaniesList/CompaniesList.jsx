@@ -59,6 +59,8 @@ const CompaniesList = () => {
     rua: "",
     numero: "",
     bairro: "",
+    cidade: "",
+    complemento: "",
     estado: "",
     cep: "",
   });
@@ -148,7 +150,9 @@ const CompaniesList = () => {
       cnpj: "",
       rua: "",
       numero: "",
+      complemento: "",
       bairro: "",
+      cidade: "",
       estado: "",
       cep: "",
     });
@@ -191,7 +195,9 @@ const CompaniesList = () => {
         cnpj: formData.cnpj.replace(/[^\d]+/g, ""),
         rua: formData.rua.trim(),
         numero: formData.numero,
+        complemento: formData.complemento.trim(),
         bairro: formData.bairro.trim(),
+        cidade: formData.cidade.trim(),
         estado: formData.estado,
         cep: formData.cep.replace(/[^\d]+/g, ""),
       };
@@ -421,6 +427,18 @@ const CompaniesList = () => {
                 maxLength="10"
               />
 
+              <label className={styles.label} htmlFor="complemento">
+                Complemento:
+              </label>
+              <input
+                type="text"
+                name="complemento"
+                value={formData.complemento}
+                onChange={handleChange}
+                placeholder="Digite o complemento"
+                className={styles.input}
+              />
+
               <label className={styles.label} htmlFor="bairro">
                 Bairro:
               </label>
@@ -430,6 +448,18 @@ const CompaniesList = () => {
                 value={formData.bairro}
                 onChange={handleChange}
                 placeholder="Digite o bairro"
+                className={styles.input}
+              />
+
+              <label className={styles.label} htmlFor="cidade">
+                Cidade:
+              </label>
+              <input
+                type="text"
+                name="cidade"
+                value={formData.cidade}
+                onChange={handleChange}
+                placeholder="Digite a cidade"
                 className={styles.input}
               />
 

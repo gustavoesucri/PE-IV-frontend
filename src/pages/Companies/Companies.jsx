@@ -47,9 +47,9 @@ const Companies = () => {
     cnpj: "",
     rua: "",
     numero: "",
+    complemento: "",
     bairro: "",
     cidade: "",
-    complemento: "",
     estado: "",
     cep: "",
   });
@@ -111,9 +111,9 @@ const Companies = () => {
       cnpj: formData.cnpj.replace(/[^\d]+/g, ""),
       rua: formData.rua.trim(),
       numero: formData.numero,
+      complemento: formData.complemento.trim(),
       bairro: formData.bairro.trim(),
       cidade: formData.cidade.trim(),
-      complemento: formData.complemento.trim(),
       estado: formData.estado,
       cep: formData.cep.replace(/[^\d]+/g, ""),
     };
@@ -149,9 +149,9 @@ const Companies = () => {
       cnpj: "",
       rua: "",
       numero: "",
+      complemento: "",
       bairro: "",
       cidade: "",
-      complemento: "",
       estado: "",
       cep: "",
     });
@@ -237,6 +237,19 @@ const Companies = () => {
             maxLength="10"
           />
 
+          <label className={styles.label} htmlFor="complemento">
+            Complemento:
+          </label>
+          <input
+            className={styles.input}
+            id="complemento"
+            name="complemento"
+            type="text"
+            placeholder="Ex: Apto 101, Sala 5"
+            value={formData.complemento}
+            onChange={handleChange}
+          />
+
           <label className={styles.label} htmlFor="bairro">
             Bairro:
           </label>
@@ -260,19 +273,6 @@ const Companies = () => {
             type="text"
             placeholder="Digite a cidade"
             value={formData.cidade}
-            onChange={handleChange}
-          />
-
-          <label className={styles.label} htmlFor="complemento">
-            Complemento:
-          </label>
-          <input
-            className={styles.input}
-            id="complemento"
-            name="complemento"
-            type="text"
-            placeholder="Ex: Apto 101, Sala 5"
-            value={formData.complemento}
             onChange={handleChange}
           />
 
