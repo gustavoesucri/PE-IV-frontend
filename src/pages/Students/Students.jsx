@@ -22,11 +22,23 @@ const Students = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState(""); // "error" ou "success"
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+const handleChange = (e) => {
+  const { name, value } = e.target;
 
+  // Limite de 50 caracteres para observacao
+  if (name === "observacao" && value.length > 50) {
+    showModal("A observação breve não pode ter mais de 50 caracteres.");
+    return; // não atualiza o estado com valor maior
+  }
+
+    // Limite de 50 caracteres para observacao
+  if (name === "observacoesDetalhadas" && value.length > 500) {
+    showModal("A observação detalhada não pode ter mais de 500 caracteres.");
+    return; // não atualiza o estado com valor maior
+  }
+
+  setFormData((prev) => ({ ...prev, [name]: value }));
+};
 const validateAge = (dataNascimento, dataIngresso) => {
   // Criar datas usando apenas ano, mês e dia, ignorando horas (por causa de problema de TimeZone)
   const [anoIngresso, mesIngresso, diaIngresso] = dataIngresso.split('-').map(Number);
@@ -99,6 +111,16 @@ const validateAge = (dataNascimento, dataIngresso) => {
     showModal("A data de ingresso não pode ser uma data futura.");
     return;
   }
+
+  if (formData.observacao.trim().length > 50){
+    showModal("A observação breve não pode ter mais de 50 caracteres.");
+    return;
+  }
+
+  if (formData.observacoesDetalhadas.trim().length > 500) {
+    showModal("A observação detalhada não pode ter mais de 500 caracteres.");
+    return;
+  } 
 
     try {
       // Preparar dados para envio
@@ -225,6 +247,7 @@ const validateAge = (dataNascimento, dataIngresso) => {
             placeholder="Digite uma observação breve"
             value={formData.observacao}
             onChange={handleChange}
+            maxLength={50}
           />
 
           {/* Observações detalhadas */}
