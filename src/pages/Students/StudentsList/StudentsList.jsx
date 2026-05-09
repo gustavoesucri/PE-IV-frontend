@@ -143,6 +143,17 @@ const StudentsList = () => {
   };
 
   const handleSave = async () => {
+
+    if (!formData.dataDesligamento) {
+      showMessage("Ao inativar um cadastro, a data de desligamento é obrigatória.");
+      return;
+    }
+
+    if (formData.dataDesligamento > new Date().toISOString().split('T')[0]) {
+      showMessage("A data de desligamento não pode ser uma data futura.");
+      return;
+    }
+
     try {
       // Atualizar no back-end
       await api.patch(`/students/${editingStudent.id}`, formData);
