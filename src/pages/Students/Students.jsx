@@ -94,6 +94,12 @@ const validateAge = (dataNascimento, dataIngresso) => {
     return;
   }
 
+  // Proibição de ingresso em data futura.
+  if (formData.dataIngresso > new Date().toISOString().split('T')[0]) {
+    showModal("A data de ingresso não pode ser uma data futura.");
+    return;
+  }
+
     try {
       // Preparar dados para envio
       const studentData = {
