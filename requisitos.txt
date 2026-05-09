@@ -31,9 +31,7 @@ Tela de cadastro de empresas:
 
 Tela de Estudantes Encaminhados:
 
-    - Ao selecionar o estudante, pode ser mais interessante colocar uma barra de busca. OU talvez limitar ligeiramente o tamanho do dropdown para saber onde ele termina, porque ele dá a percepção de que pode ser que tem alunos do fima da lista não aparecendo na tela (não tem, mas é a impressão que passa).
-
-    - Acusando erro que veio do backend ao tentar cadastrar um encaminhamento: "property createdAt should not exist". (CORRIGIDO VIA COMENTÁRIO)
+    - (abandonado)(Nesse tempo curto, não foi possível alterar isso sem modificar o seletor para um menos estético. Com isso ainda seria necessário readaptar toda a UI, então foi descartada a mudança.) Ao selecionar o estudante, pode ser mais interessante colocar uma barra de busca. OU talvez limitar ligeiramente o tamanho do dropdown para saber onde ele termina, porque ele dá a percepção de que pode ser que tem alunos do fim da lista não aparecendo na tela (não tem, mas é a impressão que passa).
 
     - É interessante ter um validador de datas também. Passou Data de Admissão no ano 1111 e Data Desligamento Prevista no ano de 2222. Passou também Admissão em data futura, como ano 2200.
 

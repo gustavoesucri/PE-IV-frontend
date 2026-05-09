@@ -154,6 +154,11 @@ const StudentsList = () => {
       return;
     }
 
+    if (formData.dataDesligamento < formData.dataIngresso) {
+      showMessage("A data de desligamento não pode ser menor que a data de ingresso.");
+      return;
+    }
+
     try {
       // Atualizar no back-end
       await api.patch(`/students/${editingStudent.id}`, formData);
