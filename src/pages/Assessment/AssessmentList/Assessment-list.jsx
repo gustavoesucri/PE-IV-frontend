@@ -50,6 +50,8 @@ const AssessmentList = () => {
         return `${stars}${prefix}${q.text}`;
     });
 
+    
+
     // Carregar questões da API
     useEffect(() => {
         const loadQuestions = async () => {
@@ -81,6 +83,27 @@ const AssessmentList = () => {
 
         loadData();
     }, [permissionsLoading, userPermissions]);
+
+        // Fechar modal com Esc
+        useEffect(() => {
+            const handleEsc = (e) => {
+                if (e.key === "Escape") {
+                    if (showModal) {
+                        setShowModal(false);
+                    }
+
+                    if (isMessageModalOpen) {
+                        closeMessageModal();
+                    }
+                }
+            };
+
+            window.addEventListener("keydown", handleEsc);
+
+            return () => {
+                window.removeEventListener("keydown", handleEsc);
+            };
+        }, [showModal, isMessageModalOpen]);
 
     const loadStudents = async () => {
         try {
