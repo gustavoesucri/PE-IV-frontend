@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { AlignCenterIcon, X } from "lucide-react";
 import styles from "./Assessment-list.module.css";
 import parse from 'html-react-parser';
 import Menu from "../../../components/Menu/Menu";
@@ -372,6 +372,9 @@ const AssessmentList = () => {
                                 Exportar como PDF
                             </button>
                         </div>
+                         <button className={styles.closeBtn} onClick={() => setShowModal(false)} style={{marginLeft: "auto"}}>
+                                <X size={20} />
+                            </button>
                     </div>
                 </div>
             )}
