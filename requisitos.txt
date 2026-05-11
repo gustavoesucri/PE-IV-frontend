@@ -63,8 +63,6 @@ Tela de Lista de Avaliações:
 
     - Permitir que Esc feche o Modal ao clicar em Visualizar. Também ter um "X" de saída no final da página.
 
-    - Ao exportar com sucesso o PDF, fechar o Modal.
-
     - Ao exportar o pdf, está vindo o texto da pergunta com o ponto final (listado a retificar em "Tela de Avaliação", neste documento) mais : (dois pontos). Ou sej suprime o ponto final e deixa os : (dois pontos), ou se coloca um ? (ponto de interogação) e se suprime os : (dois pontos). Testar. De início, prefiro com ponto de interogação presente.
 
     - Exportar PDF via back-end? Não vejo necessidade, a menos que implique em segurança de dados, como possibilidade de alteração do script. Nesse sentido, melhor o back-end fazer.

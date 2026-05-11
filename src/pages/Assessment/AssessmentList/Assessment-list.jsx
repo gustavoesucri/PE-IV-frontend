@@ -227,6 +227,7 @@ const AssessmentList = () => {
         // === SALVAR ===
         const studentName = getStudentName(selectedAssessment.studentId).replace(/\s+/g, '_');
         doc.save(`avaliacao_${studentName}_${selectedAssessment.evaluationType}.pdf`);
+        setShowModal(false)
     };
 
     return (
