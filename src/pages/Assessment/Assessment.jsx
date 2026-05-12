@@ -332,7 +332,15 @@ const Assessment = () => {
             Não foi possível carregar a visualização devido a falta de permissões, se for um problema, consulte o diretor.
           </div>
         ) : (
-          <form className={styles.form} onSubmit={handleSubmit}>
+            <form
+              className={styles.form}
+              onSubmit={handleSubmit}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  e.currentTarget.requestSubmit();
+                }
+              }}>
             <div className={styles.topFields}>
               {/* Seleção do Nome */}
               <div className={styles.selectWrapper}>

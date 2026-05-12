@@ -33,13 +33,13 @@ Tela de Estudantes Encaminhados:
 
     - (abandonado)(Nesse tempo curto, não foi possível alterar isso sem modificar o seletor para um menos estético. Com isso ainda seria necessário readaptar toda a UI, então foi descartada a mudança.) Ao selecionar o estudante, pode ser mais interessante colocar uma barra de busca. OU talvez limitar ligeiramente o tamanho do dropdown para saber onde ele termina, porque ele dá a percepção de que pode ser que tem alunos do fim da lista não aparecendo na tela (não tem, mas é a impressão que passa).
 
-    - É interessante ter um validador de datas também. Passou Data de Admissão no ano 1111 e Data Desligamento Prevista no ano de 2222. Passou também Admissão em data futura, como ano 2200.
+    - É interessante ter um validador de datas também. Passou Data de Admissão no ano 1111 e Data Desligamento Prevista no ano de 2222. Passou também Admissão em data futura, como ano 2200. (A validação da data de encaminhamento pode ser até um ano atrás e a data de desligamento não pode ser superior à idade máxima do aluno - 35 anos)
 
 --------------------
 
 Tela de Lista de Estudantes Encaminhados:
 
-    - UI quebrada para além do botão Visualizar. Não aparece o botão de Exclusão. Testei aumentando a largura para 2000px e os elementos estão lá. Provavelmente necessário uma barra de rolagem horizontal dentro da table.
+    -(Já existe rolagem no eixo x) UI quebrada para além do botão Visualizar. Não aparece o botão de Exclusão. Testei aumentando a largura para 2000px e os elementos estão lá. Provavelmente necessário uma barra de rolagem horizontal dentro da table.
 
     - Não há modal de Edição, somente Visualização.
 
@@ -53,8 +53,6 @@ Tela de Avaliação:
 
     - Provável que seja interessante salvar o estado atual da avaliação, pois pode ser um processo demorado. No papel, isso fica salvo automaticamente. A pessoa pode salvar, ou o programa pode salvar a cada 1 minuto, por exemplo. Evidentemente, deverá ter uma tabela ou espaço reservado para esses dados, seja em LocalStorage, seja no BD.
 
-    - Permitir que ao teclar Enter, a avaliação seja submetida.
-
     - As questões tem um . (ponto final) como no documento, mas será melhor colocar um ? (ponto de interrogação) ou deixar sem pontuação?
 
     - Ao perguntar sobre a data da avaliação estar na data atual é interessante mover a tela até lá para que o usuário possa ver o valor antes de clicar na opção do modal.
@@ -65,6 +63,9 @@ Tela de Lista de Avaliações:
 
     - Exportar PDF via back-end? Não vejo necessidade, a menos que implique em segurança de dados, como possibilidade de alteração do script. Nesse sentido, melhor o back-end fazer.
 
+    - Assim como existe o botão Visualizar, deve ter um para Criar/Iniciar a nova avaliação direto da listagem vinculada ao aluno.
+
+    - Será que deve ser colocado um para edição?
 -------------------------------------------------------
 
 - Revisar campos que devem aparecer no front-end.
