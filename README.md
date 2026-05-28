@@ -1,17 +1,21 @@
-# PE-IV-front
-Front-end do Projeto de Extensão IV
+# PE-IV - Frontend
 
+## Configuração
 
-### Instruções para rodar o projeto:
+1. Copie `.env.example` para `.env`
+2. Configure as variáveis conforme necessário
 
-- Em um terminal, rodar 'npm run start' no projeto /PE-IV-backend .
+## Executar
 
-- Em outro, rodar 'npm run start' na pasta do projeto /PE-IV-frontend .
+```bash
+npm install
+npm run start
+```
 
-- No login utilizar: usuário: 'Diretor' e senha 'admin'.
+**Requer:** Backend rodando (ver README do PE-IV-backend)
 
-- O back-end possui seed. Rodar usando "npm run seed"
+## Login
 
-- Também foram criados 4 arquivos JavaScript que também alimentam o backend e no futuro irão incorporar o seed. Eles têm o prefixo "envia_". Ver o README do back-end para maiores detalhes.
-
+**Usuário:** Diretor  
+**Senha (inicial):** admin
 

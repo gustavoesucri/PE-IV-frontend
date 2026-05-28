@@ -160,7 +160,7 @@ const FirstLoginModal = ({ user, onComplete }) => {
           <div className={styles.section}>
             <h3>📧 Confirme seu Email</h3>
             <div className={styles.inputGroup}>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">E-mail</label>
               <input
                 type="email"
                 id="email"
@@ -169,6 +169,7 @@ const FirstLoginModal = ({ user, onComplete }) => {
                 className={styles.input}
                 required
                 disabled={loading || emailSent}
+                placeholder="seu.email.aqui@exemple.com"
               />
               <small className={styles.hint}>
                 Este email será usado para recuperação de senha
