@@ -1,5 +1,10 @@
 # PE-IV - Frontend
 
+## Pré-requisitos
+
+- Node.js 16+
+- npm ou yarn
+
 ## Configuração
 
 1. Copie `.env.example` para `.env`
