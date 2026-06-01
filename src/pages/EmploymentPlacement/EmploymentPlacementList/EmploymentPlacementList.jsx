@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { format } from "date-fns";
+// import { format } from "date-fns";
 import styles from "./EmploymentPlacementList.module.css";
 import Menu from "../../../components/Menu/Menu";
 import { X } from "lucide-react";
@@ -235,10 +235,18 @@ const EmploymentPlacementList = () => {
   };
 
   // função de formatação usando date-fns
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return format(new Date(dateString), 'dd/MM/yyyy');
+  // const formatDate = (dateString) => {
+  //   if (!dateString) return "N/A";
+  //   return format(new Date(dateString), 'dd/MM/yyyy');
+  // };
+
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const [year, month, day] = dateStr.split("-");
+    return `${day}/${month}/${year}`;
   };
+
 
   const handleClear = () => {
     setSearch("");
